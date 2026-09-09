@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoDMX-Hub | DJ VamLykTan</title>
+
+    <meta name="description"
+          content="NeoDMX-Hub – dritte Entwicklungsstufe des IDE-Projekts innerhalb der VLT-Welt.">
+
+    <style>
+        /* =========================================================
+           FONT
+           ========================================================= */
+
+        @font-face {
+            font-family: "Psycho";
+            src: url("../../fonts/psycho/Psycho.otf") format("opentype");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Psycho";
+            src: url("../../fonts/psycho/Psycho Bold.otf") format("opentype");
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* =========================================================
+           VARIABLEN
+           ========================================================= */
+
+        :root {
+            --bg: #020406;
+            --bg-2: #030507;
+
+            --text: #dce3e6;
+            --muted: #8d989e;
+            --line: rgba(255,255,255,0.08);
+
+            --hub: #7650a7;
+            --hub-glow: rgba(118,80,167,0.42);
+
+            --neo: #38a6b0;
+            --neo-glow: rgba(56,166,176,0.42);
+
+            --icp: #a21f2e;
+            --icp-glow: rgba(162,31,46,0.40);
+
+            --mixxx: #d6dde0;
+            --mixxx-glow: rgba(214,221,224,0.20);
+
+            --ok: #57b98c;
+
+            --panel: rgba(4, 7, 10, 0.72);
+            --panel-strong: rgba(4, 7, 10, 0.86);
+        }
+
+        /* =========================================================
+           RESET
+           ========================================================= */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+            background: var(--bg);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            overflow-x: hidden;
+
+            color: var(--text);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            line-height: 1.65;
+
+            background:
+                radial-gradient(circle at 50% 12%, rgba(118,80,167,0.08), transparent 28%),
+                radial-gradient(circle at 18% 42%, rgba(56,166,176,0.05), transparent 25%),
+                radial-gradient(circle at 82% 58%, rgba(162,31,46,0.05), transparent 25%),
+                linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+
+            background-size: 48px 48px;
+            opacity: 0.18;
+            mask-image: linear-gradient(to bottom, black, transparent 86%);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        /* =========================================================
+           FIXER DYNAMISCHER HINTERGRUND
+           ========================================================= */
+
+        .hub-background {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .hub-background::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background:
+                radial-gradient(circle at center, rgba(0,0,0,0.15), rgba(2,4,6,0.55) 60%, rgba(2,4,6,0.82) 100%);
+        }
+
+        .hub-visual {
+            position: relative;
+            width: min(68vw, 760px);
+            min-width: 300px;
+            aspect-ratio: 1 / 1;
+
+            opacity: 0.42;
+            transform: translateY(2vh);
+
+            filter: saturate(0.95);
+        }
+
+        .hub-field {
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            border: 1px solid rgba(255,255,255,0.07);
+
+            background:
+                radial-gradient(circle at center, rgba(118,80,167,0.08), transparent 37%),
+                linear-gradient(180deg, rgba(7,10,14,0.64), rgba(3,5,8,0.52));
+
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.02) inset,
+                0 0 80px rgba(0,0,0,0.34);
+        }
+
+        .hub-field::before,
+        .hub-field::after {
+            content: "";
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .hub-field::before {
+            inset: 24px;
+            border: 1px solid rgba(255,255,255,0.045);
+        }
+
+        .hub-field::after {
+            top: 50%;
+            left: 50%;
+
+            width: 74%;
+            height: 74%;
+
+            transform:
+                translate(-50%, -50%)
+                rotate(45deg);
+
+            border: 1px solid rgba(118,80,167,0.08);
+        }
+
+        .node {
+            position: absolute;
+
+            width: 126px;
+            min-height: 72px;
+
+            display: grid;
+            place-items: center;
+
+            padding: 12px;
+
+            border: 1px solid rgba(255,255,255,0.13);
+            background: rgba(4,7,10,0.80);
+
+            text-align: center;
+
+            font-family:
+                "Liberation Mono",
+                "Courier New",
+                monospace;
+
+            color: #cbd4d8;
+
+            text-transform: uppercase;
+
+            font-size: 0.72rem;
+            letter-spacing: 0.11em;
+
+            box-shadow:
+                0 0 24px rgba(0,0,0,0.36);
+        }
+
+        .node small {
+            display: block;
+            margin-top: 4px;
+
+            color: #738087;
+
+            font-size: 0.60rem;
+            letter-spacing: 0.08em;
+        }
+
+        .node-hub {
+            top: 50%;
+            left: 50%;
+
+            width: 158px;
+            min-height: 92px;
+
+            transform: translate(-50%, -50%);
+
+            border-color: rgba(118,80,167,0.56);
+            color: #e2d8ed;
+
+            box-shadow:
+                0 0 26px var(--hub-glow),
+                0 0 52px rgba(118,80,167,0.16);
+        }
+
+        .node-mixxx {
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-color: rgba(214,221,224,0.28);
+            box-shadow: 0 0 22px var(--mixxx-glow);
+        }
+
+        .node-neo {
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            border-color: rgba(56,166,176,0.50);
+            color: #c6eef1;
+            box-shadow: 0 0 24px var(--neo-glow);
+        }
+
+        .node-icp {
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            border-color: rgba(162,31,46,0.50);
+            color: #f0cbd0;
+            box-shadow: 0 0 24px var(--icp-glow);
+        }
+
+        .node-monitor {
+            left: 50%;
+            bottom: 8%;
+            transform: translateX(-50%);
+            color: #a8b5ba;
+        }
+
+        .wire {
+            position: absolute;
+            z-index: 0;
+            overflow: hidden;
+            background: rgba(255,255,255,0.10);
+        }
+
+        .wire::after {
+            content: "";
+            position: absolute;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.75),
+                transparent
+            );
+
+            animation: signal-horizontal 2.8s linear infinite;
+        }
+
+        .wire-v::after {
+            background: linear-gradient(
+                180deg,
+                transparent,
+                rgba(255,255,255,0.75),
+                transparent
+            );
+
+            animation: signal-vertical 3.1s linear infinite;
+        }
+
+        .wire-top {
+            top: 21%;
+            left: 50%;
+            width: 1px;
+            height: 29%;
+            transform: translateX(-50%);
+        }
+
+        .wire-left {
+            top: 50%;
+            left: 24%;
+            width: 26%;
+            height: 1px;
+            background: rgba(56,166,176,0.18);
+        }
+
+        .wire-right {
+            top: 50%;
+            right: 24%;
+            width: 26%;
+            height: 1px;
+            background: rgba(162,31,46,0.18);
+        }
+
+        .wire-bottom {
+            left: 50%;
+            bottom: 21%;
+            width: 1px;
+            height: 29%;
+            transform: translateX(-50%);
+        }
+
+        .wire-left::after,
+        .wire-right::after {
+            top: 0;
+            left: -25%;
+            width: 25%;
+            height: 1px;
+        }
+
+        .wire-top::after,
+        .wire-bottom::after {
+            left: 0;
+            top: -25%;
+            width: 1px;
+            height: 25%;
+        }
+
+        .pulse-core {
+            position: absolute;
+
+            top: 50%;
+            left: 50%;
+
+            width: 12px;
+            height: 12px;
+
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+
+            background: #bfa6de;
+
+            box-shadow:
+                0 0 12px rgba(191,166,222,0.86),
+                0 0 32px rgba(118,80,167,0.66);
+
+            animation: core-pulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes signal-horizontal {
+            from { transform: translateX(0); }
+            to   { transform: translateX(500%); }
+        }
+
+        @keyframes signal-vertical {
+            from { transform: translateY(0); }
+            to   { transform: translateY(500%); }
+        }
+
+        @keyframes core-pulse {
+            0%, 100% {
+                opacity: 0.55;
+                transform: translate(-50%, -50%) scale(0.85);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.12);
+            }
+        }
+
+        /* =========================================================
+           SEITENINHALT
+           ========================================================= */
+
+        .page {
+            position: relative;
+            z-index: 3;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+
+            padding: 15px clamp(18px, 4vw, 56px);
+
+            background: rgba(2, 4, 6, 0.78);
+            border-bottom: 1px solid var(--line);
+
+            backdrop-filter: blur(14px);
+        }
+
+        .brand {
+            font-family: "Psycho", Georgia, serif;
+            font-size: 1.08rem;
+            color: #c7b2df;
+            text-decoration: none;
+        }
+
+        .topnav {
+            display: flex;
+            gap: 22px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .topnav a {
+            color: #aab4b8;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.70rem;
+            letter-spacing: 0.16em;
+        }
+
+        .topnav a:hover {
+            color: #ffffff;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            align-items: center;
+
+            padding:
+                90px
+                clamp(20px, 5vw, 70px)
+                90px;
+        }
+
+        .hero-inner,
+        .section-inner {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+        }
+
+        .hero-panel,
+        .content-panel {
+            background: rgba(4, 7, 10, 0.58);
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(4px);
+        }
+
+        .hero-panel {
+            max-width: 660px;
+            padding: clamp(28px, 4vw, 42px);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+
+            color: #96a2a8;
+
+            font-family:
+                "Liberation Mono",
+                "Courier New",
+                monospace;
+
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 40px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--hub), var(--neo));
+        }
+
+        h1 {
+            margin: 0;
+            padding: 0.12em 0 0.06em;
+
+            font-family: "Psycho", Georgia, serif;
+            font-size: clamp(3.2rem, 7vw, 6.2rem);
+            line-height: 1.03;
+            font-weight: 700;
+            color: #f0f2f3;
+
+            text-shadow:
+                0 0 20px rgba(118,80,167,0.16),
+                0 0 36px rgba(56,166,176,0.06);
+        }
+
+        .claim {
+            margin: 18px 0 0;
+            color: #d2d9dc;
+            font-size: clamp(1.08rem, 1.9vw, 1.42rem);
+            line-height: 1.55;
+        }
+
+        .hero-copy {
+            margin-top: 20px;
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .statusline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            min-height: 34px;
+            padding: 0 12px;
+
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(0,0,0,0.28);
+
+            color: #aab4b8;
+
+            font-family:
+                "Liberation Mono",
+                "Courier New",
+                monospace;
+
+            font-size: 0.67rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .status::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ok);
+            box-shadow: 0 0 10px rgba(87,185,140,0.62);
+        }
+
+        .status.linux::before {
+            background: var(--hub);
+            box-shadow: 0 0 10px var(--hub-glow);
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 46px;
+            padding: 0 20px;
+
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(4,7,10,0.64);
+
+            color: #dbe1e4;
+
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.15em;
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.32);
+            background: rgba(10,14,18,0.88);
+        }
+
+        .btn.primary {
+            border-color: rgba(118,80,167,0.44);
+            box-shadow: inset 0 0 26px rgba(118,80,167,0.07);
+        }
+
+        .section {
+            padding:
+                80px
+                clamp(20px, 5vw, 70px);
+        }
+
+        .content-panel {
+            padding: clamp(26px, 4vw, 40px);
+        }
+
+        .section + .section {
+            padding-top: 0;
+        }
+
+        .section-label {
+            margin: 0 0 12px;
+            color: #7f8b91;
+
+            font-family:
+                "Liberation Mono",
+                "Courier New",
+                monospace;
+
+            font-size: 0.70rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            margin: 0;
+            padding: 0.12em 0 0.06em;
+
+            font-family: "Psycho", Georgia, serif;
+            font-size: clamp(2.2rem, 4.8vw, 4.2rem);
+            line-height: 1.08;
+            font-weight: 700;
+
+            color: #edf0f2;
+        }
+
+        .lead {
+            max-width: 880px;
+            margin-top: 22px;
+            color: #a2adb2;
+            font-size: 1.02rem;
+        }
+
+        /* =========================================================
+           RELATIONS
+           ========================================================= */
+
+        .relations {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 34px;
+        }
+
+        .relation {
+            position: relative;
+            min-height: 96px;
+            padding: 18px 18px 16px 34px;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            background: rgba(0,0,0,0.16);
+        }
+
+        .relation::before {
+            content: "";
+            position: absolute;
+            left: 16px;
+            top: 24px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .relation.neo::before {
+            background: var(--neo);
+            box-shadow: 0 0 9px var(--neo-glow);
+        }
+
+        .relation.mixxx::before {
+            background: var(--mixxx);
+            box-shadow: 0 0 8px var(--mixxx-glow);
+        }
+
+        .relation.icp::before {
+            background: var(--icp);
+            box-shadow: 0 0 9px var(--icp-glow);
+        }
+
+        .relation strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #d6dde0;
+            font-size: 0.80rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .relation span {
+            color: #809097;
+            font-size: 0.92rem;
+        }
+
+        /* =========================================================
+           TIMELINE
+           ========================================================= */
+
+        .timeline {
+            position: relative;
+            margin-top: 40px;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 8px;
+            bottom: 8px;
+            width: 1px;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    var(--neo),
+                    var(--hub) 50%,
+                    var(--icp)
+                );
+
+            opacity: 0.58;
+        }
+
+        .step {
+            position: relative;
+            max-width: 860px;
+            padding: 0 0 34px 24px;
+        }
+
+        .step:last-child {
+            padding-bottom: 0;
+        }
+
+        .step::before {
+            content: "";
+            position: absolute;
+            left: -30px;
+            top: 8px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #050708;
+            border: 2px solid var(--hub);
+            box-shadow: 0 0 12px rgba(118,80,167,0.28);
+        }
+
+        .step:nth-child(1)::before {
+            border-color: var(--neo);
+            box-shadow: 0 0 12px rgba(56,166,176,0.26);
+        }
+
+        .step:nth-child(3)::before {
+            border-color: var(--icp);
+            box-shadow: 0 0 12px rgba(162,31,46,0.26);
+        }
+
+        .step small {
+            color: #657278;
+            font-family: "Courier New", monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .step h3 {
+            margin: 7px 0 8px;
+            color: #dde2e4;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .step p {
+            margin: 0;
+            color: #8a979d;
+        }
+
+        /* =========================================================
+           WHY
+           ========================================================= */
+
+        .why {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: clamp(28px, 6vw, 70px);
+            margin-top: 34px;
+        }
+
+        .why-psycho {
+            margin-bottom: 16px;
+            font-family: "Psycho", Georgia, serif;
+            font-size: clamp(1.06rem, 1.7vw, 1.38rem);
+            line-height: 1.2;
+            color: #d7dcdf;
+        }
+
+        .why-led-panel {
+            position: relative;
+            padding: 22px 24px;
+            overflow: hidden;
+
+            border: 1px solid rgba(255,255,255,0.06);
+            background-color: rgba(3,5,6,0.92);
+
+            background-image:
+                radial-gradient(circle, rgba(125,135,140,0.17) 1.4px, transparent 1.7px);
+
+            background-size: 13px 13px;
+
+            box-shadow:
+                inset 0 0 28px rgba(0,0,0,0.55),
+                0 0 20px rgba(66,170,178,0.04);
+        }
+
+        .why-led-panel::before {
+            content: "";
+            position: absolute;
+            inset: 9px;
+            border: 1px solid rgba(255,255,255,0.035);
+            pointer-events: none;
+        }
+
+        .why-led-text {
+            position: relative;
+            z-index: 1;
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size: clamp(0.96rem, 1.48vw, 1.18rem);
+            font-weight: bold;
+            line-height: 1.7;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+
+            color: #a9eff2;
+
+            text-shadow:
+                0 0 4px rgba(126,238,242,0.80),
+                0 0 9px rgba(66,170,178,0.50),
+                0 0 16px rgba(66,170,178,0.22);
+        }
+
+        .why-copy p {
+            margin: 0 0 16px;
+            color: #91a0a6;
+        }
+
+        .why-copy strong {
+            color: #dee4e6;
+            font-weight: 400;
+        }
+
+        /* =========================================================
+           OUTLOOK
+           ========================================================= */
+
+        .outlook {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 14px;
+        }
+
+        .outlook-box {
+            padding: 24px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            background: rgba(0,0,0,0.14);
+        }
+
+        .outlook-box.current {
+            border-top-color: rgba(118,80,167,0.66);
+        }
+
+        .outlook-box.future {
+            opacity: 0.76;
+        }
+
+        .outlook-box small {
+            color: #66737a;
+            font-family: "Courier New", monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .outlook-box h3 {
+            margin: 10px 0 10px;
+            color: #dde2e4;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .outlook-box p {
+            margin: 0;
+            color: #87959b;
+        }
+
+        footer {
+            padding: 34px 20px 46px;
+            color: #5f6c72;
+            text-align: center;
+            font-size: 0.70rem;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+        @media (max-width: 980px) {
+            .relations,
+            .why,
+            .outlook {
+                grid-template-columns: 1fr;
+            }
+
+            .hub-visual {
+                width: min(86vw, 620px);
+                opacity: 0.34;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .topnav {
+                gap: 14px;
+                justify-content: flex-start;
+            }
+
+            .hero {
+                min-height: auto;
+            }
+
+            .hero-panel,
+            .content-panel {
+                background: rgba(4, 7, 10, 0.70);
+            }
+
+            .hub-visual {
+                width: min(92vw, 520px);
+                opacity: 0.26;
+            }
+
+            .node {
+                width: 102px;
+                min-height: 62px;
+                font-size: 0.62rem;
+            }
+
+            .node-hub {
+                width: 138px;
+                min-height: 84px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- =====================================================
+         FIXER HINTERGRUND
+         ===================================================== -->
+
+    <div class="hub-background" aria-hidden="true">
+        <div class="hub-visual">
+            <div class="hub-field">
+
+                <div class="wire wire-v wire-top"></div>
+                <div class="wire wire-left"></div>
+                <div class="wire wire-right"></div>
+                <div class="wire wire-v wire-bottom"></div>
+
+                <div class="pulse-core"></div>
+
+                <div class="node node-mixxx">
+                    MIXXX
+                    <small>Audio / DJ</small>
+                </div>
+
+                <div class="node node-neo">
+                    NeoPixel
+                    <small>Light / LED</small>
+                </div>
+
+                <div class="node node-hub">
+                    NeoDMX-Hub
+                    <small>Stage 03</small>
+                </div>
+
+                <div class="node node-icp">
+                    VLT-ICP
+                    <small>VLT-Welt</small>
+                </div>
+
+                <div class="node node-monitor">
+                    Live
+                    <small>Monitoring</small>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="page">
+
+        <!-- =====================================================
+             HEADER
+             ===================================================== -->
+
+        <header class="topbar">
+            <a class="brand" href="../../index.html">DJ VamLykTan</a>
+
+            <nav class="topnav">
+                <a href="../index.html">Projekte</a>
+                <a href="#entwicklung">Entwicklung</a>
+                <a href="#warum">Warum</a>
+                <a href="#ausblick">Ausblick</a>
+            </nav>
+        </header>
+
+        <main>
+
+            <!-- =================================================
+                 HERO
+                 ================================================= -->
+
+            <section class="hero">
+                <div class="hero-inner">
+
+                    <div class="hero-panel">
+
+                        <div class="eyebrow">
+                            VLT-Welt · Entwicklungsstufe 3
+                        </div>
+
+                        <h1>NeoDMX-Hub</h1>
+
+                        <p class="claim">
+                            Aus einem Editor wurde eine Schnittstelle.
+                            Aus der Schnittstelle wird ein Hub.
+                        </p>
+
+                        <p class="hero-copy">
+                            Der NeoDMX-Hub ist die aktuelle dritte Entwicklungsstufe
+                            eines IDE-Projekts, das aus NeoDMX gewachsen ist.
+                            Heute verbindet diese Entwicklung mehrere Bestandteile
+                            der VLT-Welt miteinander.
+                        </p>
+
+                        <div class="statusline">
+                            <span class="status linux">Linux</span>
+                            <span class="status">Active Development</span>
+                            <span class="status">Stage 03</span>
+                        </div>
+
+                        <div class="hero-actions">
+                            <a class="btn primary" href="#entwicklung">Entwicklung ansehen</a>
+                            <a class="btn" href="#warum">Warum eigene IDE?</a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- =================================================
+                 RELATIONS
+                 ================================================= -->
+
+            <section class="section">
+                <div class="section-inner">
+                    <div class="content-panel">
+
+                        <p class="section-label">
+                            Verbindungen
+                        </p>
+
+                        <h2>
+                            Ein Hub zwischen den Welten.
+                        </h2>
+
+                        <p class="lead">
+                            NeoDMX-Hub ist nicht einfach nur ein weiteres Werkzeug.
+                            Er bildet die Verbindung zwischen Licht, Audio und den
+                            eigenen Komponenten der VLT-Welt.
+                        </p>
+
+                        <div class="relations">
+
+                            <div class="relation neo">
+                                <strong>NeoPixel</strong>
+                                <span>Licht / LED</span>
+                            </div>
+
+                            <div class="relation mixxx">
+                                <strong>Mixxx</strong>
+                                <span>DJ / Audio</span>
+                            </div>
+
+                            <div class="relation icp">
+                                <strong>VLT-ICP</strong>
+                                <span>entstanden aus der IDE</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 ENTWICKLUNG
+                 ================================================= -->
+
+            <section id="entwicklung" class="section">
+                <div class="section-inner">
+                    <div class="content-panel">
+
+                        <p class="section-label">
+                            Entwicklung
+                        </p>
+
+                        <h2>
+                            Drei Stufen.
+                        </h2>
+
+                        <p class="lead">
+                            Der Hub entstand nicht als fertiges Konzept.
+                            Er wuchs gemeinsam mit NeoDMX – immer dann weiter,
+                            wenn die nächste Stufe gebraucht wurde.
+                        </p>
+
+                        <div class="timeline">
+
+                            <article class="step">
+                                <small>Stage 01</small>
+                                <h3>Editor</h3>
+                                <p>
+                                    Ein einfacher Editor, um Texte an das
+                                    NeoPixel-Projekt zu übergeben.
+                                </p>
+                            </article>
+
+                            <article class="step">
+                                <small>Stage 02</small>
+                                <h3>Liveüberwachung</h3>
+                                <p>
+                                    Die bestehende Oberfläche wurde um eine
+                                    Liveüberwachung erweitert.
+                                </p>
+                            </article>
+
+                            <article class="step">
+                                <small>Stage 03 · Current</small>
+                                <h3>NeoDMX-Hub</h3>
+                                <p>
+                                    Die aktuelle Stufe kommuniziert aktiv mit
+                                    NeoPixel, Mixxx und VLT-ICP.
+                                </p>
+                            </article>
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 WARUM
+                 ================================================= -->
+
+            <section id="warum" class="section">
+                <div class="section-inner">
+                    <div class="content-panel">
+
+                        <p class="section-label">
+                            Warum eine eigene IDE?
+                        </p>
+
+                        <h2>
+                            Nicht noch ein Editor.
+                        </h2>
+
+                        <div class="why">
+
+                            <div>
+
+                                <div class="why-psycho">
+                                    Eigene Logik
+                                </div>
+
+                                <div class="why-led-panel">
+                                    <div class="why-led-text">
+                                        Nicht das System an die Software anpassen —
+                                        sondern die Software an das eigene System.
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="why-copy">
+
+                                <p>
+                                    Programme für einzelne Aufgaben gibt es durchaus.
+                                    Kostenmodelle, Lizenzbedingungen und Funktionsumfang
+                                    waren jedoch nie vollständig überzeugend.
+                                </p>
+
+                                <p>
+                                    Der entscheidende Punkt:
+                                    <strong>
+                                        Keine der vorhandenen Lösungen war für mein
+                                        System wirklich verfügbar.
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    Da mein Arbeitsumfeld auf Linux basiert und eng
+                                    mit Mixxx sowie den eigenen VLT-Komponenten verbunden ist,
+                                    rückte der Wunsch nach einem eigenen Werkzeug
+                                    immer stärker in den Vordergrund.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 AUSBLICK
+                 ================================================= -->
+
+            <section id="ausblick" class="section">
+                <div class="section-inner">
+                    <div class="content-panel">
+
+                        <p class="section-label">
+                            Ausblick
+                        </p>
+
+                        <h2>
+                            Linux first.
+                        </h2>
+
+                        <div class="outlook">
+
+                            <article class="outlook-box current">
+                                <small>Fokus · nächste 5–7 Jahre</small>
+                                <h3>Linux</h3>
+                                <p>
+                                    Mixxx, NeoPixel und VLT-ICP bleiben die aktive
+                                    Entwicklungsumgebung des NeoDMX-Hubs.
+                                </p>
+                            </article>
+
+                            <article class="outlook-box future">
+                                <small>Langfristiger Wunsch</small>
+                                <h3>Windows</h3>
+                                <p>
+                                    Später wäre eine Windows-Version denkbar:
+                                    zunächst mit Mixxx, eventuell langfristig auch
+                                    mit Winamp oder BPM Studio.
+                                </p>
+                            </article>
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            NeoDMX-Hub · Teil der VLT-Welt · DJ VamLykTan
+        </footer>
+
+    </div>
+
+</body>
+</html>

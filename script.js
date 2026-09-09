@@ -14,13 +14,58 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
+       EXTERNE LINKS
+
+       Die sichtbaren Social-Media-Symbole sind Bestandteil
+       der drei Hintergrundbilder.
+
+       Deshalb werden hier echte Klickflächen darübergelegt.
+
+       WICHTIG:
+       YouTube und E-Mail sind auf Linktree vorhanden, aber
+       Linktree liefert deren direkte Ziel-URL in der öffentlich
+       auslesbaren Ansicht nicht mit aus. Bis die Direktziele
+       eingetragen sind, führen diese beiden Symbole auf Linktree.
+
+       Das Wolken-Symbol in den Grafiken ist optisch SoundCloud.
+       Auf deinem aktuellen Linktree ist jedoch Mixcloud gelistet.
+       Deshalb führt dieses Symbol momentan zu Mixcloud.
+       ===================================================== */
+
+    const SOCIAL = {
+
+        facebook:
+            "https://www.facebook.com/profile.php?id=100063754892757",
+
+        instagram:
+            "https://www.instagram.com/dj_vamlyktan/",
+
+        youtube:
+            "https://www.youtube.com/@vamlyktan7205",
+
+        twitch:
+            "https://www.twitch.tv/dj_vamlyktan",
+
+        mixcloud:
+            "https://www.mixcloud.com/vamlyktan/",
+
+        email:
+            "mailto:djvamlyktan@gmail.com"
+
+    };
+
+
+    /* =====================================================
        HERO-DEFINITIONEN
 
        x / y / width / height beziehen sich immer auf
        das ORIGINALBILD.
 
-       Beispiel:
-       x: 0.50 = 50 % der Bildbreite
+       Alle drei Bilder:
+           1672 × 941 Pixel
+
+       Die Social-Hotspots wurden direkt anhand der
+       hochgeladenen Originalbilder vermessen.
 
        Dadurch bleiben die Hotspots auch bei anderen
        Fenstergrößen an derselben Stelle des Bildes.
@@ -59,6 +104,108 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     width: 0.057,
                     height: 0.034
+                },
+
+
+                /*
+                 * SOCIAL MEDIA
+                 * obere rechte Icon-Leiste
+                 */
+
+                {
+                    id: "facebook-main",
+
+                    href: SOCIAL.facebook,
+
+                    label: "Facebook",
+
+                    external: true,
+
+                    x: 0.7841,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "instagram-main",
+
+                    href: SOCIAL.instagram,
+
+                    label: "Instagram",
+
+                    external: true,
+
+                    x: 0.8140,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "youtube-main",
+
+                    href: SOCIAL.youtube,
+
+                    label: "YouTube",
+
+                    external: true,
+
+                    x: 0.8439,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "twitch-main",
+
+                    href: SOCIAL.twitch,
+
+                    label: "Twitch",
+
+                    external: true,
+
+                    x: 0.8732,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "mixcloud-main",
+
+                    href: SOCIAL.mixcloud,
+
+                    label: "Mixcloud",
+
+                    external: true,
+
+                    x: 0.9037,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "email-main",
+
+                    href: SOCIAL.email,
+
+                    label: "E-Mail",
+
+                    external: true,
+
+                    x: 0.9342,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
                 }
 
             ]
@@ -70,6 +217,9 @@ document.addEventListener("DOMContentLoaded", function () {
            10 %
 
            Dort existiert aktuell kein Projekte-Element.
+
+           Sichtbare Icons:
+           Facebook · Instagram · Cloud · Twitch · E-Mail
            ------------------------------------------------- */
 
         {
@@ -79,7 +229,89 @@ document.addEventListener("DOMContentLoaded", function () {
 
             weight: 10,
 
-            hotspots: []
+            hotspots: [
+
+                {
+                    id: "facebook-gothic",
+
+                    href: SOCIAL.facebook,
+
+                    label: "Facebook",
+
+                    external: true,
+
+                    x: 0.8215,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "instagram-gothic",
+
+                    href: SOCIAL.instagram,
+
+                    label: "Instagram",
+
+                    external: true,
+
+                    x: 0.8477,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "mixcloud-gothic",
+
+                    href: SOCIAL.mixcloud,
+
+                    label: "Mixcloud",
+
+                    external: true,
+
+                    x: 0.8745,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "twitch-gothic",
+
+                    href: SOCIAL.twitch,
+
+                    label: "Twitch",
+
+                    external: true,
+
+                    x: 0.8995,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "email-gothic",
+
+                    href: SOCIAL.email,
+
+                    label: "E-Mail",
+
+                    external: true,
+
+                    x: 0.9255,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                }
+
+            ]
         },
 
 
@@ -135,6 +367,108 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     width: 0.068,
                     height: 0.035
+                },
+
+
+                /*
+                 * SOCIAL MEDIA
+                 * obere rechte Icon-Leiste
+                 */
+
+                {
+                    id: "facebook-psycho",
+
+                    href: SOCIAL.facebook,
+
+                    label: "Facebook",
+
+                    external: true,
+
+                    x: 0.8032,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "instagram-psycho",
+
+                    href: SOCIAL.instagram,
+
+                    label: "Instagram",
+
+                    external: true,
+
+                    x: 0.8283,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "youtube-psycho",
+
+                    href: SOCIAL.youtube,
+
+                    label: "YouTube",
+
+                    external: true,
+
+                    x: 0.8553,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "twitch-psycho",
+
+                    href: SOCIAL.twitch,
+
+                    label: "Twitch",
+
+                    external: true,
+
+                    x: 0.8816,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "mixcloud-psycho",
+
+                    href: SOCIAL.mixcloud,
+
+                    label: "Mixcloud",
+
+                    external: true,
+
+                    x: 0.9109,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
+                },
+
+                {
+                    id: "email-psycho",
+
+                    href: SOCIAL.email,
+
+                    label: "E-Mail",
+
+                    external: true,
+
+                    x: 0.9384,
+                    y: 0.0213,
+
+                    width: 0.0215,
+                    height: 0.0383
                 }
 
             ]
@@ -261,6 +595,24 @@ document.addEventListener("DOMContentLoaded", function () {
             hotspot.href;
 
 
+        /*
+         * Externe Seiten in neuem Tab öffnen.
+         */
+
+        if (
+            hotspot.external
+        ) {
+
+            link.target =
+                "_blank";
+
+
+            link.rel =
+                "noopener noreferrer";
+
+        }
+
+
         link.setAttribute(
             "aria-label",
             hotspot.label
@@ -308,7 +660,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
        WICHTIG:
 
-       CSS benutzt jetzt:
+       CSS benutzt:
 
            background-size: contain
 
@@ -356,14 +708,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         /* -------------------------------------------------
            CONTAIN
-
-           Der entscheidende Unterschied zu vorher:
-
-           COVER:
-               Math.max()
-
-           CONTAIN:
-               Math.min()
            ------------------------------------------------- */
 
         const scale =
@@ -391,9 +735,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         /* -------------------------------------------------
            background-position: center center
-
-           Wenn schwarze Balken entstehen, liegen sie
-           gleichmäßig links/rechts bzw. oben/unten.
            ------------------------------------------------- */
 
         const offsetX =

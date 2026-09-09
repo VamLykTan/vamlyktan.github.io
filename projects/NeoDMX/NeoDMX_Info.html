@@ -490,8 +490,6 @@
             border-bottom-color: #ffffff;
         }
 
-
-
         .story-final-wrap {
             margin-top: 46px;
             max-width: 980px;
@@ -556,6 +554,60 @@
                 white-space: normal;
                 animation: none;
             }
+        }
+
+        .official-video-block {
+            display: grid;
+            grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.85fr);
+            margin-top: 42px;
+            overflow: hidden;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-top-color: rgba(47,157,166,0.58);
+            box-shadow: 0 0 42px rgba(47,157,166,0.05);
+        }
+
+        .official-video-player-wrap {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            background: #000000;
+        }
+
+        .official-video-player {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            background: #000000;
+        }
+
+        .official-video-copy {
+            padding: clamp(26px, 4vw, 42px);
+        }
+
+        .official-video-copy small {
+            color: #89bfc4;
+            text-transform: uppercase;
+            letter-spacing: 0.17em;
+        }
+
+        .official-video-copy h3 {
+            margin: 12px 0 18px;
+            font-family: "Psycho", Georgia, serif;
+            font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+            line-height: 1.1;
+            font-weight: 700;
+            color: #f0f0f0;
+        }
+
+        .official-video-copy p {
+            margin: 0;
+            color: #9eabb1;
+        }
+
+        .official-video-copy .btn {
+            margin-top: 24px;
         }
 
         .video-grid {
@@ -638,7 +690,6 @@
             box-shadow: 0 0 12px rgba(123,67,177,0.85);
         }
 
-
         .resonance-box {
             margin-top: 42px;
             padding: clamp(28px, 5vw, 48px);
@@ -695,7 +746,8 @@
             }
 
             .cards,
-            .video-grid {
+            .video-grid,
+            .official-video-block {
                 grid-template-columns: 1fr;
             }
         }
@@ -1021,7 +1073,6 @@
             </div>
         </section>
 
-
         <section id="idee" class="section">
             <div class="section-inner">
 
@@ -1066,9 +1117,6 @@
 
             </div>
         </section>
-
-
-
 
         <section id="entstehung" class="section">
             <div class="section-inner">
@@ -1143,9 +1191,9 @@
                     <article class="story-step">
                         <h3>DMX kommt hinzu</h3>
                         <p>
-                        Aus diesen Versuchen entstand die Idee für ein eigenes NeoLED-System. Irgendwann verschwand das Projekt für eine Zeit in der Schublade – 
-                        nicht vergessen, aber auch nicht wirklich weitergeführt. Seit gut einem Jahr wird es wieder aktiv betrieben und weiterentwickelt. 
-                        Parallel dazu entstand eine eigene <a href="NeoDMX_IDE.html" class="project-button">NeoDMX - IDE</a>, um die Entwicklung besser an die eigenen Anforderungen anzupassen. 
+                        Aus diesen Versuchen entstand die Idee für ein eigenes NeoLED-System. Irgendwann verschwand das Projekt für eine Zeit in der Schublade –
+                        nicht vergessen, aber auch nicht wirklich weitergeführt. Seit gut einem Jahr wird es wieder aktiv betrieben und weiterentwickelt.
+                        Parallel dazu entstand eine eigene <a href="NeoDMX_IDE.html" class="project-button">NeoDMX - IDE</a>, um die Entwicklung besser an die eigenen Anforderungen anzupassen.
                         Als weiterer Baustein der entstehenden VLT-Welt kam zudem das Nebenprojekt <a href="VLT_ICP.html" class="project-button">VLT-ICP</a> hinzu.</p>
                     </article>
 
@@ -1169,7 +1217,6 @@
             </div>
         </section>
 
-
         <section id="video" class="section">
             <div class="section-inner">
 
@@ -1180,6 +1227,33 @@
                     Die Videos zeigen NeoDMX nicht als Datenblatt, sondern dort, wo es hingehört:
                     im Zusammenspiel aus Licht, Bewegung und Atmosphäre.
                 </p>
+
+                <div class="official-video-block">
+                    <div class="official-video-player-wrap">
+                        <video class="official-video-player" controls preload="metadata" playsinline>
+                            <source src="../../media/NeoDMX/VID_20260628_220304_web.mp4" type="video/mp4">
+                            Dein Browser unterstützt die Videowiedergabe nicht.
+                        </video>
+                    </div>
+
+                    <div class="official-video-copy">
+                        <small>Erster offizieller Werbelauf</small>
+                        <h3>Acoustic meets Gothic</h3>
+                        <p>
+                            Dieser Lauf war der erste offizielle Werbelauf von NeoDMX für die
+                            Veranstaltung <strong>Acoustic meets Gothic</strong>. Damit wurde das
+                            System erstmals gezielt für die öffentliche Bewerbung einer
+                            Veranstaltung eingesetzt.
+                        </p>
+
+                        <a class="btn primary"
+                           href="https://www.facebook.com/share/1cCkyDzzLQ/"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            Acoustic meets Gothic auf Facebook
+                        </a>
+                    </div>
+                </div>
 
                 <div class="video-grid">
 
@@ -1207,7 +1281,6 @@
 
             </div>
         </section>
-
 
         <section id="resonanz" class="section">
             <div class="section-inner">
@@ -1239,7 +1312,6 @@
 
             </div>
         </section>
-
 
         <section class="section">
             <div class="section-inner">

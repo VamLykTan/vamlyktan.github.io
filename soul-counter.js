@@ -4,18 +4,13 @@ document.addEventListener("DOMContentLoaded", function () {
        SEELENZÄHLER · SEELEN / ECHOS
 
        SEELEN:
-       ungefähr ein Zähler pro Browser, der die Homepage seit
-       Aktivierung dieses Zählers besucht hat. Dafür wird nur
-       lokal ein Marker gespeichert.
+       ungefähr einmal pro Browser.
 
        ECHOS:
-       jeder Seitenaufruf der Homepage seit Aktivierung.
+       jeder Aufruf der Homepage.
 
-       Es werden keine Namen, Mailadressen oder sonstigen
-       persönlichen Angaben gespeichert.
-
-       Der externe Zähler ist absichtlich nur dekorative
-       Seitenstatistik, keine belastbare Analytics-Lösung.
+       Die Optik basiert auf dem freigegebenen Seelenmotiv:
+       körperlose Erscheinungen liegen hinter der Anzeige.
        ===================================================== */
 
     const API =
@@ -39,56 +34,41 @@ document.addEventListener("DOMContentLoaded", function () {
        ===================================================== */
 
     const counter =
-        document.createElement(
-            "aside"
-        );
-
+        document.createElement("aside");
 
     counter.id =
         "vlt-soul-counter";
-
 
     counter.setAttribute(
         "aria-label",
         "Seelenzähler"
     );
 
-
     counter.title =
         "Seelen ≈ einmal pro Browser · Echos = Seitenaufrufe";
 
-
     counter.innerHTML = `
-        <span class="soul-mark" aria-hidden="true"></span>
+        <div class="soul-art" aria-hidden="true"></div>
 
-        <span class="soul-pair">
+        <div class="soul-readout">
             <span class="soul-label">SEELEN</span>
-            <strong id="vlt-souls">------</strong>
-        </span>
+            <strong class="soul-value" id="vlt-souls">—</strong>
 
-        <span class="soul-divider" aria-hidden="true"></span>
+            <span class="soul-divider" aria-hidden="true"></span>
 
-        <span class="soul-pair">
-            <span class="soul-label">ECHOS</span>
-            <strong id="vlt-echoes">------</strong>
-        </span>
+            <span class="echo-label">ECHOS</span>
+            <strong class="echo-value" id="vlt-echoes">—</strong>
+        </div>
     `;
 
-
-    document.body.appendChild(
-        counter
-    );
+    document.body.appendChild(counter);
 
 
     const soulsElement =
-        document.getElementById(
-            "vlt-souls"
-        );
+        document.getElementById("vlt-souls");
 
     const echoesElement =
-        document.getElementById(
-            "vlt-echoes"
-        );
+        document.getElementById("vlt-echoes");
 
 
     /* =====================================================
@@ -96,471 +76,296 @@ document.addEventListener("DOMContentLoaded", function () {
        ===================================================== */
 
     const style =
-        document.createElement(
-            "style"
-        );
-
+        document.createElement("style");
 
     style.textContent = `
 
         #vlt-soul-counter {
+            --soul-accent: #f21b36;
+            --soul-muted: #938d91;
 
-            --soul-accent:
-                #9c0715;
+            position: fixed;
+            z-index: 48;
 
-            --soul-accent-soft:
-                rgba(156,7,21,.32);
+            aspect-ratio: 5 / 4;
 
-            position:
-                fixed;
+            pointer-events: none;
 
-            z-index:
-                48;
+            opacity: .92;
+            transform: translateZ(0);
 
-            min-width:
-                190px;
+            transition:
+                opacity .45s ease,
+                transform .55s ease,
+                filter .45s ease;
 
-            display:
-                grid;
+            filter:
+                drop-shadow(0 0 18px rgba(0,0,0,.42));
+        }
 
-            grid-template-columns:
-                14px
-                1fr
-                1px
-                1fr;
+        #vlt-soul-counter .soul-art {
+            position: absolute;
+            inset: 0;
 
-            align-items:
-                center;
+            background:
+                url("images/soul-counter-bg.svg")
+                center center / contain
+                no-repeat;
 
-            gap:
-                9px;
+            opacity: .94;
 
-            padding:
-                8px
-                11px;
+            transform-origin: 68% 48%;
 
-            color:
-                #aaa4a6;
+            animation:
+                vlt-soul-drift
+                12s
+                ease-in-out
+                infinite;
+        }
+
+        #vlt-soul-counter .soul-readout {
+            position: absolute;
+
+            left: 56.0%;
+            top: 38.0%;
+
+            width: 28.5%;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            text-align: center;
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            text-transform: uppercase;
+
+            text-shadow:
+                0 2px 8px rgba(0,0,0,.95);
+        }
+
+        #vlt-soul-counter .soul-label,
+        #vlt-soul-counter .echo-label {
+            display: block;
+
+            color: #e6dfe2;
+
+            font-size:
+                clamp(8px, .65vw, 12px);
+
+            letter-spacing: .22em;
+            line-height: 1;
+        }
+
+        #vlt-soul-counter .soul-value {
+            display: block;
+
+            margin-top: 10%;
+
+            color: var(--soul-accent);
+
+            font-size:
+                clamp(25px, 2.25vw, 46px);
+
+            font-weight: normal;
+            line-height: .94;
+
+            letter-spacing: .035em;
+
+            text-shadow:
+                0 0 8px rgba(255,20,45,.74),
+                0 0 20px rgba(160,0,20,.42),
+                0 2px 8px rgba(0,0,0,1);
+        }
+
+        #vlt-soul-counter .soul-divider {
+            display: block;
+
+            width: 68%;
+            height: 1px;
+
+            margin: 13% 0 10%;
 
             background:
                 linear-gradient(
                     90deg,
-                    rgba(0,0,0,.76),
-                    rgba(4,3,5,.55)
-                );
-
-            border-top:
-                1px solid
-                rgba(255,255,255,.08);
-
-            border-bottom:
-                1px solid
-                rgba(120,0,12,.36);
-
-            box-shadow:
-                inset 0 0 18px
-                rgba(0,0,0,.58),
-                0 0 20px
-                rgba(0,0,0,.18);
-
-            backdrop-filter:
-                blur(3px);
-
-            font-family:
-                "Courier New",
-                "Liberation Mono",
-                monospace;
-
-            line-height:
-                1;
-
-            opacity:
-                .78;
-
-            transition:
-                opacity .25s ease,
-                border-color .25s ease,
-                box-shadow .25s ease,
-                transform .35s ease;
-
-        }
-
-
-        #vlt-soul-counter::before,
-        #vlt-soul-counter::after {
-
-            content:
-                "";
-
-            position:
-                absolute;
-
-            width:
-                18px;
-
-            height:
-                1px;
-
-            background:
-                var(--soul-accent);
-
-            box-shadow:
-                0 0 8px
-                var(--soul-accent-soft);
-
-        }
-
-
-        #vlt-soul-counter::before {
-
-            left:
-                -8px;
-
-            top:
-                -1px;
-
-        }
-
-
-        #vlt-soul-counter::after {
-
-            right:
-                -8px;
-
-            bottom:
-                -1px;
-
-        }
-
-
-        #vlt-soul-counter:hover {
-
-            opacity:
-                1;
-
-            border-bottom-color:
-                var(--soul-accent);
-
-            box-shadow:
-                inset 0 0 18px
-                rgba(0,0,0,.62),
-                0 0 18px
-                var(--soul-accent-soft);
-
-        }
-
-
-        #vlt-soul-counter
-        .soul-mark {
-
-            position:
-                relative;
-
-            width:
-                11px;
-
-            height:
-                11px;
-
-            border:
-                1px solid
-                var(--soul-accent);
-
-            transform:
-                rotate(45deg);
-
-            box-shadow:
-                0 0 7px
-                var(--soul-accent-soft);
-
-        }
-
-
-        #vlt-soul-counter
-        .soul-mark::before {
-
-            content:
-                "";
-
-            position:
-                absolute;
-
-            left:
-                50%;
-
-            top:
-                -6px;
-
-            width:
-                1px;
-
-            height:
-                21px;
-
-            background:
-                var(--soul-accent);
-
-            transform:
-                translateX(-50%);
-
-            opacity:
-                .68;
-
-        }
-
-
-        #vlt-soul-counter
-        .soul-pair {
-
-            display:
-                grid;
-
-            gap:
-                4px;
-
-        }
-
-
-        #vlt-soul-counter
-        .soul-label {
-
-            color:
-                #666267;
-
-            font-size:
-                clamp(
-                    7px,
-                    .47vw,
-                    9px
-                );
-
-            letter-spacing:
-                .18em;
-
-        }
-
-
-        #vlt-soul-counter
-        strong {
-
-            color:
-                #c6bec1;
-
-            font-size:
-                clamp(
-                    10px,
-                    .72vw,
-                    13px
-                );
-
-            font-weight:
-                normal;
-
-            letter-spacing:
-                .12em;
-
-            text-shadow:
-                0 0 8px
-                rgba(255,255,255,.08);
-
-        }
-
-
-        #vlt-soul-counter
-        .soul-divider {
-
-            align-self:
-                stretch;
-
-            width:
-                1px;
-
-            background:
-                linear-gradient(
                     transparent,
-                    rgba(150,0,15,.42),
+                    rgba(245,25,50,.94),
                     transparent
                 );
 
+            box-shadow:
+                0 0 7px rgba(240,15,40,.36);
         }
 
+        #vlt-soul-counter .soul-divider::after {
+            content: "";
 
-        body[data-hero="gothic"]
-        #vlt-soul-counter {
+            display: block;
 
-            --soul-accent:
-                #a80b18;
+            width: 5px;
+            height: 5px;
 
-            --soul-accent-soft:
-                rgba(168,11,24,.34);
+            margin: -2px auto 0;
 
+            background: var(--soul-accent);
+
+            transform: rotate(45deg);
+
+            box-shadow:
+                0 0 7px rgba(245,20,45,.55);
         }
 
+        #vlt-soul-counter .echo-label {
+            color: #aaa3a7;
 
-        body[data-hero="main"]
-        #vlt-soul-counter {
-
-            --soul-accent:
-                #ba0d1c;
-
-            --soul-accent-soft:
-                rgba(186,13,28,.34);
-
+            font-size:
+                clamp(7px, .55vw, 10px);
         }
 
+        #vlt-soul-counter .echo-value {
+            display: block;
+
+            margin-top: 7%;
+
+            color: var(--soul-muted);
+
+            font-size:
+                clamp(16px, 1.45vw, 28px);
+
+            font-weight: normal;
+            line-height: 1;
+
+            letter-spacing: .04em;
+
+            text-shadow:
+                0 2px 8px rgba(0,0,0,1),
+                0 0 8px rgba(255,255,255,.08);
+        }
 
         body[data-hero="psycho"]
         #vlt-soul-counter {
+            --soul-accent: #a55cc4;
+            --soul-muted: #9a8da0;
 
-            --soul-accent:
-                #7a438f;
-
-            --soul-accent-soft:
-                rgba(122,67,143,.38);
-
-            border-bottom-color:
-                rgba(122,67,143,.44);
-
+            filter:
+                hue-rotate(18deg)
+                drop-shadow(0 0 18px rgba(0,0,0,.42));
         }
-
-
-        /*
-         * Beim Gothic-Portal wird der Zähler mit verschluckt.
-         */
 
         body.vlt-portal-active
         #vlt-soul-counter {
-
-            opacity:
-                .08;
-
-            transform:
-                scale(.98);
-
+            opacity: .12;
+            transform: scale(.97);
+            filter: blur(2px);
         }
 
+        @keyframes vlt-soul-drift {
+            0%, 100% {
+                transform:
+                    translate3d(0,0,0)
+                    scale(1);
+            }
+
+            50% {
+                transform:
+                    translate3d(1.4%, -1.2%, 0)
+                    scale(1.012);
+            }
+        }
 
         @media (max-width: 700px) {
-
             #vlt-soul-counter {
-
-                min-width:
-                    164px;
-
-                gap:
-                    7px;
-
-                padding:
-                    7px
-                    9px;
-
+                opacity: .82;
             }
 
+            #vlt-soul-counter .soul-readout {
+                left: 55.5%;
+                width: 30%;
+            }
         }
-
 
         @media (prefers-reduced-motion: reduce) {
-
-            #vlt-soul-counter {
-
-                transition:
-                    none;
-
+            #vlt-soul-counter,
+            #vlt-soul-counter .soul-art {
+                transition: none;
+                animation: none;
             }
-
         }
-
     `;
 
-
-    document.head.appendChild(
-        style
-    );
+    document.head.appendChild(style);
 
 
     /* =====================================================
        POSITIONIERUNG RELATIV ZUM ORIGINALBILD
 
-       Der Zähler sitzt unterhalb der Social-Icon-Zone.
+       Die Erscheinungen liegen rechts oben und die Ziffern
+       schweben davor – wie im freigegebenen Entwurf.
        ===================================================== */
 
     const positions = {
-
         main: {
-            x: 0.795,
-            y: 0.090,
-            width: 0.158
+            x: 0.700,
+            y: 0.071,
+            width: 0.286
         },
 
         gothic: {
-            x: 0.795,
-            y: 0.082,
-            width: 0.158
+            x: 0.700,
+            y: 0.071,
+            width: 0.286
         },
 
         psycho: {
-            x: 0.795,
-            y: 0.090,
-            width: 0.158
+            x: 0.700,
+            y: 0.071,
+            width: 0.286
         }
-
     };
 
-
-    const image =
+    const heroImage =
         new Image();
 
-
     function getHeroFile() {
-
         const hero =
             document.body.dataset.hero;
-
 
         if (hero === "gothic") {
             return "images/Gothic.png";
         }
 
-
         if (hero === "psycho") {
             return "images/Psycho.png";
         }
 
-
         return "images/mainbackground.png";
-
     }
-
 
     function loadPositionImage() {
-
-        image.src =
+        heroImage.src =
             getHeroFile();
-
     }
 
-
     function positionCounter() {
-
         if (
-            !image.naturalWidth ||
-            !image.naturalHeight
+            !heroImage.naturalWidth ||
+            !heroImage.naturalHeight
         ) {
-
             return;
-
         }
-
 
         const hero =
             document.body.dataset.hero ||
             "main";
 
-
         const pos =
             positions[hero] ||
             positions.main;
-
 
         const viewportWidth =
             window.innerWidth;
@@ -568,350 +373,190 @@ document.addEventListener("DOMContentLoaded", function () {
         const viewportHeight =
             window.innerHeight;
 
-
         const scale =
             Math.min(
-                viewportWidth /
-                    image.naturalWidth,
-
-                viewportHeight /
-                    image.naturalHeight
+                viewportWidth / heroImage.naturalWidth,
+                viewportHeight / heroImage.naturalHeight
             );
 
-
         const renderedWidth =
-            image.naturalWidth *
-            scale;
+            heroImage.naturalWidth * scale;
 
         const renderedHeight =
-            image.naturalHeight *
-            scale;
-
+            heroImage.naturalHeight * scale;
 
         const offsetX =
-            (
-                viewportWidth -
-                renderedWidth
-            ) / 2;
+            (viewportWidth - renderedWidth) / 2;
 
         const offsetY =
-            (
-                viewportHeight -
-                renderedHeight
-            ) / 2;
-
+            (viewportHeight - renderedHeight) / 2;
 
         const width =
-            pos.width *
-            renderedWidth;
-
+            pos.width * renderedWidth;
 
         counter.style.left =
-            `${
-                offsetX +
-                pos.x *
-                renderedWidth
-            }px`;
+            `${offsetX + pos.x * renderedWidth}px`;
 
         counter.style.top =
-            `${
-                offsetY +
-                pos.y *
-                renderedHeight
-            }px`;
+            `${offsetY + pos.y * renderedHeight}px`;
 
         counter.style.width =
             `${width}px`;
-
     }
 
-
-    image.onload =
+    heroImage.onload =
         positionCounter;
-
 
     window.addEventListener(
         "resize",
         positionCounter
     );
 
-
     window.addEventListener(
         "vlt:herochange",
         function () {
-
             loadPositionImage();
-
         }
     );
-
 
     loadPositionImage();
 
 
     /* =====================================================
-       API
+       ZÄHLER
        ===================================================== */
 
     function storageAvailable() {
-
         try {
-
             const testKey =
                 "__vlt_soul_test__";
 
-
-            localStorage.setItem(
-                testKey,
-                "1"
-            );
-
-
-            localStorage.removeItem(
-                testKey
-            );
-
+            localStorage.setItem(testKey, "1");
+            localStorage.removeItem(testKey);
 
             return true;
-
         }
-
         catch (error) {
-
             return false;
-
         }
-
     }
 
-
-    async function counterRequest(
-        mode,
-        key
-    ) {
-
+    async function counterRequest(mode, key) {
         const response =
             await fetch(
                 `${API}/${mode}/${NAMESPACE}/${key}`,
                 {
-                    method:
-                        "GET",
-
-                    cache:
-                        "no-store"
+                    method: "GET",
+                    cache: "no-store"
                 }
             );
 
-
         if (!response.ok) {
-
             throw new Error(
                 `counter ${response.status}`
             );
-
         }
-
 
         const data =
             await response.json();
 
-
         const value =
-            Number(
-                data.value
-            );
+            Number(data.value);
 
-
-        if (
-            !Number.isFinite(
-                value
-            )
-        ) {
-
+        if (!Number.isFinite(value)) {
             throw new Error(
                 "counter value invalid"
             );
-
         }
 
-
         return value;
-
     }
 
-
-    function formatValue(
-        value
-    ) {
-
+    function formatValue(value) {
         return String(
             Math.max(
                 0,
-                Math.floor(
-                    value
-                )
+                Math.floor(value)
             )
-        ).padStart(
-            6,
-            "0"
         );
-
     }
 
-
-    function animateValue(
-        element,
-        value
-    ) {
-
+    function animateValue(element, value) {
         const reduceMotion =
             window.matchMedia(
                 "(prefers-reduced-motion: reduce)"
             ).matches;
 
-
-        if (
-            reduceMotion ||
-            value < 2
-        ) {
-
+        if (reduceMotion || value < 2) {
             element.textContent =
-                formatValue(
-                    value
-                );
-
+                formatValue(value);
 
             return;
-
         }
 
-
-        const duration =
-            950;
-
-        const started =
-            performance.now();
-
+        const duration = 950;
+        const started = performance.now();
 
         function frame(now) {
-
             const progress =
                 Math.min(
                     1,
-                    (
-                        now -
-                        started
-                    ) /
-                    duration
+                    (now - started) / duration
                 );
-
 
             const eased =
-                1 -
-                Math.pow(
-                    1 -
-                    progress,
-                    3
-                );
-
+                1 - Math.pow(1 - progress, 3);
 
             const current =
-                Math.round(
-                    value *
-                    eased
-                );
-
+                Math.round(value * eased);
 
             element.textContent =
-                formatValue(
-                    current
-                );
+                formatValue(current);
 
-
-            if (
-                progress < 1
-            ) {
-
-                requestAnimationFrame(
-                    frame
-                );
-
+            if (progress < 1) {
+                requestAnimationFrame(frame);
             }
-
         }
 
-
-        requestAnimationFrame(
-            frame
-        );
-
+        requestAnimationFrame(frame);
     }
 
-
     async function loadCounters() {
-
-        /*
-         * ECHOS:
-         * jeder Homepage-Aufruf.
-         */
-
         const echoPromise =
             counterRequest(
                 "hit",
                 ECHO_KEY
             );
 
-
-        /*
-         * SEELEN:
-         * nur einmal pro Browser, solange LocalStorage
-         * nicht gelöscht wird.
-         */
-
         let soulPromise;
-
 
         const canStore =
             storageAvailable();
 
-
         if (
             canStore &&
-            !localStorage.getItem(
-                LOCAL_MARK
-            )
+            !localStorage.getItem(LOCAL_MARK)
         ) {
-
             soulPromise =
                 counterRequest(
                     "hit",
                     SOUL_KEY
-                ).then(
-                    value => {
+                ).then(function (value) {
+                    localStorage.setItem(
+                        LOCAL_MARK,
+                        "1"
+                    );
 
-                        localStorage.setItem(
-                            LOCAL_MARK,
-                            "1"
-                        );
-
-
-                        return value;
-
-                    }
-                );
-
+                    return value;
+                });
         }
-
         else {
-
             soulPromise =
                 counterRequest(
                     "get",
                     SOUL_KEY
                 );
-
         }
-
 
         const results =
             await Promise.allSettled([
@@ -919,48 +564,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 echoPromise
             ]);
 
-
-        if (
-            results[0].status ===
-            "fulfilled"
-        ) {
-
+        if (results[0].status === "fulfilled") {
             animateValue(
                 soulsElement,
                 results[0].value
             );
-
         }
-
         else {
-
-            soulsElement.textContent =
-                "------";
-
+            soulsElement.textContent = "—";
         }
 
-
-        if (
-            results[1].status ===
-            "fulfilled"
-        ) {
-
+        if (results[1].status === "fulfilled") {
             animateValue(
                 echoesElement,
                 results[1].value
             );
-
         }
-
         else {
-
-            echoesElement.textContent =
-                "------";
-
+            echoesElement.textContent = "—";
         }
-
     }
-
 
     loadCounters();
 

@@ -1,522 +1,1244 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     /* =====================================================
-       GOTHIC · ENTER
+       GOTHIC · ENTER PORTAL
 
-       Nur aktiv, wenn script.js den Gothic-Hintergrund
-       ausgewählt hat.
+       Gothic ist das Eingangstor.
 
-       Das sichtbare ENTER ist Teil von Gothic.png.
-       Hier kommt nur die echte Klickfläche + Animation dazu.
+       ENTER:
+       1. Nebel baut sich in mehreren Schichten auf.
+       2. Gothic wird vollständig vom Nebel verschluckt.
+       3. Hinter dem Nebel wird Main ODER Psycho (50/50)
+          aktiviert.
+       4. Der Nebel zieht ab und das neue Bild bleibt stehen.
+
+       Kein Scroll zu "Aktuell".
        ===================================================== */
 
-    if (document.body.dataset.hero !== "gothic") {
+    if (
+        document.body.dataset.hero !==
+        "gothic"
+    ) {
+
         return;
+
     }
 
 
-    const imageFile = "images/Gothic.png";
+    if (
+        !window.VLTHero
+    ) {
+
+        return;
+
+    }
+
+
+    const imageFile =
+        "images/Gothic.png";
 
 
     /* =====================================================
-       CSS DIREKT EINHÄNGEN
+       CSS
        ===================================================== */
 
-    const style = document.createElement("style");
+    const style =
+        document.createElement(
+            "style"
+        );
+
 
     style.textContent = `
 
+        /* -------------------------------------------------
+           ENTER-HOTSPOT
+           ------------------------------------------------- */
+
         #gothic-enter-hotspot {
             position: fixed;
-            z-index: 60;
+            z-index: 70;
             display: block;
             pointer-events: auto;
             cursor: pointer;
             text-decoration: none;
-            outline: 1px solid rgba(150, 0, 0, 0.65);
-            background: rgba(100, 0, 0, 0.10);
+
+            outline: 1px solid rgba(150, 0, 0, 0.58);
+            background: rgba(90, 0, 0, 0.06);
+
             box-shadow:
-                0 0 6px rgba(180, 0, 0, 0.35),
-                0 0 14px rgba(120, 0, 0, 0.18);
+                0 0 7px rgba(180, 0, 0, 0.25),
+                0 0 18px rgba(110, 0, 0, 0.12);
+
             transition:
-                opacity 0.2s ease,
-                background 0.2s ease,
-                box-shadow 0.2s ease,
-                outline-color 0.2s ease;
+                opacity 0.35s ease,
+                background 0.25s ease,
+                box-shadow 0.25s ease,
+                outline-color 0.25s ease;
         }
 
         #gothic-enter-hotspot:hover {
-            outline-color: #ff1a1a;
-            background: rgba(170, 0, 0, 0.28);
-            box-shadow:
-                0 0 8px rgba(255, 20, 20, 0.85),
-                0 0 18px rgba(180, 0, 0, 0.55);
-        }
+            outline-color: rgba(255, 35, 35, 0.95);
+            background: rgba(160, 0, 0, 0.20);
 
-        #gothic-enter-hotspot.inactive {
-            pointer-events: none;
-            opacity: 0;
+            box-shadow:
+                0 0 10px rgba(255, 20, 20, 0.65),
+                0 0 28px rgba(155, 0, 0, 0.35);
         }
 
         #gothic-enter-hotspot.running {
-            animation: gothic-enter-button-pulse 1.15s ease-out 1;
+            pointer-events: none;
+
+            animation:
+                vlt-enter-pulse
+                1.20s
+                ease-out
+                forwards;
         }
 
-        #gothic-enter-ritual {
-            position: fixed;
-            inset: 0;
-            z-index: 55;
-            overflow: hidden;
+        #gothic-enter-hotspot.hidden {
             pointer-events: none;
             opacity: 0;
         }
 
-        #gothic-enter-ritual.running,
-        #gothic-enter-ritual.awake {
+
+        /* -------------------------------------------------
+           PORTAL-BÜHNE
+           ------------------------------------------------- */
+
+        #gothic-portal {
+            position: fixed;
+            inset: 0;
+            z-index: 62;
+            overflow: hidden;
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+
+            background:
+                transparent;
+        }
+
+        #gothic-portal.running {
+            visibility: visible;
             opacity: 1;
         }
 
-        .gothic-ritual-image,
-        .gothic-ritual-fog,
-        .gothic-ritual-signal,
-        .gothic-ritual-rune,
-        .gothic-ritual-vignette {
+
+        /*
+         * Alte Gothic-Kopie liegt über dem Hintergrund.
+         * Dadurch kann Gothic wegsterben, während darunter
+         * bereits das neue Hero-Bild umgeschaltet wird.
+         */
+
+        .portal-old-hero {
             position: absolute;
-            pointer-events: none;
-        }
-
-        .gothic-ritual-image {
             inset: 0;
-            background-image: url("${imageFile}");
-            background-repeat: no-repeat;
-            background-size: contain;
-            background-position: center center;
-            opacity: 0;
-            transform: scale(1);
+            z-index: 1;
+
+            background-image:
+                url("${imageFile}");
+
+            background-repeat:
+                no-repeat;
+
+            background-size:
+                contain;
+
+            background-position:
+                center center;
+
+            opacity: 1;
+
+            transform:
+                scale(1);
+
+            filter:
+                brightness(1)
+                contrast(1)
+                saturate(1);
+
+            animation:
+                vlt-gothic-dissolve
+                5.4s
+                ease-in-out
+                forwards;
         }
 
-        .gothic-ritual-fog {
-            bottom: -10%;
-            width: 76%;
-            height: 48%;
+
+        /* -------------------------------------------------
+           ORGANISCHER NEBEL
+
+           Jede Ebene benutzt SVG-Fractal-Noise als Textur.
+           Dadurch ist es keine simple Blur-Fläche.
+           ------------------------------------------------- */
+
+        .portal-fog {
+            position: absolute;
+            z-index: 4;
+
+            width: 145%;
+            height: 86%;
+
+            left: -22%;
+
             opacity: 0;
-            filter: blur(34px);
-            background:
+
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='520' viewBox='0 0 900 520'%3E%3Cfilter id='n' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009 .022' numOctaves='4' seed='23'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='gamma' amplitude='1.25' exponent='1.4' offset='-.12'/%3E%3CfeFuncG type='gamma' amplitude='1.25' exponent='1.4' offset='-.12'/%3E%3CfeFuncB type='gamma' amplitude='1.25' exponent='1.4' offset='-.12'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23aeb4bc' filter='url(%23n)' opacity='.92'/%3E%3C/svg%3E");
+
+            background-size:
+                58%
+                100%;
+
+            background-repeat:
+                repeat-x;
+
+            mix-blend-mode:
+                screen;
+
+            filter:
+                blur(11px)
+                contrast(1.32);
+
+            -webkit-mask-image:
                 radial-gradient(
                     ellipse at center,
-                    rgba(190, 194, 202, 0.14),
-                    rgba(90, 98, 110, 0.06) 42%,
-                    transparent 72%
-                );
-        }
-
-        .gothic-ritual-fog.left {
-            left: -18%;
-        }
-
-        .gothic-ritual-fog.right {
-            right: -18%;
-        }
-
-        .gothic-ritual-signal {
-            top: 0;
-            left: 50%;
-            width: 1px;
-            height: 100%;
-            opacity: 0;
-            transform: translateX(-50%) scaleY(0);
-            transform-origin: center top;
-            background:
-                linear-gradient(
-                    to bottom,
-                    transparent 0%,
-                    rgba(210, 0, 22, 0.18) 7%,
-                    rgba(255, 25, 38, 0.75) 34%,
-                    rgba(170, 0, 16, 0.45) 70%,
+                    black 0 42%,
+                    rgba(0,0,0,.90) 56%,
+                    rgba(0,0,0,.28) 76%,
                     transparent 100%
                 );
-            box-shadow:
-                0 0 9px rgba(220, 0, 22, 0.42),
-                0 0 22px rgba(120, 0, 10, 0.24);
+
+            mask-image:
+                radial-gradient(
+                    ellipse at center,
+                    black 0 42%,
+                    rgba(0,0,0,.90) 56%,
+                    rgba(0,0,0,.28) 76%,
+                    transparent 100%
+                );
+
+            will-change:
+                transform,
+                opacity;
         }
 
-        .gothic-ritual-rune {
-            position: fixed;
-            width: 22px;
-            height: 22px;
-            border: 1px solid rgba(255, 25, 40, 0.90);
-            border-radius: 50%;
+
+        .portal-fog.back {
+            bottom: -24%;
+
             opacity: 0;
-            transform: translate(-50%, -50%) scale(0.2);
-            box-shadow:
-                0 0 8px rgba(255, 0, 22, 0.80),
-                inset 0 0 8px rgba(255, 0, 22, 0.28);
+
+            filter:
+                blur(18px)
+                contrast(1.10);
+
+            animation:
+                vlt-fog-back
+                5.6s
+                ease-in-out
+                forwards;
         }
 
-        .gothic-ritual-vignette {
-            inset: 0;
+
+        .portal-fog.mid-a {
+            bottom: -18%;
+
+            transform:
+                translateX(-18%)
+                scale(1.12);
+
+            animation:
+                vlt-fog-mid-a
+                5.6s
+                cubic-bezier(.18,.70,.20,1)
+                forwards;
+        }
+
+
+        .portal-fog.mid-b {
+            bottom: -12%;
+
+            transform:
+                translateX(20%)
+                scale(1.18);
+
+            animation:
+                vlt-fog-mid-b
+                5.6s
+                cubic-bezier(.18,.70,.20,1)
+                forwards;
+        }
+
+
+        .portal-fog.front {
+            bottom: -31%;
+
+            height: 96%;
+
+            background-size:
+                48%
+                100%;
+
+            filter:
+                blur(8px)
+                contrast(1.45);
+
+            animation:
+                vlt-fog-front
+                5.6s
+                cubic-bezier(.14,.72,.20,1)
+                forwards;
+        }
+
+
+        /*
+         * Seitliche Rauchzungen. Sie sorgen dafür, dass der
+         * Nebel nicht nur von unten als horizontale Wand kommt.
+         */
+
+        .portal-smoke-wing {
+            position: absolute;
+            z-index: 5;
+
+            top: 8%;
+
+            width: 58%;
+            height: 88%;
+
             opacity: 0;
+
             background:
                 radial-gradient(
                     ellipse at center,
-                    transparent 30%,
-                    rgba(0, 0, 0, 0.18) 58%,
-                    rgba(0, 0, 0, 0.64) 100%
+                    rgba(178,185,192,.28) 0%,
+                    rgba(91,97,105,.16) 34%,
+                    rgba(35,38,43,.08) 55%,
+                    transparent 76%
                 );
+
+            filter:
+                blur(38px);
+
+            will-change:
+                transform,
+                opacity;
         }
 
-        #gothic-enter-ritual.running .gothic-ritual-image {
-            animation: gothic-enter-breath 3.6s ease-in-out forwards;
+
+        .portal-smoke-wing.left {
+            left: -25%;
+
+            animation:
+                vlt-smoke-wing-left
+                5.4s
+                ease-in-out
+                forwards;
         }
 
-        #gothic-enter-ritual.running .gothic-ritual-rune {
-            animation: gothic-enter-rune 2.15s cubic-bezier(.16,.78,.22,1) forwards;
+
+        .portal-smoke-wing.right {
+            right: -25%;
+
+            animation:
+                vlt-smoke-wing-right
+                5.4s
+                ease-in-out
+                forwards;
         }
 
-        #gothic-enter-ritual.running .gothic-ritual-signal {
-            animation: gothic-enter-signal 2.4s .35s ease-out forwards;
+
+        /*
+         * Rote Glut bleibt nur im Kern des Rituals.
+         * Kein roter Kreis.
+         */
+
+        .portal-red-core {
+            position: absolute;
+            z-index: 3;
+
+            left: 50%;
+            top: 48%;
+
+            width: min(46vw, 650px);
+            aspect-ratio: 1 / 1;
+
+            opacity: 0;
+
+            transform:
+                translate(-50%, -50%)
+                scale(.72);
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(190,0,18,.18) 0%,
+                    rgba(130,0,13,.10) 25%,
+                    rgba(70,0,8,.035) 48%,
+                    transparent 70%
+                );
+
+            filter:
+                blur(17px);
+
+            animation:
+                vlt-red-core
+                5.4s
+                ease-in-out
+                forwards;
         }
 
-        #gothic-enter-ritual.running .gothic-ritual-fog.left {
-            animation: gothic-enter-fog-left 3.6s ease-out forwards;
+
+        /*
+         * Schwarzer Schleier: am Höhepunkt ist genug Deckung
+         * vorhanden, um den Hero-Wechsel unsichtbar zu machen.
+         */
+
+        .portal-veil {
+            position: absolute;
+            inset: 0;
+            z-index: 6;
+
+            opacity: 0;
+
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    rgba(8,8,10,.54) 0%,
+                    rgba(3,3,5,.70) 48%,
+                    rgba(0,0,0,.90) 100%
+                );
+
+            animation:
+                vlt-veil
+                5.6s
+                ease-in-out
+                forwards;
         }
 
-        #gothic-enter-ritual.running .gothic-ritual-fog.right {
-            animation: gothic-enter-fog-right 3.6s ease-out forwards;
+
+        /*
+         * Am Ende ein ganz kurzer Lichtsaum des neuen Bildes.
+         */
+
+        .portal-arrival {
+            position: absolute;
+            inset: 0;
+            z-index: 7;
+
+            opacity: 0;
+
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    rgba(170,30,45,.08),
+                    transparent 58%
+                );
+
+            animation:
+                vlt-arrival
+                5.6s
+                ease-in-out
+                forwards;
         }
 
-        #gothic-enter-ritual.running .gothic-ritual-vignette {
-            animation: gothic-enter-vignette 3.6s ease-in-out forwards;
-        }
 
-        #gothic-enter-ritual.awake .gothic-ritual-image {
-            opacity: 0.026;
-            animation: gothic-enter-idle-breath 11s ease-in-out infinite;
-        }
+        /* -------------------------------------------------
+           KEYFRAMES
+           ------------------------------------------------- */
 
-        #gothic-enter-ritual.awake .gothic-ritual-fog {
-            opacity: 0.075;
-            animation: gothic-enter-idle-fog 16s ease-in-out infinite alternate;
-        }
+        @keyframes vlt-enter-pulse {
 
-        #gothic-enter-ritual.awake .gothic-ritual-rune {
-            animation: gothic-enter-idle-rune 9s 2.5s ease-out infinite;
-        }
-
-        @keyframes gothic-enter-button-pulse {
             0% {
-                outline-color: rgba(255,20,20,.70);
-                background: rgba(120,0,0,.08);
-            }
-            36% {
-                outline-color: rgba(255,45,45,1);
-                background: rgba(170,0,0,.28);
+                outline-color:
+                    rgba(180,0,0,.55);
+
                 box-shadow:
-                    0 0 12px rgba(255,20,20,.95),
-                    0 0 36px rgba(190,0,0,.68);
+                    0 0 8px
+                    rgba(180,0,0,.28);
             }
+
+            32% {
+                outline-color:
+                    rgba(255,40,40,1);
+
+                background:
+                    rgba(150,0,0,.24);
+
+                box-shadow:
+                    0 0 13px
+                    rgba(255,20,20,.92),
+                    0 0 42px
+                    rgba(180,0,0,.52);
+            }
+
             100% {
-                outline-color: rgba(150,0,0,.65);
-                background: rgba(100,0,0,.10);
+                outline-color:
+                    rgba(150,0,0,.20);
+
+                background:
+                    rgba(70,0,0,.02);
+
+                box-shadow:
+                    0 0 0
+                    rgba(0,0,0,0);
             }
         }
 
-        @keyframes gothic-enter-rune {
+
+        @keyframes vlt-gothic-dissolve {
+
             0% {
-                opacity: 0;
-                transform: translate(-50%,-50%) scale(.18);
-            }
-            12% {
                 opacity: 1;
-            }
-            62% {
-                opacity: .72;
-                transform: translate(-50%,-50%) scale(7);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(-50%,-50%) scale(17);
-            }
-        }
 
-        @keyframes gothic-enter-breath {
-            0% {
-                opacity: 0;
-                transform: scale(1);
-                filter: brightness(1) contrast(1) saturate(1);
+                transform:
+                    scale(1);
+
+                filter:
+                    brightness(1)
+                    contrast(1)
+                    saturate(1);
             }
-            18% {
-                opacity: .045;
+
+            34% {
+                opacity: 1;
+
+                transform:
+                    scale(1.006);
+
+                filter:
+                    brightness(.93)
+                    contrast(1.04)
+                    saturate(.90);
             }
-            42% {
-                opacity: .14;
-                transform: scale(1.012);
-                filter: brightness(1.13) contrast(1.05) saturate(1.16);
+
+            50% {
+                opacity: .82;
+
+                transform:
+                    scale(1.014);
+
+                filter:
+                    brightness(.72)
+                    contrast(1.08)
+                    saturate(.72);
             }
+
             66% {
-                opacity: .055;
-                transform: scale(1.005);
+                opacity: .15;
+
+                transform:
+                    scale(1.020);
+
+                filter:
+                    brightness(.48)
+                    contrast(1.10)
+                    saturate(.54);
             }
+
             100% {
-                opacity: .024;
-                transform: scale(1);
-                filter: brightness(1.02) contrast(1.01) saturate(1.04);
+                opacity: 0;
+
+                transform:
+                    scale(1.024);
             }
         }
 
-        @keyframes gothic-enter-signal {
+
+        @keyframes vlt-fog-back {
+
             0% {
                 opacity: 0;
-                transform: translateX(-50%) scaleY(0);
+
+                transform:
+                    translateY(28%)
+                    scale(1.04);
             }
-            14% {
+
+            34% {
+                opacity: .30;
+            }
+
+            54% {
+                opacity: .62;
+
+                transform:
+                    translateY(-7%)
+                    scale(1.12);
+            }
+
+            72% {
+                opacity: .46;
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translateY(-30%)
+                    scale(1.18);
+            }
+        }
+
+
+        @keyframes vlt-fog-mid-a {
+
+            0% {
+                opacity: 0;
+
+                transform:
+                    translate(-24%, 34%)
+                    scale(1.05);
+            }
+
+            30% {
+                opacity: .36;
+            }
+
+            52% {
+                opacity: .78;
+
+                transform:
+                    translate(7%, -4%)
+                    scale(1.17);
+            }
+
+            72% {
+                opacity: .50;
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translate(27%, -35%)
+                    scale(1.28);
+            }
+        }
+
+
+        @keyframes vlt-fog-mid-b {
+
+            0% {
+                opacity: 0;
+
+                transform:
+                    translate(25%, 32%)
+                    scale(1.05);
+            }
+
+            26% {
+                opacity: .30;
+            }
+
+            55% {
                 opacity: .72;
+
+                transform:
+                    translate(-9%, -8%)
+                    scale(1.19);
             }
-            62% {
+
+            74% {
+                opacity: .46;
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translate(-31%, -38%)
+                    scale(1.27);
+            }
+        }
+
+
+        @keyframes vlt-fog-front {
+
+            0% {
+                opacity: 0;
+
+                transform:
+                    translateY(36%)
+                    scale(1.04);
+            }
+
+            30% {
+                opacity: .32;
+            }
+
+            50% {
+                opacity: .86;
+
+                transform:
+                    translateY(-4%)
+                    scale(1.20);
+            }
+
+            63% {
+                opacity: .78;
+            }
+
+            80% {
+                opacity: .36;
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translateY(-46%)
+                    scale(1.32);
+            }
+        }
+
+
+        @keyframes vlt-smoke-wing-left {
+
+            0% {
+                opacity: 0;
+
+                transform:
+                    translateX(-30%)
+                    rotate(-8deg)
+                    scale(.82);
+            }
+
+            40% {
+                opacity: .36;
+            }
+
+            60% {
                 opacity: .48;
-                transform: translateX(-50%) scaleY(1);
+
+                transform:
+                    translateX(58%)
+                    rotate(4deg)
+                    scale(1.14);
             }
+
             100% {
                 opacity: 0;
-                transform: translateX(-50%) scaleY(1);
+
+                transform:
+                    translateX(88%)
+                    rotate(11deg)
+                    scale(1.28);
             }
         }
 
-        @keyframes gothic-enter-fog-left {
+
+        @keyframes vlt-smoke-wing-right {
+
             0% {
                 opacity: 0;
-                transform: translateX(-12%) translateY(8%);
+
+                transform:
+                    translateX(30%)
+                    rotate(8deg)
+                    scale(.82);
             }
-            50% {
-                opacity: .13;
+
+            40% {
+                opacity: .33;
             }
+
+            60% {
+                opacity: .46;
+
+                transform:
+                    translateX(-58%)
+                    rotate(-4deg)
+                    scale(1.14);
+            }
+
             100% {
-                opacity: .055;
-                transform: translateX(13%) translateY(-3%);
+                opacity: 0;
+
+                transform:
+                    translateX(-88%)
+                    rotate(-11deg)
+                    scale(1.28);
             }
         }
 
-        @keyframes gothic-enter-fog-right {
-            0% {
-                opacity: 0;
-                transform: translateX(12%) translateY(8%);
-            }
-            50% {
-                opacity: .11;
-            }
+
+        @keyframes vlt-red-core {
+
+            0%,
             100% {
-                opacity: .05;
-                transform: translateX(-13%) translateY(-3%);
-            }
-        }
-
-        @keyframes gothic-enter-vignette {
-            0%, 100% { opacity: 0; }
-            38% { opacity: .50; }
-            62% { opacity: .20; }
-        }
-
-        @keyframes gothic-enter-idle-breath {
-            0%, 100% {
-                opacity: .018;
-                transform: scale(1);
-            }
-            50% {
-                opacity: .045;
-                transform: scale(1.004);
-            }
-        }
-
-        @keyframes gothic-enter-idle-rune {
-            0%, 79%, 100% {
                 opacity: 0;
-                transform: translate(-50%,-50%) scale(.3);
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(.72);
             }
-            82% { opacity: .42; }
-            91% {
-                opacity: 0;
-                transform: translate(-50%,-50%) scale(4.5);
+
+            24% {
+                opacity: .16;
+            }
+
+            52% {
+                opacity: .80;
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(1.18);
+            }
+
+            69% {
+                opacity: .30;
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(1.42);
             }
         }
 
-        @keyframes gothic-enter-idle-fog {
-            from { transform: translateX(-3%); }
-            to   { transform: translateX(3%); }
+
+        @keyframes vlt-veil {
+
+            0%,
+            24% {
+                opacity: 0;
+            }
+
+            49% {
+                opacity: .42;
+            }
+
+            56% {
+                opacity: .94;
+            }
+
+            64% {
+                opacity: .90;
+            }
+
+            78% {
+                opacity: .30;
+            }
+
+            100% {
+                opacity: 0;
+            }
         }
+
+
+        @keyframes vlt-arrival {
+
+            0%,
+            62% {
+                opacity: 0;
+            }
+
+            76% {
+                opacity: .42;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
 
         @media (prefers-reduced-motion: reduce) {
-            #gothic-enter-ritual {
+
+            #gothic-portal {
                 display: none;
             }
+
             #gothic-enter-hotspot {
                 animation: none !important;
             }
+
         }
+
     `;
 
-    document.head.appendChild(style);
+
+    document.head.appendChild(
+        style
+    );
 
 
     /* =====================================================
        ENTER-HOTSPOT
-
-       Direkt am sichtbaren roten Button in Gothic.png.
-       Koordinaten beziehen sich auf das Originalbild.
        ===================================================== */
 
-    const enter = document.createElement("a");
+    const enter =
+        document.createElement(
+            "a"
+        );
 
-    enter.id = "gothic-enter-hotspot";
-    enter.href = "#aktuell";
-    enter.setAttribute("aria-label", "Enter");
-    enter.title = "Enter";
 
-    document.body.appendChild(enter);
+    enter.id =
+        "gothic-enter-hotspot";
+
+    enter.href =
+        "#";
+
+    enter.setAttribute(
+        "aria-label",
+        "Enter"
+    );
+
+    enter.title =
+        "Enter";
+
+
+    document.body.appendChild(
+        enter
+    );
 
 
     /* =====================================================
-       RITUAL-EBENE
+       PORTAL
        ===================================================== */
 
-    const ritual = document.createElement("div");
+    const portal =
+        document.createElement(
+            "div"
+        );
 
-    ritual.id = "gothic-enter-ritual";
-    ritual.setAttribute("aria-hidden", "true");
 
-    ritual.innerHTML = `
-        <div class="gothic-ritual-image"></div>
-        <div class="gothic-ritual-fog left"></div>
-        <div class="gothic-ritual-fog right"></div>
-        <div class="gothic-ritual-signal"></div>
-        <div class="gothic-ritual-rune"></div>
-        <div class="gothic-ritual-vignette"></div>
+    portal.id =
+        "gothic-portal";
+
+    portal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    portal.innerHTML = `
+        <div class="portal-old-hero"></div>
+
+        <div class="portal-red-core"></div>
+
+        <div class="portal-fog back"></div>
+        <div class="portal-fog mid-a"></div>
+        <div class="portal-fog mid-b"></div>
+        <div class="portal-fog front"></div>
+
+        <div class="portal-smoke-wing left"></div>
+        <div class="portal-smoke-wing right"></div>
+
+        <div class="portal-veil"></div>
+        <div class="portal-arrival"></div>
     `;
 
-    document.body.appendChild(ritual);
 
-    const rune = ritual.querySelector(".gothic-ritual-rune");
+    document.body.appendChild(
+        portal
+    );
 
 
     /* =====================================================
-       POSITIONIERUNG · IDENTISCH ZU background-size: contain
+       ENTER-POSITION
+       background-size: contain
        ===================================================== */
 
-    const image = new Image();
-    image.src = imageFile;
+    const image =
+        new Image();
+
+
+    image.src =
+        imageFile;
 
 
     function positionEnter() {
 
-        if (!image.naturalWidth || !image.naturalHeight) {
+        if (
+            !image.naturalWidth ||
+            !image.naturalHeight
+        ) {
+
             return;
+
         }
 
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
 
-        const scale = Math.min(
-            viewportWidth / image.naturalWidth,
-            viewportHeight / image.naturalHeight
-        );
+        const viewportWidth =
+            window.innerWidth;
 
-        const renderedWidth = image.naturalWidth * scale;
-        const renderedHeight = image.naturalHeight * scale;
-
-        const offsetX = (viewportWidth - renderedWidth) / 2;
-        const offsetY = (viewportHeight - renderedHeight) / 2;
+        const viewportHeight =
+            window.innerHeight;
 
 
-        /* ENTER: leicht größer als der sichtbare rote Rahmen */
+        const scale =
+            Math.min(
+                viewportWidth /
+                    image.naturalWidth,
 
-        enter.style.left = `${offsetX + 0.4336 * renderedWidth}px`;
-        enter.style.top = `${offsetY + 0.8129 * renderedHeight}px`;
-        enter.style.width = `${0.1322 * renderedWidth}px`;
-        enter.style.height = `${0.0723 * renderedHeight}px`;
+                viewportHeight /
+                    image.naturalHeight
+            );
 
 
-        /* Zentrum des roten Symbols über der Figur */
+        const renderedWidth =
+            image.naturalWidth *
+            scale;
 
-        rune.style.left = `${offsetX + 0.5000 * renderedWidth}px`;
-        rune.style.top = `${offsetY + 0.0840 * renderedHeight}px`;
+        const renderedHeight =
+            image.naturalHeight *
+            scale;
+
+
+        const offsetX =
+            (
+                viewportWidth -
+                renderedWidth
+            ) / 2;
+
+        const offsetY =
+            (
+                viewportHeight -
+                renderedHeight
+            ) / 2;
+
+
+        /*
+         * Sichtbarer ENTER-Rahmen in Gothic.png.
+         */
+
+        enter.style.left =
+            `${
+                offsetX +
+                0.4336 *
+                renderedWidth
+            }px`;
+
+        enter.style.top =
+            `${
+                offsetY +
+                0.8129 *
+                renderedHeight
+            }px`;
+
+        enter.style.width =
+            `${
+                0.1322 *
+                renderedWidth
+            }px`;
+
+        enter.style.height =
+            `${
+                0.0723 *
+                renderedHeight
+            }px`;
+
     }
 
 
-    image.onload = positionEnter;
-    window.addEventListener("resize", positionEnter);
+    image.onload =
+        positionEnter;
+
+
+    window.addEventListener(
+        "resize",
+        positionEnter
+    );
 
 
     /* =====================================================
-       HOTSPOT BEIM SCROLLEN AUSBLENDEN
+       BEIM SCROLLEN DEAKTIVIEREN
        ===================================================== */
 
     function updateEnterState() {
 
-        const inactive = window.scrollY > window.innerHeight * 0.20;
+        const inactive =
+            window.scrollY >
+            window.innerHeight *
+            0.20;
 
-        enter.classList.toggle("inactive", inactive);
+
+        enter.classList.toggle(
+            "hidden",
+            inactive
+        );
+
     }
 
 
-    window.addEventListener("scroll", updateEnterState, { passive: true });
+    window.addEventListener(
+        "scroll",
+        updateEnterState,
+        {
+            passive: true
+        }
+    );
+
+
     updateEnterState();
 
 
     /* =====================================================
-       ENTER · AKTIVIERUNG
+       RITUAL
        ===================================================== */
 
-    let running = false;
+    let running =
+        false;
 
 
-    enter.addEventListener("click", function (event) {
+    function choosePortalTarget() {
 
-        event.preventDefault();
+        return (
+            Math.random() < 0.5
+            ? "main"
+            : "psycho"
+        );
 
-        if (running) {
-            return;
-        }
+    }
 
 
-        const target = document.getElementById("aktuell");
+    enter.addEventListener(
+        "click",
+        function (event) {
+
+            event.preventDefault();
 
 
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-
-            if (target) {
-                target.scrollIntoView();
+            if (running) {
+                return;
             }
 
-            return;
-        }
+
+            running =
+                true;
 
 
-        running = true;
-
-        enter.classList.remove("running");
-        ritual.classList.remove("running", "awake");
-
-        void ritual.offsetWidth;
-
-        enter.classList.add("running");
-        ritual.classList.add("running");
+            const targetHero =
+                choosePortalTarget();
 
 
-        window.setTimeout(function () {
+            /*
+             * Reduced Motion:
+             * Kein Ritual, aber trotzdem Portal-Funktion.
+             */
 
-            enter.classList.remove("running");
-            ritual.classList.remove("running");
-            ritual.classList.add("awake");
+            if (
+                window.matchMedia(
+                    "(prefers-reduced-motion: reduce)"
+                ).matches
+            ) {
 
-            running = false;
+                window.VLTHero.switchHero(
+                    targetHero
+                );
 
-            if (target) {
-                target.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
+
+                enter.remove();
+                portal.remove();
+
+
+                return;
+
             }
 
-        }, 3600);
-    });
+
+            document.body.classList.add(
+                "vlt-portal-active"
+            );
+
+
+            enter.classList.add(
+                "running"
+            );
+
+
+            portal.classList.remove(
+                "running"
+            );
+
+
+            void portal.offsetWidth;
+
+
+            portal.classList.add(
+                "running"
+            );
+
+
+            /*
+             * Der eigentliche Bildwechsel findet am dichtesten
+             * Punkt des Nebels statt.
+             */
+
+            window.setTimeout(
+                function () {
+
+                    window.VLTHero.switchHero(
+                        targetHero
+                    );
+
+
+                    enter.classList.add(
+                        "hidden"
+                    );
+
+                },
+                3050
+            );
+
+
+            /*
+             * Nebel vollständig abziehen lassen.
+             */
+
+            window.setTimeout(
+                function () {
+
+                    document.body.classList.remove(
+                        "vlt-portal-active"
+                    );
+
+
+                    portal.classList.remove(
+                        "running"
+                    );
+
+
+                    portal.style.visibility =
+                        "hidden";
+
+
+                    enter.remove();
+
+
+                    running =
+                        false;
+
+                },
+                5750
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       Falls ein Hero-Wechsel von außen ausgelöst wird,
+       verschwindet ENTER ebenfalls.
+       ===================================================== */
+
+    window.addEventListener(
+        "vlt:herochange",
+        function (event) {
+
+            if (
+                event.detail &&
+                event.detail.id !==
+                "gothic"
+            ) {
+
+                enter.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        }
+    );
 
 });

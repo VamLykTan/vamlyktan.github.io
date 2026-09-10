@@ -1,556 +1,211 @@
 /* =========================================================
    DJ VamLykTan · SEELENZÄHLER
-   Freigegebene Optik:
-   - körperlose Erscheinungen
-   - rote / violette Energie im Nebel
-   - SEELEN / ECHOS direkt über den Erscheinungen
+   Freigegebene Optik mit echten Seelenfragmenten.
+   Die Zahlen liegen über den Erscheinungen.
    ========================================================= */
 
 #vlt-soul-counter {
-    --soul-accent: #f10f2f;
-    --soul-accent-soft: rgba(241, 15, 47, 0.44);
-    --soul-ghost: #d7d0e6;
-    --soul-ghost-violet: #a794c2;
-    --soul-echo: #bbb4bd;
-
+    --soul-accent: #ff1732;
+    --soul-accent-soft: rgba(255, 23, 50, .42);
+    --echo-text: rgba(220, 216, 223, .88);
     position: fixed;
     z-index: 48;
-
-    display: block;
-
-    aspect-ratio: 0.84 / 1;
-
-    overflow: hidden;
+    aspect-ratio: .82 / 1;
+    overflow: visible;
     pointer-events: none;
-
-    opacity: 0.96;
-
-    filter:
-        drop-shadow(0 0 24px rgba(0,0,0,0.72));
-
-    -webkit-mask-image:
-        radial-gradient(
-            ellipse at 53% 45%,
-            #000 0%,
-            #000 61%,
-            rgba(0,0,0,.86) 72%,
-            transparent 98%
-        );
-
-    mask-image:
-        radial-gradient(
-            ellipse at 53% 45%,
-            #000 0%,
-            #000 61%,
-            rgba(0,0,0,.86) 72%,
-            transparent 98%
-        );
-
-    transition:
-        opacity .5s ease,
-        transform .55s ease,
-        filter .5s ease;
+    opacity: .98;
+    filter: drop-shadow(0 0 22px rgba(0,0,0,.72));
+    transition: opacity .45s ease, transform .55s ease, filter .45s ease;
 }
 
-#vlt-soul-counter::before {
-    content: "";
-
-    position: absolute;
-    inset: 3% 2% 2%;
-    z-index: 0;
-
-    background:
-        radial-gradient(
-            ellipse at 49% 31%,
-            rgba(150, 0, 23, .18),
-            rgba(49, 0, 10, .08) 32%,
-            transparent 63%
-        ),
-        radial-gradient(
-            ellipse at 50% 61%,
-            rgba(202, 198, 218, .08),
-            transparent 66%
-        );
-
-    filter: blur(16px);
-}
-
-/* =========================================================
-   SEELEN / NEBEL
-   ========================================================= */
-
-#vlt-soul-counter .soul-visual {
+#vlt-soul-counter .soul-art {
     position: absolute;
     inset: 0;
     z-index: 1;
-
     overflow: hidden;
-}
-
-#vlt-soul-counter .soul-ghosts {
-    position: absolute;
-
-    left: 0;
-    top: -1%;
-
-    width: 100%;
-    height: 103%;
-
-    overflow: visible;
-
-    filter:
-        drop-shadow(0 0 13px rgba(235,225,255,.12));
-}
-
-#vlt-soul-counter .soul-red-halo {
-    opacity: .76;
-    transform-origin: 47% 30%;
-
-    animation:
-        vltSoulHalo 9.5s
-        ease-in-out
-        infinite;
+    -webkit-mask-image: radial-gradient(ellipse at 52% 45%, #000 0%, #000 63%, rgba(0,0,0,.88) 75%, transparent 100%);
+    mask-image: radial-gradient(ellipse at 52% 45%, #000 0%, #000 63%, rgba(0,0,0,.88) 75%, transparent 100%);
 }
 
 #vlt-soul-counter .soul-wraith {
-    transform-box: fill-box;
+    position: absolute;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    mix-blend-mode: screen;
+    filter: saturate(1.08) contrast(1.07) drop-shadow(0 0 12px rgba(232,222,255,.16));
     transform-origin: center;
 }
 
-#vlt-soul-counter .wraith-main {
-    animation:
-        vltSoulMainDrift 10.5s
-        ease-in-out
-        infinite;
+#vlt-soul-counter .wraith-center {
+    left: 17%;
+    top: 0;
+    width: 70%;
+    height: 50%;
+    opacity: 1;
+    animation: vltSoulCenterDrift 10.5s ease-in-out infinite;
 }
 
 #vlt-soul-counter .wraith-left {
-    animation:
-        vltSoulLeftDrift 13s
-        ease-in-out
-        infinite;
+    left: -2%;
+    top: 25%;
+    width: 53%;
+    height: 61%;
+    opacity: .94;
+    animation: vltSoulLeftDrift 13s ease-in-out infinite;
 }
 
 #vlt-soul-counter .wraith-right {
-    animation:
-        vltSoulRightDrift 11.7s
-        ease-in-out
-        infinite;
+    right: -2%;
+    top: 34%;
+    width: 52%;
+    height: 57%;
+    opacity: .94;
+    animation: vltSoulRightDrift 11.7s ease-in-out infinite;
 }
 
-#vlt-soul-counter .soul-wisp-a,
-#vlt-soul-counter .soul-wisp-b,
-#vlt-soul-counter .soul-wisp-c {
-    transform-box: fill-box;
-    transform-origin: center;
+#vlt-soul-counter .soul-mist {
+    position: absolute;
+    left: 3%;
+    right: -2%;
+    bottom: 0;
+    height: 56%;
+    background:
+        radial-gradient(ellipse at 52% 35%, rgba(220,214,235,.12), transparent 58%),
+        radial-gradient(ellipse at 50% 72%, rgba(130,118,150,.13), transparent 68%);
+    filter: blur(13px);
+    opacity: .74;
+    animation: vltSoulMistDrift 15s ease-in-out infinite alternate;
 }
-
-#vlt-soul-counter .soul-wisp-a {
-    animation:
-        vltSoulWispA 15s
-        ease-in-out
-        infinite
-        alternate;
-}
-
-#vlt-soul-counter .soul-wisp-b {
-    animation:
-        vltSoulWispB 18s
-        ease-in-out
-        infinite
-        alternate;
-}
-
-#vlt-soul-counter .soul-wisp-c {
-    animation:
-        vltSoulWispC 16.5s
-        ease-in-out
-        infinite
-        alternate;
-}
-
-/* =========================================================
-   DYNAMISCHE ZAHLEN DIREKT ÜBER DEN SEELEN
-   ========================================================= */
 
 #vlt-soul-counter .soul-readout {
     position: absolute;
-
     left: 50%;
-    top: 26%;
-
-    z-index: 4;
-
-    width: 42%;
-
+    top: 34%;
+    z-index: 5;
+    width: 44%;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    transform: translateX(-50%);
-
     text-align: center;
-
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
-
+    font-family: Georgia, "Times New Roman", serif;
     text-transform: uppercase;
-
-    text-shadow:
-        0 2px 8px rgba(0,0,0,1),
-        0 0 13px rgba(0,0,0,.95);
-}
-
-#vlt-soul-counter .soul-rune {
-    position: relative;
-
-    width: 25px;
-    height: 25px;
-
-    margin-bottom: 18px;
-
-    border:
-        2px solid
-        var(--soul-accent);
-
-    transform: rotate(45deg);
-
-    box-shadow:
-        0 0 8px var(--soul-accent-soft),
-        inset 0 0 6px rgba(255,0,35,.12);
-}
-
-#vlt-soul-counter .soul-rune::before,
-#vlt-soul-counter .soul-rune::after {
-    content: "";
-
-    position: absolute;
-    left: 50%;
-
-    background:
-        var(--soul-accent);
-
-    transform:
-        translateX(-50%);
-
-    box-shadow:
-        0 0 8px
-        var(--soul-accent-soft);
-}
-
-#vlt-soul-counter .soul-rune::before {
-    top: -28px;
-
-    width: 2px;
-    height: 58px;
-}
-
-#vlt-soul-counter .soul-rune::after {
-    top: 50%;
-    left: -17px;
-
-    width: 58px;
-    height: 2px;
-
-    transform:
-        translateY(-50%);
-}
-
-#vlt-soul-counter .soul-rune-core {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 7px;
-    height: 7px;
-
-    background: var(--soul-accent);
-
-    transform:
-        translate(-50%,-50%);
-
-    box-shadow:
-        0 0 10px var(--soul-accent),
-        0 0 21px var(--soul-accent-soft);
+    text-shadow: 0 2px 8px rgba(0,0,0,1), 0 0 13px rgba(0,0,0,.96);
 }
 
 #vlt-soul-counter .soul-label,
 #vlt-soul-counter .echo-label {
     display: block;
-
-    color:
-        rgba(235, 229, 233, .92);
-
-    font-size:
-        clamp(10px, .72vw, 15px);
-
+    color: rgba(240,235,238,.96);
+    font-size: clamp(10px,.72vw,15px);
     font-weight: normal;
-
     letter-spacing: .28em;
     line-height: 1;
 }
 
-#vlt-soul-counter .soul-value,
-#vlt-soul-counter .echo-value {
+#vlt-soul-counter .soul-value {
     display: block;
-
+    margin-top: 9px;
+    color: var(--soul-accent);
+    font-size: clamp(44px,3.1vw,72px);
     font-weight: normal;
     line-height: .92;
-}
-
-#vlt-soul-counter .soul-value {
-    margin-top: 8px;
-
-    color:
-        var(--soul-accent);
-
-    font-size:
-        clamp(42px, 3vw, 68px);
-
     letter-spacing: .015em;
-
-    text-shadow:
-        0 0 8px rgba(255, 19, 50, .92),
-        0 0 22px rgba(205, 0, 34, .56),
-        0 2px 9px #000;
+    text-shadow: 0 0 8px rgba(255,19,50,.96), 0 0 22px rgba(205,0,34,.60), 0 2px 9px #000;
 }
 
 #vlt-soul-counter .soul-divider {
     position: relative;
-
-    width: 90%;
+    width: 92%;
     height: 1px;
-
-    margin: 15px 0 13px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,16,47,.94) 24%,
-            rgba(255,16,47,.94) 76%,
-            transparent
-        );
-
-    box-shadow:
-        0 0 8px
-        rgba(255,16,47,.35);
+    margin: 16px 0 13px;
+    background: linear-gradient(90deg, transparent, rgba(255,16,47,.96) 24%, rgba(255,16,47,.96) 76%, transparent);
+    box-shadow: 0 0 8px rgba(255,16,47,.38);
 }
 
 #vlt-soul-counter .soul-divider::after {
     content: "";
-
     position: absolute;
     left: 50%;
     top: 50%;
-
     width: 9px;
     height: 9px;
-
-    background:
-        var(--soul-accent);
-
-    transform:
-        translate(-50%,-50%)
-        rotate(45deg);
-
-    box-shadow:
-        0 0 10px
-        var(--soul-accent-soft);
+    background: var(--soul-accent);
+    transform: translate(-50%,-50%) rotate(45deg);
+    box-shadow: 0 0 10px var(--soul-accent-soft);
 }
 
 #vlt-soul-counter .echo-label {
-    color:
-        rgba(190,184,192,.84);
-
-    font-size:
-        clamp(9px, .62vw, 13px);
+    color: rgba(202,196,204,.90);
+    font-size: clamp(9px,.62vw,13px);
 }
 
 #vlt-soul-counter .echo-value {
+    display: block;
     margin-top: 8px;
-
-    color:
-        rgba(220,214,223,.88);
-
-    font-size:
-        clamp(30px, 2.05vw, 48px);
-
+    color: var(--echo-text);
+    font-size: clamp(30px,2.05vw,48px);
+    font-weight: normal;
+    line-height: 1;
     letter-spacing: .02em;
-
-    text-shadow:
-        0 0 8px rgba(255,255,255,.16),
-        0 2px 9px #000;
+    text-shadow: 0 0 8px rgba(255,255,255,.18), 0 2px 9px #000;
 }
-
-/* =========================================================
-   HERO-FARBEN
-   ========================================================= */
 
 body[data-hero="gothic"] #vlt-soul-counter,
 body[data-hero="main"] #vlt-soul-counter {
-    --soul-accent: #f10f2f;
-    --soul-accent-soft: rgba(241,15,47,.44);
+    --soul-accent: #ff1732;
+    --soul-accent-soft: rgba(255,23,50,.42);
+    --echo-text: rgba(220,216,223,.88);
 }
 
 body[data-hero="psycho"] #vlt-soul-counter {
-    --soul-accent: #be4cff;
-    --soul-accent-soft: rgba(190,76,255,.42);
+    --soul-accent: #c463ff;
+    --soul-accent-soft: rgba(196,99,255,.42);
+    --echo-text: rgba(222,213,232,.88);
 }
 
-body[data-hero="psycho"]
-#vlt-soul-counter .soul-red-halo {
-    filter:
-        hue-rotate(42deg)
-        saturate(1.18);
+body[data-hero="psycho"] #vlt-soul-counter .soul-wraith {
+    filter: hue-rotate(23deg) saturate(1.10) contrast(1.07) drop-shadow(0 0 12px rgba(232,222,255,.16));
 }
 
-/* Beim Portal tauchen die Seelen in den Nebel ein. */
 body.vlt-portal-active #vlt-soul-counter {
     opacity: .18;
-
-    transform:
-        scale(.985);
-
-    filter:
-        blur(2px)
-        drop-shadow(0 0 24px rgba(0,0,0,.72));
+    transform: scale(.985);
+    filter: blur(2px) drop-shadow(0 0 24px rgba(0,0,0,.72));
 }
 
-/* =========================================================
-   ANIMATIONEN
-   ========================================================= */
-
-@keyframes vltSoulMainDrift {
-    0%,100% {
-        transform:
-            translate3d(0,0,0)
-            scale(1);
-    }
-
-    50% {
-        transform:
-            translate3d(1px,-10px,0)
-            scale(1.018);
-    }
+@keyframes vltSoulCenterDrift {
+    0%,100% { transform: translate3d(0,0,0) scale(1); }
+    50% { transform: translate3d(1px,-8px,0) scale(1.014); }
 }
 
 @keyframes vltSoulLeftDrift {
-    0%,100% {
-        transform:
-            translate3d(0,0,0)
-            scale(.99);
-    }
-
-    50% {
-        transform:
-            translate3d(-5px,-6px,0)
-            scale(1.012);
-    }
+    0%,100% { transform: translate3d(0,0,0) scale(.995); }
+    50% { transform: translate3d(-4px,-5px,0) scale(1.008); }
 }
 
 @keyframes vltSoulRightDrift {
-    0%,100% {
-        transform:
-            translate3d(0,0,0)
-            scale(1);
-    }
-
-    50% {
-        transform:
-            translate3d(5px,-8px,0)
-            scale(1.015);
-    }
+    0%,100% { transform: translate3d(0,0,0) scale(1); }
+    50% { transform: translate3d(4px,-6px,0) scale(1.010); }
 }
 
-@keyframes vltSoulHalo {
-    0%,100% {
-        opacity: .58;
-        transform: scale(.985);
-    }
-
-    50% {
-        opacity: .88;
-        transform: scale(1.018);
-    }
+@keyframes vltSoulMistDrift {
+    from { transform: translate3d(-4px,4px,0) scale(1); opacity: .58; }
+    to { transform: translate3d(8px,-7px,0) scale(1.03); opacity: .82; }
 }
 
-@keyframes vltSoulWispA {
-    from {
-        transform:
-            translate3d(-5px,2px,0)
-            rotate(-1deg);
-    }
-
-    to {
-        transform:
-            translate3d(9px,-9px,0)
-            rotate(1.5deg);
-    }
+@media (max-width:800px) {
+    #vlt-soul-counter .soul-readout { top:33%; width:46%; }
 }
 
-@keyframes vltSoulWispB {
-    from {
-        transform:
-            translate3d(7px,4px,0)
-            rotate(1deg);
-    }
-
-    to {
-        transform:
-            translate3d(-8px,-7px,0)
-            rotate(-1.4deg);
-    }
-}
-
-@keyframes vltSoulWispC {
-    from {
-        transform:
-            translate3d(-4px,7px,0);
-    }
-
-    to {
-        transform:
-            translate3d(8px,-4px,0);
-    }
-}
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 800px) {
-    #vlt-soul-counter {
-        opacity: .90;
-    }
-
-    #vlt-soul-counter .soul-readout {
-        top: 24%;
-        width: 45%;
-    }
-
-    #vlt-soul-counter .soul-rune {
-        width: 20px;
-        height: 20px;
-        margin-bottom: 14px;
-    }
-}
-
-@media (max-width: 560px) {
-    #vlt-soul-counter {
-        opacity: .82;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion:reduce) {
     #vlt-soul-counter,
     #vlt-soul-counter *,
     #vlt-soul-counter *::before,
     #vlt-soul-counter *::after {
-        animation: none !important;
-        transition: none !important;
+        animation:none !important;
+        transition:none !important;
     }
 }

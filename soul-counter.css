@@ -4,92 +4,155 @@
 
 /* =========================================================
    DJ VamLykTan · SEELENZÄHLER
-   Freigegebene Optik mit echten Seelenfragmenten.
-   Die Zahlen liegen über den Erscheinungen.
+   Variante 2: Artwork-Ebene und Counter sind getrennt.
+   Die Seelen leben als eigene Hero-Schicht im Motiv,
+   der Zähler liegt separat darüber.
    ========================================================= */
 
+#vlt-soul-layer,
 #vlt-soul-counter {
-    --soul-accent: #ff1732;
-    --soul-accent-soft: rgba(255, 23, 50, .42);
-    --echo-text: rgba(220, 216, 223, .88);
     position: fixed;
-    z-index: 48;
-    aspect-ratio: .82 / 1;
-    overflow: visible;
     pointer-events: none;
     opacity: .98;
-    filter: drop-shadow(0 0 22px rgba(0,0,0,.72));
     transition: opacity .45s ease, transform .55s ease, filter .45s ease;
 }
 
-#vlt-soul-counter .soul-art {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    overflow: hidden;
-    -webkit-mask-image: radial-gradient(ellipse at 52% 45%, #000 0%, #000 63%, rgba(0,0,0,.88) 75%, transparent 100%);
-    mask-image: radial-gradient(ellipse at 52% 45%, #000 0%, #000 63%, rgba(0,0,0,.88) 75%, transparent 100%);
+#vlt-soul-layer {
+    --soul-accent: #ff1732;
+    --soul-accent-soft: rgba(255, 23, 50, .42);
+    --soul-violet: rgba(212, 160, 255, .52);
+    z-index: 42;
+    overflow: visible;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 24px rgba(0,0,0,.72));
 }
 
-#vlt-soul-counter .soul-wraith {
+#vlt-soul-layer .soul-scene {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+}
+
+#vlt-soul-layer .scene-glow {
+    position: absolute;
+    left: 8%;
+    top: 4%;
+    width: 84%;
+    height: 84%;
+    background:
+        radial-gradient(circle at 50% 24%, rgba(255, 42, 72, .30), transparent 34%),
+        radial-gradient(circle at 50% 54%, rgba(255, 20, 60, .16), transparent 48%),
+        radial-gradient(circle at 50% 78%, rgba(215, 195, 255, .10), transparent 42%);
+    filter: blur(18px);
+    opacity: .88;
+}
+
+#vlt-soul-layer .scene-halo {
+    position: absolute;
+    left: 18%;
+    top: 2%;
+    width: 64%;
+    height: 42%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 26, 54, .70);
+    box-shadow:
+        0 0 22px rgba(255, 26, 54, .48),
+        inset 0 0 18px rgba(255, 26, 54, .28);
+    opacity: .92;
+}
+
+#vlt-soul-layer .scene-halo::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -18%;
+    width: 2px;
+    height: 34%;
+    background: linear-gradient(to bottom, rgba(255, 30, 56, .96), rgba(255, 30, 56, .18));
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(255, 30, 56, .44);
+}
+
+#vlt-soul-layer .scene-halo::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -3%;
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 30, 56, .95);
+    transform: translate(-50%, -50%) rotate(45deg);
+    box-shadow: 0 0 12px rgba(255, 30, 56, .44);
+}
+
+#vlt-soul-layer .soul-wraith {
     position: absolute;
     display: block;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    mix-blend-mode: screen;
-    filter: saturate(1.08) contrast(1.07) drop-shadow(0 0 12px rgba(232,222,255,.16));
     transform-origin: center;
+    filter:
+        saturate(1.08)
+        contrast(1.08)
+        drop-shadow(0 0 16px rgba(255, 236, 255, .16));
+    -webkit-mask-image: radial-gradient(ellipse at 50% 46%, #000 0%, #000 52%, rgba(0,0,0,.86) 72%, transparent 100%);
+    mask-image: radial-gradient(ellipse at 50% 46%, #000 0%, #000 52%, rgba(0,0,0,.86) 72%, transparent 100%);
 }
 
-#vlt-soul-counter .wraith-center {
-    left: 17%;
-    top: 0;
-    width: 70%;
-    height: 50%;
+#vlt-soul-layer .wraith-center {
+    left: 18%;
+    top: -1%;
+    width: 65%;
+    height: 51%;
     opacity: 1;
-    animation: vltSoulCenterDrift 10.5s ease-in-out infinite;
+    animation: vltSoulCenterDrift 12s ease-in-out infinite;
 }
 
-#vlt-soul-counter .wraith-left {
-    left: -2%;
-    top: 25%;
-    width: 53%;
-    height: 61%;
-    opacity: .94;
-    animation: vltSoulLeftDrift 13s ease-in-out infinite;
+#vlt-soul-layer .wraith-left {
+    left: 0;
+    top: 30%;
+    width: 41%;
+    height: 49%;
+    opacity: .92;
+    animation: vltSoulLeftDrift 14s ease-in-out infinite;
 }
 
-#vlt-soul-counter .wraith-right {
-    right: -2%;
-    top: 34%;
-    width: 52%;
-    height: 57%;
-    opacity: .94;
-    animation: vltSoulRightDrift 11.7s ease-in-out infinite;
+#vlt-soul-layer .wraith-right {
+    right: 0;
+    top: 31%;
+    width: 40%;
+    height: 47%;
+    opacity: .92;
+    animation: vltSoulRightDrift 11.5s ease-in-out infinite;
 }
 
-#vlt-soul-counter .soul-mist {
+#vlt-soul-layer .scene-mist {
     position: absolute;
-    left: 3%;
-    right: -2%;
+    left: 2%;
+    right: 1%;
     bottom: 0;
-    height: 56%;
+    height: 38%;
     background:
-        radial-gradient(ellipse at 52% 35%, rgba(220,214,235,.12), transparent 58%),
-        radial-gradient(ellipse at 50% 72%, rgba(130,118,150,.13), transparent 68%);
-    filter: blur(13px);
-    opacity: .74;
+        radial-gradient(ellipse at 50% 14%, rgba(235, 224, 245, .22), transparent 56%),
+        radial-gradient(ellipse at 50% 66%, rgba(255, 34, 56, .12), transparent 62%),
+        radial-gradient(ellipse at 34% 86%, rgba(215, 206, 228, .16), transparent 38%),
+        radial-gradient(ellipse at 70% 82%, rgba(215, 206, 228, .16), transparent 38%);
+    filter: blur(14px);
+    opacity: .84;
     animation: vltSoulMistDrift 15s ease-in-out infinite alternate;
 }
 
-#vlt-soul-counter .soul-readout {
-    position: absolute;
-    left: 50%;
-    top: 34%;
-    z-index: 5;
-    width: 44%;
+#vlt-soul-counter {
+    --soul-accent: #ff1732;
+    --soul-accent-soft: rgba(255, 23, 50, .42);
+    --echo-text: rgba(232, 227, 235, .92);
+    z-index: 44;
     transform: translateX(-50%);
+    filter: drop-shadow(0 0 10px rgba(0,0,0,.82));
+}
+
+#vlt-soul-counter .soul-readout {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -99,11 +162,45 @@
     text-shadow: 0 2px 8px rgba(0,0,0,1), 0 0 13px rgba(0,0,0,.96);
 }
 
+#vlt-soul-counter .soul-sigil {
+    width: clamp(20px, 1.8vw, 32px);
+    height: clamp(20px, 1.8vw, 32px);
+    margin-bottom: 12px;
+    position: relative;
+}
+
+#vlt-soul-counter .soul-sigil::before,
+#vlt-soul-counter .soul-sigil::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+}
+
+#vlt-soul-counter .soul-sigil::before {
+    background:
+        linear-gradient(90deg, transparent 47%, var(--soul-accent) 47%, var(--soul-accent) 53%, transparent 53%),
+        linear-gradient(transparent 47%, var(--soul-accent) 47%, var(--soul-accent) 53%, transparent 53%);
+    opacity: .9;
+    filter: drop-shadow(0 0 6px var(--soul-accent-soft));
+}
+
+#vlt-soul-counter .soul-sigil::after {
+    width: 62%;
+    height: 62%;
+    border: 2px solid var(--soul-accent);
+    transform: translate(-50%, -50%) rotate(45deg);
+    box-shadow: 0 0 8px var(--soul-accent-soft);
+}
+
 #vlt-soul-counter .soul-label,
 #vlt-soul-counter .echo-label {
     display: block;
-    color: rgba(240,235,238,.96);
-    font-size: clamp(10px,.72vw,15px);
+    color: rgba(242, 236, 241, .96);
+    font-size: clamp(12px, .92vw, 16px);
     font-weight: normal;
     letter-spacing: .28em;
     line-height: 1;
@@ -111,9 +208,9 @@
 
 #vlt-soul-counter .soul-value {
     display: block;
-    margin-top: 9px;
+    margin-top: 10px;
     color: var(--soul-accent);
-    font-size: clamp(44px,3.1vw,72px);
+    font-size: clamp(54px, 4vw, 86px);
     font-weight: normal;
     line-height: .92;
     letter-spacing: .015em;
@@ -122,9 +219,9 @@
 
 #vlt-soul-counter .soul-divider {
     position: relative;
-    width: 92%;
+    width: 100%;
     height: 1px;
-    margin: 16px 0 13px;
+    margin: 18px 0 16px;
     background: linear-gradient(90deg, transparent, rgba(255,16,47,.96) 24%, rgba(255,16,47,.96) 76%, transparent);
     box-shadow: 0 0 8px rgba(255,16,47,.38);
 }
@@ -142,74 +239,172 @@
 }
 
 #vlt-soul-counter .echo-label {
-    color: rgba(202,196,204,.90);
-    font-size: clamp(9px,.62vw,13px);
+    color: rgba(214, 208, 218, .92);
+    font-size: clamp(11px, .80vw, 14px);
 }
 
 #vlt-soul-counter .echo-value {
     display: block;
-    margin-top: 8px;
+    margin-top: 9px;
     color: var(--echo-text);
-    font-size: clamp(30px,2.05vw,48px);
+    font-size: clamp(40px, 2.9vw, 60px);
     font-weight: normal;
     line-height: 1;
     letter-spacing: .02em;
     text-shadow: 0 0 8px rgba(255,255,255,.18), 0 2px 9px #000;
 }
 
-body[data-hero="gothic"] #vlt-soul-counter,
-body[data-hero="main"] #vlt-soul-counter {
+body[data-hero="main"] #vlt-soul-layer,
+body[data-hero="gothic"] #vlt-soul-layer,
+body[data-hero="main"] #vlt-soul-counter,
+body[data-hero="gothic"] #vlt-soul-counter {
     --soul-accent: #ff1732;
-    --soul-accent-soft: rgba(255,23,50,.42);
-    --echo-text: rgba(220,216,223,.88);
+    --soul-accent-soft: rgba(255, 23, 50, .42);
+    --echo-text: rgba(232, 227, 235, .92);
 }
 
+body[data-hero="psycho"] #vlt-soul-layer,
 body[data-hero="psycho"] #vlt-soul-counter {
     --soul-accent: #c463ff;
-    --soul-accent-soft: rgba(196,99,255,.42);
-    --echo-text: rgba(222,213,232,.88);
+    --soul-accent-soft: rgba(196, 99, 255, .42);
+    --echo-text: rgba(226, 217, 236, .92);
 }
 
-body[data-hero="psycho"] #vlt-soul-counter .soul-wraith {
-    filter: hue-rotate(23deg) saturate(1.10) contrast(1.07) drop-shadow(0 0 12px rgba(232,222,255,.16));
+body[data-hero="main"] #vlt-soul-layer .scene-halo {
+    left: 18%;
+    top: 4%;
+    width: 64%;
+    height: 40%;
+}
+
+body[data-hero="gothic"] #vlt-soul-layer .scene-halo {
+    left: 16%;
+    top: 2%;
+    width: 68%;
+    height: 43%;
+}
+
+body[data-hero="psycho"] #vlt-soul-layer .scene-glow {
+    background:
+        radial-gradient(circle at 64% 24%, rgba(204, 92, 255, .24), transparent 30%),
+        radial-gradient(circle at 56% 54%, rgba(255, 26, 54, .18), transparent 42%),
+        radial-gradient(circle at 72% 70%, rgba(216, 202, 255, .12), transparent 34%);
+}
+
+body[data-hero="psycho"] #vlt-soul-layer .scene-halo {
+    left: 42%;
+    top: 4%;
+    width: 42%;
+    height: 34%;
+    border-color: rgba(197, 112, 255, .64);
+    box-shadow:
+        0 0 22px rgba(196, 99, 255, .28),
+        inset 0 0 18px rgba(196, 99, 255, .18);
+    opacity: .76;
+}
+
+body[data-hero="psycho"] #vlt-soul-layer .scene-halo::before,
+body[data-hero="psycho"] #vlt-soul-layer .scene-halo::after {
+    background: linear-gradient(to bottom, rgba(196, 99, 255, .88), rgba(196, 99, 255, .18));
+    box-shadow: 0 0 10px rgba(196, 99, 255, .28);
+}
+
+body[data-hero="psycho"] #vlt-soul-layer .scene-halo::after {
+    background: rgba(196, 99, 255, .92);
+}
+
+body[data-hero="psycho"] #vlt-soul-layer .soul-wraith {
+    filter:
+        hue-rotate(22deg)
+        saturate(1.12)
+        contrast(1.08)
+        drop-shadow(0 0 16px rgba(236, 222, 255, .16));
+}
+
+body[data-hero="psycho"] #vlt-soul-layer .wraith-center {
+    left: 43%;
+    top: 5%;
+    width: 40%;
+    height: 36%;
+    opacity: .62;
+}
+
+body[data-hero="psycho"] #vlt-soul-layer .wraith-left {
+    left: 34%;
+    top: 16%;
+    width: 30%;
+    height: 30%;
+    opacity: .42;
+}
+
+body[data-hero="psycho"] #vlt-soul-layer .wraith-right {
+    right: 1%;
+    top: 18%;
+    width: 28%;
+    height: 30%;
+    opacity: .48;
+}
+
+body[data-hero="psycho"] #vlt-soul-layer .scene-mist {
+    bottom: 18%;
+    height: 24%;
+    opacity: .38;
+    filter: blur(12px);
+}
+
+body.vlt-portal-active #vlt-soul-layer {
+    opacity: .16;
+    transform: scale(.985);
+    filter: blur(2px) drop-shadow(0 0 24px rgba(0,0,0,.72));
 }
 
 body.vlt-portal-active #vlt-soul-counter {
-    opacity: .18;
-    transform: scale(.985);
+    opacity: .16;
+    transform: translateX(-50%) scale(.985);
     filter: blur(2px) drop-shadow(0 0 24px rgba(0,0,0,.72));
 }
 
 @keyframes vltSoulCenterDrift {
     0%,100% { transform: translate3d(0,0,0) scale(1); }
-    50% { transform: translate3d(1px,-8px,0) scale(1.014); }
+    50% { transform: translate3d(1px,-9px,0) scale(1.014); }
 }
 
 @keyframes vltSoulLeftDrift {
     0%,100% { transform: translate3d(0,0,0) scale(.995); }
-    50% { transform: translate3d(-4px,-5px,0) scale(1.008); }
+    50% { transform: translate3d(-6px,-4px,0) scale(1.012); }
 }
 
 @keyframes vltSoulRightDrift {
     0%,100% { transform: translate3d(0,0,0) scale(1); }
-    50% { transform: translate3d(4px,-6px,0) scale(1.010); }
+    50% { transform: translate3d(6px,-5px,0) scale(1.014); }
 }
 
 @keyframes vltSoulMistDrift {
-    from { transform: translate3d(-4px,4px,0) scale(1); opacity: .58; }
-    to { transform: translate3d(8px,-7px,0) scale(1.03); opacity: .82; }
+    from { transform: translate3d(-6px,4px,0) scale(1); opacity: .58; }
+    to { transform: translate3d(8px,-7px,0) scale(1.03); opacity: .86; }
 }
 
-@media (max-width:800px) {
-    #vlt-soul-counter .soul-readout { top:33%; width:46%; }
+@media (max-width: 1100px) {
+    #vlt-soul-counter .soul-value { font-size: clamp(48px, 4vw, 76px); }
+    #vlt-soul-counter .echo-value { font-size: clamp(34px, 2.8vw, 54px); }
 }
 
-@media (prefers-reduced-motion:reduce) {
+@media (max-width: 800px) {
+    #vlt-soul-layer { opacity: .90; }
+    #vlt-soul-counter .soul-sigil { margin-bottom: 10px; }
+    #vlt-soul-counter .soul-divider { margin: 14px 0 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #vlt-soul-layer,
+    #vlt-soul-layer *,
+    #vlt-soul-layer *::before,
+    #vlt-soul-layer *::after,
     #vlt-soul-counter,
     #vlt-soul-counter *,
     #vlt-soul-counter *::before,
     #vlt-soul-counter *::after {
-        animation:none !important;
-        transition:none !important;
+        animation: none !important;
+        transition: none !important;
     }
 }

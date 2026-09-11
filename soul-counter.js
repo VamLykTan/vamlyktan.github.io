@@ -5,20 +5,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const ECHO_KEY = "echoes";
     const LOCAL_MARK = "vlt_soul_counted_v1";
 
+    const soulLayer = document.createElement("div");
+    soulLayer.id = "vlt-soul-layer";
+    soulLayer.setAttribute("aria-hidden", "true");
+    soulLayer.innerHTML = `
+        <div class="soul-scene">
+            <span class="scene-glow"></span>
+            <span class="scene-halo"></span>
+            <span class="soul-wraith wraith-center"></span>
+            <span class="soul-wraith wraith-left"></span>
+            <span class="soul-wraith wraith-right"></span>
+            <span class="scene-mist"></span>
+        </div>`;
+
     const counter = document.createElement("aside");
     counter.id = "vlt-soul-counter";
     counter.setAttribute("aria-label", "Seelenzähler");
     counter.title = "Seelen ≈ einmal pro Browser · Echos = Seitenaufrufe";
-
     counter.innerHTML = `
-        <div class="soul-art" aria-hidden="true">
-            <span class="soul-wraith wraith-center"></span>
-            <span class="soul-wraith wraith-left"></span>
-            <span class="soul-wraith wraith-right"></span>
-            <span class="soul-mist"></span>
-        </div>
-
         <div class="soul-readout">
+            <span class="soul-sigil" aria-hidden="true"></span>
             <span class="soul-label">SEELEN</span>
             <strong class="soul-value" id="vlt-souls">---</strong>
             <span class="soul-divider" aria-hidden="true"></span>
@@ -26,35 +32,83 @@ document.addEventListener("DOMContentLoaded", function () {
             <strong class="echo-value" id="vlt-echoes">---</strong>
         </div>`;
 
+    document.body.appendChild(soulLayer);
     document.body.appendChild(counter);
 
     const soulsElement = document.getElementById("vlt-souls");
     const echoesElement = document.getElementById("vlt-echoes");
 
     const positions = {
-        main:   { x: 0.765, y: 0.050, width: 0.225 },
-        gothic: { x: 0.745, y: 0.045, width: 0.240 },
-        psycho: { x: 0.770, y: 0.055, width: 0.220 }
+        main: {
+            desktop: {
+                scene:   { x: 0.705, y: 0.070, width: 0.240, height: 0.470 },
+                counter: { x: 0.825, y: 0.175, width: 0.100 }
+            },
+            mobile: {
+                scene:   { x: 0.650, y: 0.105, width: 0.270, height: 0.420 },
+                counter: { x: 0.785, y: 0.180, width: 0.118 }
+            }
+        },
+        gothic: {
+            desktop: {
+                scene:   { x: 0.695, y: 0.072, width: 0.248, height: 0.480 },
+                counter: { x: 0.820, y: 0.178, width: 0.104 }
+            },
+            mobile: {
+                scene:   { x: 0.642, y: 0.110, width: 0.275, height: 0.425 },
+                counter: { x: 0.782, y: 0.182, width: 0.122 }
+            }
+        },
+        psycho: {
+            desktop: {
+                scene:   { x: 0.675, y: 0.050, width: 0.245, height: 0.435 },
+                counter: { x: 0.792, y: 0.140, width: 0.100 }
+            },
+            mobile: {
+                scene:   { x: 0.628, y: 0.090, width: 0.260, height: 0.385 },
+                counter: { x: 0.770, y: 0.150, width: 0.118 }
+            }
+        }
     };
 
     const heroImage = new Image();
 
     function getHeroFile() {
         const hero = document.body.dataset.hero;
-        if (hero === "gothic") return "images/Gothic.png";
-        if (hero === "psycho") return "images/Psycho.png";
+
+        if (hero === "gothic") {
+            return "images/Gothic.png";
+        }
+
+        if (hero === "psycho") {
+            return "images/Psycho.png";
+        }
+
         return "images/mainbackground.png";
     }
 
-    function loadPositionImage() {
-        heroImage.src = getHeroFile();
+    function getActiveLayout(heroId) {
+        const hero = positions[heroId] || positions.main;
+        return window.innerWidth <= 900 ? hero.mobile : hero.desktop;
     }
 
-    function positionCounter() {
-        if (!heroImage.naturalWidth || !heroImage.naturalHeight) return;
+    function applyBox(element, left, top, width, height) {
+        element.style.left = `${left}px`;
+        element.style.top = `${top}px`;
+        element.style.width = `${width}px`;
 
-        const hero = document.body.dataset.hero || "main";
-        const pos = positions[hero] || positions.main;
+        if (typeof height === "number") {
+            element.style.height = `${height}px`;
+        }
+    }
+
+    function positionArtifacts() {
+        if (!heroImage.naturalWidth || !heroImage.naturalHeight) {
+            return;
+        }
+
+        const heroId = document.body.dataset.hero || "main";
+        const layout = getActiveLayout(heroId);
         const vw = window.innerWidth;
         const vh = window.innerHeight;
 
@@ -63,19 +117,45 @@ document.addEventListener("DOMContentLoaded", function () {
             vh / heroImage.naturalHeight
         );
 
-        const rw = heroImage.naturalWidth * scale;
-        const rh = heroImage.naturalHeight * scale;
-        const ox = (vw - rw) / 2;
-        const oy = (vh - rh) / 2;
+        const renderedWidth = heroImage.naturalWidth * scale;
+        const renderedHeight = heroImage.naturalHeight * scale;
+        const offsetX = (vw - renderedWidth) / 2;
+        const offsetY = (vh - renderedHeight) / 2;
 
-        counter.style.left = `${ox + pos.x * rw}px`;
-        counter.style.top = `${oy + pos.y * rh}px`;
-        counter.style.width = `${pos.width * rw}px`;
+        const scene = layout.scene;
+        const counterPos = layout.counter;
+
+        const sceneLeft = offsetX + scene.x * renderedWidth;
+        const sceneTop = offsetY + scene.y * renderedHeight;
+        const sceneWidth = scene.width * renderedWidth;
+        const sceneHeight = scene.height * renderedHeight;
+
+        const counterCenterX = offsetX + counterPos.x * renderedWidth;
+        const counterTop = offsetY + counterPos.y * renderedHeight;
+        const counterWidth = counterPos.width * renderedWidth;
+
+        applyBox(soulLayer, sceneLeft, sceneTop, sceneWidth, sceneHeight);
+        applyBox(counter, counterCenterX, counterTop, counterWidth);
     }
 
-    heroImage.onload = positionCounter;
-    window.addEventListener("resize", positionCounter);
+    function loadPositionImage() {
+        const nextSource = getHeroFile();
+
+        if (heroImage.getAttribute("data-source") === nextSource && heroImage.complete) {
+            positionArtifacts();
+            return;
+        }
+
+        heroImage.setAttribute("data-source", nextSource);
+        heroImage.src = nextSource;
+    }
+
+    heroImage.onload = positionArtifacts;
+
+    window.addEventListener("resize", positionArtifacts);
+    window.addEventListener("load", positionArtifacts);
     window.addEventListener("vlt:herochange", loadPositionImage);
+
     loadPositionImage();
 
     function storageAvailable() {

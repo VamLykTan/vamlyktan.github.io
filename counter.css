@@ -25,8 +25,8 @@ body { font-family: Georgia, "Times New Roman", serif; }
 }
 
 /*
- * Das Artwork arbeitet in seinem nativen 1672x941-Koordinatensystem.
- * Der komplette Stage wird anschließend proportional an den Browser angepasst.
+ * Hintergrund und Soul-Overlay arbeiten deckungsgleich im nativen
+ * 1672x941-Koordinatensystem. Erst der komplette Stage wird skaliert.
  */
 #stage {
   position: absolute;
@@ -38,7 +38,8 @@ body { font-family: Georgia, "Times New Roman", serif; }
   will-change: transform;
 }
 
-.hero-image {
+.hero-image,
+.soul-overlay {
   position: absolute;
   inset: 0;
   width: 1672px;
@@ -48,20 +49,19 @@ body { font-family: Georgia, "Times New Roman", serif; }
   -webkit-user-drag: none;
 }
 
-#hero-overlays {
-  position: absolute;
-  inset: 0;
+.hero-image {
+  z-index: 1;
+}
+
+/*
+ * Ausschließlich das transparente *_Soul.png bewegt sich.
+ * Hintergrund, Counter und Hotspots bleiben pixelstarr.
+ */
+.soul-overlay {
   z-index: 2;
   pointer-events: none;
   animation: soul-drift 12s step-end infinite;
   will-change: transform;
-}
-
-.hero-overlay-part {
-  position: absolute;
-  display: none;
-  user-select: none;
-  -webkit-user-drag: none;
 }
 
 /*

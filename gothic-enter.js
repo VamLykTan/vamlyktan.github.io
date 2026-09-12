@@ -1,1244 +1,364 @@
-document.addEventListener("DOMContentLoaded", function () {
+(() => {
+  "use strict";
 
-    /* =====================================================
-       GOTHIC · ENTER PORTAL
+  const BUILD_MS = 10000;
+  const CLEAR_MS = 4000;
+  let running = false;
+  let buildTimer = null;
+  let clearTimer = null;
 
-       Gothic ist das Eingangstor.
-
-       ENTER:
-       1. Nebel baut sich in mehreren Schichten auf.
-       2. Gothic wird vollständig vom Nebel verschluckt.
-       3. Hinter dem Nebel wird Main ODER Psycho (50/50)
-          aktiviert.
-       4. Der Nebel zieht ab und das neue Bild bleibt stehen.
-
-       Kein Scroll zu "Aktuell".
-       ===================================================== */
-
-    if (
-        document.body.dataset.hero !==
-        "gothic"
-    ) {
-
-        return;
-
+  const style = document.createElement("style");
+  style.textContent = `
+    #vlt-gothic-portal {
+      position: fixed;
+      inset: 0;
+      z-index: 62;
+      overflow: hidden;
+      pointer-events: none;
+      visibility: hidden;
+      opacity: 0;
     }
 
-
-    if (
-        !window.VLTHero
-    ) {
-
-        return;
-
+    #vlt-gothic-portal.building,
+    #vlt-gothic-portal.clearing {
+      visibility: visible;
+      opacity: 1;
     }
 
-
-    const imageFile =
-        "images/Gothic.png";
-
-
-    /* =====================================================
-       CSS
-       ===================================================== */
-
-    const style =
-        document.createElement(
-            "style"
-        );
-
-
-    style.textContent = `
-
-        /* -------------------------------------------------
-           ENTER-HOTSPOT
-           ------------------------------------------------- */
-
-        #gothic-enter-hotspot {
-            position: fixed;
-            z-index: 70;
-            display: block;
-            pointer-events: auto;
-            cursor: pointer;
-            text-decoration: none;
-
-            outline: 1px solid rgba(150, 0, 0, 0.58);
-            background: rgba(90, 0, 0, 0.06);
-
-            box-shadow:
-                0 0 7px rgba(180, 0, 0, 0.25),
-                0 0 18px rgba(110, 0, 0, 0.12);
-
-            transition:
-                opacity 0.35s ease,
-                background 0.25s ease,
-                box-shadow 0.25s ease,
-                outline-color 0.25s ease;
-        }
-
-        #gothic-enter-hotspot:hover {
-            outline-color: rgba(255, 35, 35, 0.95);
-            background: rgba(160, 0, 0, 0.20);
-
-            box-shadow:
-                0 0 10px rgba(255, 20, 20, 0.65),
-                0 0 28px rgba(155, 0, 0, 0.35);
-        }
-
-        #gothic-enter-hotspot.running {
-            pointer-events: none;
-
-            animation:
-                vlt-enter-pulse
-                1.20s
-                ease-out
-                forwards;
-        }
-
-        #gothic-enter-hotspot.hidden {
-            pointer-events: none;
-            opacity: 0;
-        }
-
-
-        /* -------------------------------------------------
-           PORTAL-BÜHNE
-           ------------------------------------------------- */
-
-        #gothic-portal {
-            position: fixed;
-            inset: 0;
-            z-index: 62;
-            overflow: hidden;
-            pointer-events: none;
-            visibility: hidden;
-            opacity: 0;
-
-            background:
-                transparent;
-        }
-
-        #gothic-portal.running {
-            visibility: visible;
-            opacity: 1;
-        }
-
-
-        /*
-         * Alte Gothic-Kopie liegt über dem Hintergrund.
-         * Dadurch kann Gothic wegsterben, während darunter
-         * bereits das neue Hero-Bild umgeschaltet wird.
-         */
-
-        .portal-old-hero {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-
-            background-image:
-                url("${imageFile}");
-
-            background-repeat:
-                no-repeat;
-
-            background-size:
-                contain;
-
-            background-position:
-                center center;
-
-            opacity: 1;
-
-            transform:
-                scale(1);
-
-            filter:
-                brightness(1)
-                contrast(1)
-                saturate(1);
-
-            animation:
-                vlt-gothic-dissolve
-                5.4s
-                ease-in-out
-                forwards;
-        }
-
-
-        /* -------------------------------------------------
-           ORGANISCHER NEBEL
-
-           Jede Ebene benutzt SVG-Fractal-Noise als Textur.
-           Dadurch ist es keine simple Blur-Fläche.
-           ------------------------------------------------- */
-
-        .portal-fog {
-            position: absolute;
-            z-index: 4;
-
-            width: 145%;
-            height: 86%;
-
-            left: -22%;
-
-            opacity: 0;
-
-            background-image:
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='520' viewBox='0 0 900 520'%3E%3Cfilter id='n' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009 .022' numOctaves='4' seed='23'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='gamma' amplitude='1.25' exponent='1.4' offset='-.12'/%3E%3CfeFuncG type='gamma' amplitude='1.25' exponent='1.4' offset='-.12'/%3E%3CfeFuncB type='gamma' amplitude='1.25' exponent='1.4' offset='-.12'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23aeb4bc' filter='url(%23n)' opacity='.92'/%3E%3C/svg%3E");
-
-            background-size:
-                58%
-                100%;
-
-            background-repeat:
-                repeat-x;
-
-            mix-blend-mode:
-                screen;
-
-            filter:
-                blur(11px)
-                contrast(1.32);
-
-            -webkit-mask-image:
-                radial-gradient(
-                    ellipse at center,
-                    black 0 42%,
-                    rgba(0,0,0,.90) 56%,
-                    rgba(0,0,0,.28) 76%,
-                    transparent 100%
-                );
-
-            mask-image:
-                radial-gradient(
-                    ellipse at center,
-                    black 0 42%,
-                    rgba(0,0,0,.90) 56%,
-                    rgba(0,0,0,.28) 76%,
-                    transparent 100%
-                );
-
-            will-change:
-                transform,
-                opacity;
-        }
-
-
-        .portal-fog.back {
-            bottom: -24%;
-
-            opacity: 0;
-
-            filter:
-                blur(18px)
-                contrast(1.10);
-
-            animation:
-                vlt-fog-back
-                5.6s
-                ease-in-out
-                forwards;
-        }
-
-
-        .portal-fog.mid-a {
-            bottom: -18%;
-
-            transform:
-                translateX(-18%)
-                scale(1.12);
-
-            animation:
-                vlt-fog-mid-a
-                5.6s
-                cubic-bezier(.18,.70,.20,1)
-                forwards;
-        }
-
-
-        .portal-fog.mid-b {
-            bottom: -12%;
-
-            transform:
-                translateX(20%)
-                scale(1.18);
-
-            animation:
-                vlt-fog-mid-b
-                5.6s
-                cubic-bezier(.18,.70,.20,1)
-                forwards;
-        }
-
-
-        .portal-fog.front {
-            bottom: -31%;
-
-            height: 96%;
-
-            background-size:
-                48%
-                100%;
-
-            filter:
-                blur(8px)
-                contrast(1.45);
-
-            animation:
-                vlt-fog-front
-                5.6s
-                cubic-bezier(.14,.72,.20,1)
-                forwards;
-        }
-
-
-        /*
-         * Seitliche Rauchzungen. Sie sorgen dafür, dass der
-         * Nebel nicht nur von unten als horizontale Wand kommt.
-         */
-
-        .portal-smoke-wing {
-            position: absolute;
-            z-index: 5;
-
-            top: 8%;
-
-            width: 58%;
-            height: 88%;
-
-            opacity: 0;
-
-            background:
-                radial-gradient(
-                    ellipse at center,
-                    rgba(178,185,192,.28) 0%,
-                    rgba(91,97,105,.16) 34%,
-                    rgba(35,38,43,.08) 55%,
-                    transparent 76%
-                );
-
-            filter:
-                blur(38px);
-
-            will-change:
-                transform,
-                opacity;
-        }
-
-
-        .portal-smoke-wing.left {
-            left: -25%;
-
-            animation:
-                vlt-smoke-wing-left
-                5.4s
-                ease-in-out
-                forwards;
-        }
-
-
-        .portal-smoke-wing.right {
-            right: -25%;
-
-            animation:
-                vlt-smoke-wing-right
-                5.4s
-                ease-in-out
-                forwards;
-        }
-
-
-        /*
-         * Rote Glut bleibt nur im Kern des Rituals.
-         * Kein roter Kreis.
-         */
-
-        .portal-red-core {
-            position: absolute;
-            z-index: 3;
-
-            left: 50%;
-            top: 48%;
-
-            width: min(46vw, 650px);
-            aspect-ratio: 1 / 1;
-
-            opacity: 0;
-
-            transform:
-                translate(-50%, -50%)
-                scale(.72);
-
-            background:
-                radial-gradient(
-                    circle,
-                    rgba(190,0,18,.18) 0%,
-                    rgba(130,0,13,.10) 25%,
-                    rgba(70,0,8,.035) 48%,
-                    transparent 70%
-                );
-
-            filter:
-                blur(17px);
-
-            animation:
-                vlt-red-core
-                5.4s
-                ease-in-out
-                forwards;
-        }
-
-
-        /*
-         * Schwarzer Schleier: am Höhepunkt ist genug Deckung
-         * vorhanden, um den Hero-Wechsel unsichtbar zu machen.
-         */
-
-        .portal-veil {
-            position: absolute;
-            inset: 0;
-            z-index: 6;
-
-            opacity: 0;
-
-            background:
-                radial-gradient(
-                    ellipse at center,
-                    rgba(8,8,10,.54) 0%,
-                    rgba(3,3,5,.70) 48%,
-                    rgba(0,0,0,.90) 100%
-                );
-
-            animation:
-                vlt-veil
-                5.6s
-                ease-in-out
-                forwards;
-        }
-
-
-        /*
-         * Am Ende ein ganz kurzer Lichtsaum des neuen Bildes.
-         */
-
-        .portal-arrival {
-            position: absolute;
-            inset: 0;
-            z-index: 7;
-
-            opacity: 0;
-
-            background:
-                radial-gradient(
-                    ellipse at center,
-                    rgba(170,30,45,.08),
-                    transparent 58%
-                );
-
-            animation:
-                vlt-arrival
-                5.6s
-                ease-in-out
-                forwards;
-        }
-
-
-        /* -------------------------------------------------
-           KEYFRAMES
-           ------------------------------------------------- */
-
-        @keyframes vlt-enter-pulse {
-
-            0% {
-                outline-color:
-                    rgba(180,0,0,.55);
-
-                box-shadow:
-                    0 0 8px
-                    rgba(180,0,0,.28);
-            }
-
-            32% {
-                outline-color:
-                    rgba(255,40,40,1);
-
-                background:
-                    rgba(150,0,0,.24);
-
-                box-shadow:
-                    0 0 13px
-                    rgba(255,20,20,.92),
-                    0 0 42px
-                    rgba(180,0,0,.52);
-            }
-
-            100% {
-                outline-color:
-                    rgba(150,0,0,.20);
-
-                background:
-                    rgba(70,0,0,.02);
-
-                box-shadow:
-                    0 0 0
-                    rgba(0,0,0,0);
-            }
-        }
-
-
-        @keyframes vlt-gothic-dissolve {
-
-            0% {
-                opacity: 1;
-
-                transform:
-                    scale(1);
-
-                filter:
-                    brightness(1)
-                    contrast(1)
-                    saturate(1);
-            }
-
-            34% {
-                opacity: 1;
-
-                transform:
-                    scale(1.006);
-
-                filter:
-                    brightness(.93)
-                    contrast(1.04)
-                    saturate(.90);
-            }
-
-            50% {
-                opacity: .82;
-
-                transform:
-                    scale(1.014);
-
-                filter:
-                    brightness(.72)
-                    contrast(1.08)
-                    saturate(.72);
-            }
-
-            66% {
-                opacity: .15;
-
-                transform:
-                    scale(1.020);
-
-                filter:
-                    brightness(.48)
-                    contrast(1.10)
-                    saturate(.54);
-            }
-
-            100% {
-                opacity: 0;
-
-                transform:
-                    scale(1.024);
-            }
-        }
-
-
-        @keyframes vlt-fog-back {
-
-            0% {
-                opacity: 0;
-
-                transform:
-                    translateY(28%)
-                    scale(1.04);
-            }
-
-            34% {
-                opacity: .30;
-            }
-
-            54% {
-                opacity: .62;
-
-                transform:
-                    translateY(-7%)
-                    scale(1.12);
-            }
-
-            72% {
-                opacity: .46;
-            }
-
-            100% {
-                opacity: 0;
-
-                transform:
-                    translateY(-30%)
-                    scale(1.18);
-            }
-        }
-
-
-        @keyframes vlt-fog-mid-a {
-
-            0% {
-                opacity: 0;
-
-                transform:
-                    translate(-24%, 34%)
-                    scale(1.05);
-            }
-
-            30% {
-                opacity: .36;
-            }
-
-            52% {
-                opacity: .78;
-
-                transform:
-                    translate(7%, -4%)
-                    scale(1.17);
-            }
-
-            72% {
-                opacity: .50;
-            }
-
-            100% {
-                opacity: 0;
-
-                transform:
-                    translate(27%, -35%)
-                    scale(1.28);
-            }
-        }
-
-
-        @keyframes vlt-fog-mid-b {
-
-            0% {
-                opacity: 0;
-
-                transform:
-                    translate(25%, 32%)
-                    scale(1.05);
-            }
-
-            26% {
-                opacity: .30;
-            }
-
-            55% {
-                opacity: .72;
-
-                transform:
-                    translate(-9%, -8%)
-                    scale(1.19);
-            }
-
-            74% {
-                opacity: .46;
-            }
-
-            100% {
-                opacity: 0;
-
-                transform:
-                    translate(-31%, -38%)
-                    scale(1.27);
-            }
-        }
-
-
-        @keyframes vlt-fog-front {
-
-            0% {
-                opacity: 0;
-
-                transform:
-                    translateY(36%)
-                    scale(1.04);
-            }
-
-            30% {
-                opacity: .32;
-            }
-
-            50% {
-                opacity: .86;
-
-                transform:
-                    translateY(-4%)
-                    scale(1.20);
-            }
-
-            63% {
-                opacity: .78;
-            }
-
-            80% {
-                opacity: .36;
-            }
-
-            100% {
-                opacity: 0;
-
-                transform:
-                    translateY(-46%)
-                    scale(1.32);
-            }
-        }
-
-
-        @keyframes vlt-smoke-wing-left {
-
-            0% {
-                opacity: 0;
-
-                transform:
-                    translateX(-30%)
-                    rotate(-8deg)
-                    scale(.82);
-            }
-
-            40% {
-                opacity: .36;
-            }
-
-            60% {
-                opacity: .48;
-
-                transform:
-                    translateX(58%)
-                    rotate(4deg)
-                    scale(1.14);
-            }
-
-            100% {
-                opacity: 0;
-
-                transform:
-                    translateX(88%)
-                    rotate(11deg)
-                    scale(1.28);
-            }
-        }
-
-
-        @keyframes vlt-smoke-wing-right {
-
-            0% {
-                opacity: 0;
-
-                transform:
-                    translateX(30%)
-                    rotate(8deg)
-                    scale(.82);
-            }
-
-            40% {
-                opacity: .33;
-            }
-
-            60% {
-                opacity: .46;
-
-                transform:
-                    translateX(-58%)
-                    rotate(-4deg)
-                    scale(1.14);
-            }
-
-            100% {
-                opacity: 0;
-
-                transform:
-                    translateX(-88%)
-                    rotate(-11deg)
-                    scale(1.28);
-            }
-        }
-
-
-        @keyframes vlt-red-core {
-
-            0%,
-            100% {
-                opacity: 0;
-
-                transform:
-                    translate(-50%, -50%)
-                    scale(.72);
-            }
-
-            24% {
-                opacity: .16;
-            }
-
-            52% {
-                opacity: .80;
-
-                transform:
-                    translate(-50%, -50%)
-                    scale(1.18);
-            }
-
-            69% {
-                opacity: .30;
-
-                transform:
-                    translate(-50%, -50%)
-                    scale(1.42);
-            }
-        }
-
-
-        @keyframes vlt-veil {
-
-            0%,
-            24% {
-                opacity: 0;
-            }
-
-            49% {
-                opacity: .42;
-            }
-
-            56% {
-                opacity: .94;
-            }
-
-            64% {
-                opacity: .90;
-            }
-
-            78% {
-                opacity: .30;
-            }
-
-            100% {
-                opacity: 0;
-            }
-        }
-
-
-        @keyframes vlt-arrival {
-
-            0%,
-            62% {
-                opacity: 0;
-            }
-
-            76% {
-                opacity: .42;
-            }
-
-            100% {
-                opacity: 0;
-            }
-        }
-
-
-        @media (prefers-reduced-motion: reduce) {
-
-            #gothic-portal {
-                display: none;
-            }
-
-            #gothic-enter-hotspot {
-                animation: none !important;
-            }
-
-        }
-
-    `;
-
-
-    document.head.appendChild(
-        style
-    );
-
-
-    /* =====================================================
-       ENTER-HOTSPOT
-       ===================================================== */
-
-    const enter =
-        document.createElement(
-            "a"
-        );
-
-
-    enter.id =
-        "gothic-enter-hotspot";
-
-    enter.href =
-        "#";
-
-    enter.setAttribute(
-        "aria-label",
-        "Enter"
-    );
-
-    enter.title =
-        "Enter";
-
-
-    document.body.appendChild(
-        enter
-    );
-
-
-    /* =====================================================
-       PORTAL
-       ===================================================== */
-
-    const portal =
-        document.createElement(
-            "div"
-        );
-
-
-    portal.id =
-        "gothic-portal";
-
-    portal.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-
-    portal.innerHTML = `
-        <div class="portal-old-hero"></div>
-
-        <div class="portal-red-core"></div>
-
-        <div class="portal-fog back"></div>
-        <div class="portal-fog mid-a"></div>
-        <div class="portal-fog mid-b"></div>
-        <div class="portal-fog front"></div>
-
-        <div class="portal-smoke-wing left"></div>
-        <div class="portal-smoke-wing right"></div>
-
-        <div class="portal-veil"></div>
-        <div class="portal-arrival"></div>
-    `;
-
-
-    document.body.appendChild(
-        portal
-    );
-
-
-    /* =====================================================
-       ENTER-POSITION
-       background-size: contain
-       ===================================================== */
-
-    const image =
-        new Image();
-
-
-    image.src =
-        imageFile;
-
-
-    function positionEnter() {
-
-        if (
-            !image.naturalWidth ||
-            !image.naturalHeight
-        ) {
-
-            return;
-
-        }
-
-
-        const viewportWidth =
-            window.innerWidth;
-
-        const viewportHeight =
-            window.innerHeight;
-
-
-        const scale =
-            Math.min(
-                viewportWidth /
-                    image.naturalWidth,
-
-                viewportHeight /
-                    image.naturalHeight
-            );
-
-
-        const renderedWidth =
-            image.naturalWidth *
-            scale;
-
-        const renderedHeight =
-            image.naturalHeight *
-            scale;
-
-
-        const offsetX =
-            (
-                viewportWidth -
-                renderedWidth
-            ) / 2;
-
-        const offsetY =
-            (
-                viewportHeight -
-                renderedHeight
-            ) / 2;
-
-
-        /*
-         * Sichtbarer ENTER-Rahmen in Gothic.png.
-         */
-
-        enter.style.left =
-            `${
-                offsetX +
-                0.4336 *
-                renderedWidth
-            }px`;
-
-        enter.style.top =
-            `${
-                offsetY +
-                0.8129 *
-                renderedHeight
-            }px`;
-
-        enter.style.width =
-            `${
-                0.1322 *
-                renderedWidth
-            }px`;
-
-        enter.style.height =
-            `${
-                0.0723 *
-                renderedHeight
-            }px`;
-
+    #vlt-gothic-portal .portal-fog {
+      position: absolute;
+      z-index: 4;
+      left: -24%;
+      width: 148%;
+      height: 92%;
+      opacity: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='520' viewBox='0 0 900 520'%3E%3Cfilter id='n' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009 .022' numOctaves='4' seed='23'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='gamma' amplitude='1.25' exponent='1.4' offset='-.12'/%3E%3CfeFuncG type='gamma' amplitude='1.25' exponent='1.4' offset='-.12'/%3E%3CfeFuncB type='gamma' amplitude='1.25' exponent='1.4' offset='-.12'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23aeb4bc' filter='url(%23n)' opacity='.92'/%3E%3C/svg%3E");
+      background-repeat: repeat-x;
+      background-size: 58% 100%;
+      mix-blend-mode: screen;
+      filter: blur(12px) contrast(1.28);
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 0 42%, rgba(0,0,0,.9) 57%, rgba(0,0,0,.28) 77%, transparent 100%);
+      mask-image: radial-gradient(ellipse at center, #000 0 42%, rgba(0,0,0,.9) 57%, rgba(0,0,0,.28) 77%, transparent 100%);
+      will-change: transform, opacity;
     }
 
-
-    image.onload =
-        positionEnter;
-
-
-    window.addEventListener(
-        "resize",
-        positionEnter
-    );
-
-
-    /* =====================================================
-       BEIM SCROLLEN DEAKTIVIEREN
-       ===================================================== */
-
-    function updateEnterState() {
-
-        const inactive =
-            window.scrollY >
-            window.innerHeight *
-            0.20;
-
-
-        enter.classList.toggle(
-            "hidden",
-            inactive
-        );
-
+    #vlt-gothic-portal .portal-fog.back {
+      bottom: -26%;
+      filter: blur(20px) contrast(1.08);
     }
 
+    #vlt-gothic-portal .portal-fog.mid-a { bottom: -20%; }
+    #vlt-gothic-portal .portal-fog.mid-b { bottom: -13%; }
 
-    window.addEventListener(
-        "scroll",
-        updateEnterState,
-        {
-            passive: true
-        }
-    );
-
-
-    updateEnterState();
-
-
-    /* =====================================================
-       RITUAL
-       ===================================================== */
-
-    let running =
-        false;
-
-
-    function choosePortalTarget() {
-
-        return (
-            Math.random() < 0.5
-            ? "main"
-            : "psycho"
-        );
-
+    #vlt-gothic-portal .portal-fog.front {
+      bottom: -33%;
+      height: 102%;
+      background-size: 48% 100%;
+      filter: blur(9px) contrast(1.42);
     }
 
+    #vlt-gothic-portal .portal-smoke-wing {
+      position: absolute;
+      z-index: 5;
+      top: 5%;
+      width: 62%;
+      height: 94%;
+      opacity: 0;
+      background: radial-gradient(ellipse at center,
+        rgba(188,194,201,.34) 0%,
+        rgba(98,104,112,.19) 34%,
+        rgba(38,41,46,.09) 57%,
+        transparent 78%);
+      filter: blur(40px);
+      will-change: transform, opacity;
+    }
 
-    enter.addEventListener(
-        "click",
-        function (event) {
+    #vlt-gothic-portal .portal-smoke-wing.left { left: -29%; }
+    #vlt-gothic-portal .portal-smoke-wing.right { right: -29%; }
 
-            event.preventDefault();
+    #vlt-gothic-portal .portal-red-core {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      top: 49%;
+      width: min(52vw, 720px);
+      aspect-ratio: 1 / 1;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(.70);
+      background: radial-gradient(circle,
+        rgba(190,0,18,.20) 0%,
+        rgba(125,0,14,.10) 25%,
+        rgba(68,0,8,.035) 48%,
+        transparent 72%);
+      filter: blur(20px);
+      will-change: transform, opacity;
+    }
 
+    #vlt-gothic-portal .portal-veil {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      opacity: 0;
+      background: radial-gradient(ellipse at center,
+        rgba(12,12,15,.26) 0%,
+        rgba(4,4,7,.50) 48%,
+        rgba(0,0,0,.88) 100%);
+      will-change: opacity;
+    }
 
-            if (running) {
-                return;
-            }
+    #vlt-gothic-portal .portal-switch-cover {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      opacity: 0;
+      background:
+        radial-gradient(ellipse at 50% 54%, rgba(48,49,54,.25), rgba(5,5,8,.78) 58%, rgba(0,0,0,.94) 100%);
+      will-change: opacity;
+    }
 
+    #vlt-gothic-portal .portal-arrival {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      opacity: 0;
+      background: radial-gradient(ellipse at center, rgba(165,25,40,.08), transparent 60%);
+      will-change: opacity;
+    }
 
-            running =
-                true;
+    #vlt-gothic-portal.building .portal-fog.back {
+      animation: vlt-fog-back-build 10s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.building .portal-fog.mid-a {
+      animation: vlt-fog-mid-a-build 10s cubic-bezier(.18,.70,.20,1) forwards;
+    }
+    #vlt-gothic-portal.building .portal-fog.mid-b {
+      animation: vlt-fog-mid-b-build 10s cubic-bezier(.18,.70,.20,1) forwards;
+    }
+    #vlt-gothic-portal.building .portal-fog.front {
+      animation: vlt-fog-front-build 10s cubic-bezier(.14,.72,.20,1) forwards;
+    }
+    #vlt-gothic-portal.building .portal-smoke-wing.left {
+      animation: vlt-wing-left-build 10s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.building .portal-smoke-wing.right {
+      animation: vlt-wing-right-build 10s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.building .portal-red-core {
+      animation: vlt-red-core-build 10s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.building .portal-veil {
+      animation: vlt-veil-build 10s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.building .portal-switch-cover {
+      animation: vlt-switch-cover-build 10s ease-in forwards;
+    }
 
+    #vlt-gothic-portal.clearing .portal-fog.back {
+      animation: vlt-fog-back-clear 4s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.clearing .portal-fog.mid-a {
+      animation: vlt-fog-mid-a-clear 4s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.clearing .portal-fog.mid-b {
+      animation: vlt-fog-mid-b-clear 4s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.clearing .portal-fog.front {
+      animation: vlt-fog-front-clear 4s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.clearing .portal-smoke-wing.left {
+      animation: vlt-wing-left-clear 4s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.clearing .portal-smoke-wing.right {
+      animation: vlt-wing-right-clear 4s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.clearing .portal-red-core {
+      animation: vlt-red-core-clear 3.2s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.clearing .portal-veil {
+      animation: vlt-veil-clear 4s ease-in-out forwards;
+    }
+    #vlt-gothic-portal.clearing .portal-switch-cover {
+      animation: vlt-switch-cover-clear 3.4s ease-out forwards;
+    }
+    #vlt-gothic-portal.clearing .portal-arrival {
+      animation: vlt-arrival-clear 4s ease-in-out forwards;
+    }
 
-            const targetHero =
-                choosePortalTarget();
+    @keyframes vlt-fog-back-build {
+      0%   { opacity:0;   transform:translateY(30%) scale(1.02); }
+      35%  { opacity:.20; }
+      68%  { opacity:.48; transform:translateY(2%) scale(1.10); }
+      100% { opacity:.72; transform:translateY(-13%) scale(1.18); }
+    }
+    @keyframes vlt-fog-mid-a-build {
+      0%   { opacity:0;   transform:translate(-27%,35%) scale(1.03); }
+      30%  { opacity:.18; }
+      65%  { opacity:.56; transform:translate(3%,3%) scale(1.14); }
+      100% { opacity:.88; transform:translate(11%,-13%) scale(1.24); }
+    }
+    @keyframes vlt-fog-mid-b-build {
+      0%   { opacity:0;   transform:translate(28%,34%) scale(1.03); }
+      28%  { opacity:.16; }
+      67%  { opacity:.54; transform:translate(-4%,1%) scale(1.15); }
+      100% { opacity:.84; transform:translate(-13%,-15%) scale(1.25); }
+    }
+    @keyframes vlt-fog-front-build {
+      0%   { opacity:0;   transform:translateY(39%) scale(1.03); }
+      32%  { opacity:.18; }
+      64%  { opacity:.58; transform:translateY(4%) scale(1.16); }
+      100% { opacity:.96; transform:translateY(-13%) scale(1.29); }
+    }
+    @keyframes vlt-wing-left-build {
+      0%   { opacity:0; transform:translate(-24%,18%) scale(.94); }
+      45%  { opacity:.16; }
+      100% { opacity:.58; transform:translate(30%,-4%) scale(1.18); }
+    }
+    @keyframes vlt-wing-right-build {
+      0%   { opacity:0; transform:translate(24%,16%) scale(.94); }
+      43%  { opacity:.15; }
+      100% { opacity:.56; transform:translate(-30%,-5%) scale(1.18); }
+    }
+    @keyframes vlt-red-core-build {
+      0%,25% { opacity:0; transform:translate(-50%,-50%) scale(.70); }
+      70%    { opacity:.11; }
+      100%   { opacity:.18; transform:translate(-50%,-50%) scale(1.08); }
+    }
+    @keyframes vlt-veil-build {
+      0%,35% { opacity:0; }
+      72%    { opacity:.24; }
+      100%   { opacity:.78; }
+    }
+    @keyframes vlt-switch-cover-build {
+      0%,72% { opacity:0; }
+      88%    { opacity:.24; }
+      100%   { opacity:.86; }
+    }
 
+    @keyframes vlt-fog-back-clear {
+      0%   { opacity:.72; transform:translateY(-13%) scale(1.18); }
+      100% { opacity:0;   transform:translateY(-42%) scale(1.25); }
+    }
+    @keyframes vlt-fog-mid-a-clear {
+      0%   { opacity:.88; transform:translate(11%,-13%) scale(1.24); }
+      100% { opacity:0;   transform:translate(37%,-44%) scale(1.34); }
+    }
+    @keyframes vlt-fog-mid-b-clear {
+      0%   { opacity:.84; transform:translate(-13%,-15%) scale(1.25); }
+      100% { opacity:0;   transform:translate(-39%,-45%) scale(1.34); }
+    }
+    @keyframes vlt-fog-front-clear {
+      0%   { opacity:.96; transform:translateY(-13%) scale(1.29); }
+      38%  { opacity:.68; }
+      100% { opacity:0;   transform:translateY(-48%) scale(1.38); }
+    }
+    @keyframes vlt-wing-left-clear {
+      0%   { opacity:.58; transform:translate(30%,-4%) scale(1.18); }
+      100% { opacity:0;   transform:translate(55%,-22%) scale(1.30); }
+    }
+    @keyframes vlt-wing-right-clear {
+      0%   { opacity:.56; transform:translate(-30%,-5%) scale(1.18); }
+      100% { opacity:0;   transform:translate(-55%,-23%) scale(1.30); }
+    }
+    @keyframes vlt-red-core-clear {
+      0%   { opacity:.18; transform:translate(-50%,-50%) scale(1.08); }
+      100% { opacity:0;   transform:translate(-50%,-50%) scale(1.18); }
+    }
+    @keyframes vlt-veil-clear {
+      0%   { opacity:.78; }
+      46%  { opacity:.46; }
+      100% { opacity:0; }
+    }
+    @keyframes vlt-switch-cover-clear {
+      0%   { opacity:.86; }
+      32%  { opacity:.66; }
+      100% { opacity:0; }
+    }
+    @keyframes vlt-arrival-clear {
+      0%,24% { opacity:0; }
+      52%    { opacity:.16; }
+      100%   { opacity:0; }
+    }
+  `;
+  document.head.appendChild(style);
 
-            /*
-             * Reduced Motion:
-             * Kein Ritual, aber trotzdem Portal-Funktion.
-             */
+  const portal = document.createElement("div");
+  portal.id = "vlt-gothic-portal";
+  portal.setAttribute("aria-hidden", "true");
+  portal.innerHTML = `
+    <div class="portal-red-core"></div>
+    <div class="portal-fog back"></div>
+    <div class="portal-fog mid-a"></div>
+    <div class="portal-fog mid-b"></div>
+    <div class="portal-fog front"></div>
+    <div class="portal-smoke-wing left"></div>
+    <div class="portal-smoke-wing right"></div>
+    <div class="portal-veil"></div>
+    <div class="portal-switch-cover"></div>
+    <div class="portal-arrival"></div>
+  `;
+  document.body.appendChild(portal);
 
-            if (
-                window.matchMedia(
-                    "(prefers-reduced-motion: reduce)"
-                ).matches
-            ) {
+  function currentHeroId() {
+    return window.VLTHero?.getCurrent?.().id || document.body.dataset.hero || "gothic";
+  }
 
-                window.VLTHero.switchHero(
-                    targetHero
-                );
+  function finish() {
+    window.clearTimeout(buildTimer);
+    window.clearTimeout(clearTimer);
+    buildTimer = null;
+    clearTimer = null;
+    portal.classList.remove("building", "clearing");
+    document.body.classList.remove("gothic-ritual-running");
+    running = false;
+  }
 
+  function start() {
+    if (running || currentHeroId() !== "gothic" || typeof window.setHero !== "function") {
+      return false;
+    }
 
-                enter.remove();
-                portal.remove();
+    const target = Math.random() < 0.5 ? "main" : "psycho";
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      window.setHero(target);
+      return true;
+    }
 
-                return;
+    running = true;
+    document.body.classList.add("gothic-ritual-running");
+    portal.classList.remove("clearing");
+    void portal.offsetWidth;
+    portal.classList.add("building");
 
-            }
+    buildTimer = window.setTimeout(() => {
+      window.setHero(target);
+      portal.classList.remove("building");
+      void portal.offsetWidth;
+      portal.classList.add("clearing");
 
+      clearTimer = window.setTimeout(finish, CLEAR_MS + 80);
+    }, BUILD_MS);
 
-            document.body.classList.add(
-                "vlt-portal-active"
-            );
+    return true;
+  }
 
+  window.VLTGothicRitual = {
+    start,
+    isRunning() {
+      return running;
+    },
+    timing: {
+      buildMs: BUILD_MS,
+      clearMs: CLEAR_MS
+    }
+  };
 
-            enter.classList.add(
-                "running"
-            );
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest?.('[data-action-id="enter-gothic"]');
+    if (!trigger) return;
 
-
-            portal.classList.remove(
-                "running"
-            );
-
-
-            void portal.offsetWidth;
-
-
-            portal.classList.add(
-                "running"
-            );
-
-
-            /*
-             * Der eigentliche Bildwechsel findet am dichtesten
-             * Punkt des Nebels statt.
-             */
-
-            window.setTimeout(
-                function () {
-
-                    window.VLTHero.switchHero(
-                        targetHero
-                    );
-
-
-                    enter.classList.add(
-                        "hidden"
-                    );
-
-                },
-                3050
-            );
-
-
-            /*
-             * Nebel vollständig abziehen lassen.
-             */
-
-            window.setTimeout(
-                function () {
-
-                    document.body.classList.remove(
-                        "vlt-portal-active"
-                    );
-
-
-                    portal.classList.remove(
-                        "running"
-                    );
-
-
-                    portal.style.visibility =
-                        "hidden";
-
-
-                    enter.remove();
-
-
-                    running =
-                        false;
-
-                },
-                5750
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       Falls ein Hero-Wechsel von außen ausgelöst wird,
-       verschwindet ENTER ebenfalls.
-       ===================================================== */
-
-    window.addEventListener(
-        "vlt:herochange",
-        function (event) {
-
-            if (
-                event.detail &&
-                event.detail.id !==
-                "gothic"
-            ) {
-
-                enter.classList.add(
-                    "hidden"
-                );
-
-            }
-
-        }
-    );
-
-});
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    start();
+  }, true);
+})();

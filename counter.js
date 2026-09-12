@@ -23,6 +23,7 @@
       accent: "#ff102d",
       glow: "rgba(255,16,45,.62)",
       hotspots: [
+        { id: "about-gothic", href: "about.html", label: "About VamLykTan", x: .287, y: .510, width: .398, height: .145 },
         { id: "facebook-gothic", href: SOCIAL.facebook, label: "Facebook", external: true, x: .8215, y: .0213, width: .0215, height: .0383 },
         { id: "instagram-gothic", href: SOCIAL.instagram, label: "Instagram", external: true, x: .8477, y: .0213, width: .0215, height: .0383 },
         { id: "mixcloud-gothic", href: SOCIAL.mixcloud, label: "Mixcloud", external: true, x: .8745, y: .0213, width: .0215, height: .0383 },
@@ -41,6 +42,7 @@
       accent: "#ff102d",
       glow: "rgba(255,16,45,.62)",
       hotspots: [
+        { id: "about-main", href: "about.html", label: "About VamLykTan", x: .300, y: .522, width: .382, height: .155 },
         { id: "projects-main", href: "projects/index.html", label: "Projekte", x: .472, y: .021, width: .057, height: .034 },
         { id: "facebook-main", href: SOCIAL.facebook, label: "Facebook", external: true, x: .7841, y: .0213, width: .0215, height: .0383 },
         { id: "instagram-main", href: SOCIAL.instagram, label: "Instagram", external: true, x: .8140, y: .0213, width: .0215, height: .0383 },
@@ -60,6 +62,7 @@
       accent: "#d75cff",
       glow: "rgba(215,92,255,.55)",
       hotspots: [
+        { id: "about-psycho", href: "about.html", label: "About VamLykTan", x: .064, y: .255, width: .500, height: .225 },
         { id: "projects-psycho-nav", href: "projects/index.html", label: "Projekte", x: .426, y: .021, width: .060, height: .034 },
         { id: "projects-psycho-content", href: "projects/index.html", label: "Projekte", x: .335, y: .568, width: .068, height: .035 },
         { id: "facebook-psycho", href: SOCIAL.facebook, label: "Facebook", external: true, x: .8032, y: .0213, width: .0215, height: .0383 },

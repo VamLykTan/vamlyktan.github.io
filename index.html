@@ -1,124 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>DJ VamLykTan</title>
-
-    <meta name="description"
-          content="Offizielle Homepage von DJ VamLykTan">
-
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="soul-counter.css">
-
-    <script src="script.js" defer></script>
-    <script src="gothic-enter.js" defer></script>
-    <script src="soul-counter.js" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DJ VamLykTan</title>
+  <meta name="description" content="Offizielle Homepage von DJ VamLykTan">
+  <link rel="stylesheet" href="counter.css">
+  <script src="counter.js" defer></script>
 </head>
-
-
 <body>
-<a
-    href="projects/"
-    class="background-button projects-button"
-    aria-label="Projekte">
-</a>  
+  <main id="viewport" aria-label="DJ VamLykTan">
+    <div id="stage">
+      <img id="hero-image" class="hero-image"
+           src="images/Gothic.png"
+           alt="DJ VamLykTan Hero">
 
-    <header class="site-header">
+      <div id="hero-overlays" aria-hidden="true">
+        <img class="hero-overlay-part" id="overlay-1" alt="">
+        <img class="hero-overlay-part" id="overlay-2" alt="">
+        <img class="hero-overlay-part" id="overlay-3" alt="">
+      </div>
 
-        <div class="logo">
-            DJ VamLykTan
+      <aside id="soul-readout" aria-label="Seelen und Echos">
+        <section class="counter counter-souls" aria-label="Seelen">
+          <span class="counter-label">SEELEN</span>
+          <strong id="souls" class="counter-value soul-value">000</strong>
+        </section>
+
+        <div class="counter-divider" aria-hidden="true">
+          <span class="divider-diamond"></span>
         </div>
 
-        <nav class="main-nav">
-            <a href="#home">Home</a>
-            <a href="#aktuell">Aktuell</a>
-            <a href="#termine">Termine</a>
-            <a href="#kontakt">Kontakt</a>
-        </nav>
-
-    </header>
-
-
-    <main>
-
-        <section id="home" class="hero">
-
-            <div class="hero-overlay"></div>
-
-            <div class="hero-content">
-
-                <h1>DJ VamLykTan</h1>
-
-                <p class="hero-claim">
-                    Darkness has a frequency.
-                </p>
-
-                <div class="hero-buttons">
-
-                    <a href="#aktuell"
-                       class="button button-primary">
-                        Aktuell
-                    </a>
-
-                    <a href="#kontakt"
-                       class="button button-secondary">
-                        Kontakt
-                    </a>
-
-                </div>
-
-            </div>
-
+        <section class="counter counter-echoes" aria-label="Echos">
+          <span class="counter-label">ECHOS</span>
+          <strong id="echoes" class="counter-value echo-value">000</strong>
         </section>
+      </aside>
+    </div>
+  </main>
 
+  <form id="debug-panel" autocomplete="off" hidden>
+    <label>Bild
+      <select id="debug-hero">
+        <option value="gothic">Gothic_2</option>
+        <option value="main">mainbackground_2</option>
+        <option value="psycho">Psycho_2</option>
+      </select>
+    </label>
 
-        <section id="aktuell" class="content-section">
+    <label>Seelen
+      <input id="debug-souls" type="number" min="0" step="1">
+    </label>
 
-            <h2>Aktuell</h2>
+    <label>Echos
+      <input id="debug-echoes" type="number" min="0" step="1">
+    </label>
 
-            <p>
-                Hier entstehen aktuelle Informationen,
-                Veranstaltungen und Neuigkeiten.
-            </p>
-
-        </section>
-
-
-        <section id="termine" class="content-section">
-
-            <h2>Termine</h2>
-
-            <p>
-                Kommende Termine folgen.
-            </p>
-
-        </section>
-
-
-        <section id="kontakt" class="content-section">
-
-            <h2>Kontakt</h2>
-
-            <p>
-                Social Media und Kontaktmöglichkeiten folgen.
-            </p>
-
-        </section>
-
-    </main>
-
-
-    <footer class="site-footer">
-
-        <p>
-            © DJ VamLykTan
-        </p>
-
-    </footer>
-
+    <button type="submit">Setzen</button>
+  </form>
 </body>
 </html>

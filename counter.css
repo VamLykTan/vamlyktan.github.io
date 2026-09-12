@@ -1,0 +1,204 @@
+:root {
+  color-scheme: dark;
+  --counter-accent: #ff102d;
+  --counter-accent-glow: rgba(255,16,45,.62);
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+body { font-family: Georgia, "Times New Roman", serif; }
+
+#viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+/*
+ * Das Artwork arbeitet in seinem nativen 1672x941-Koordinatensystem.
+ * Der komplette Stage wird anschließend proportional an den Browser angepasst.
+ */
+#stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1672px;
+  height: 941px;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  width: 1672px;
+  height: 941px;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#hero-overlays {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-overlay-part {
+  position: absolute;
+  display: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#soul-readout {
+  position: absolute;
+  left: var(--counter-x);
+  top: var(--counter-y);
+  width: var(--counter-width);
+  height: 244px;
+  z-index: 5;
+  pointer-events: none;
+  text-align: center;
+  text-transform: uppercase;
+  filter: drop-shadow(0 3px 10px rgba(0,0,0,.82));
+}
+
+#soul-readout::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 2px;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 48%,
+    rgba(0,0,0,.58) 0%,
+    rgba(0,0,0,.38) 45%,
+    rgba(0,0,0,.14) 69%,
+    transparent 88%
+  );
+  filter: blur(4px);
+}
+
+.counter {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-shadow: 0 2px 7px rgba(0,0,0,1), 0 0 11px rgba(0,0,0,.95);
+}
+
+.counter-souls { top: 4px; }
+.counter-echoes { top: 134px; }
+
+.counter-label {
+  display: block;
+  color: rgba(239,236,239,.97);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 5.5px;
+  white-space: nowrap;
+}
+
+.counter-value {
+  display: block;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: .96;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.soul-value {
+  margin-top: 16px;
+  color: var(--counter-accent);
+  font-size: 69px;
+  text-shadow: 0 0 7px var(--counter-accent), 0 0 20px var(--counter-accent-glow), 0 2px 8px rgba(0,0,0,1);
+}
+
+.echo-value {
+  margin-top: 14px;
+  color: rgba(228,223,231,.97);
+  font-size: 50px;
+  text-shadow: 0 0 8px rgba(255,255,255,.18), 0 2px 8px rgba(0,0,0,1);
+}
+
+.counter-divider {
+  position: absolute;
+  left: 22px;
+  top: 113px;
+  width: calc(100% - 44px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--counter-accent) 15%, var(--counter-accent) 85%, transparent 100%);
+  box-shadow: 0 0 7px var(--counter-accent-glow);
+}
+
+.divider-diamond {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  background: var(--counter-accent);
+  transform: translate(-50%,-50%) rotate(45deg);
+  box-shadow: 0 0 9px var(--counter-accent-glow);
+}
+
+/* Bewusst beibehalten: https://vamlyktan.github.io/?debug=1 */
+#debug-panel {
+  position: fixed;
+  z-index: 100;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  padding: 12px;
+  border: 1px solid rgba(255,24,48,.55);
+  background: rgba(0,0,0,.90);
+  color: #ddd;
+  font: 13px/1.2 Arial, sans-serif;
+}
+
+#debug-panel[hidden] { display: none; }
+#debug-panel label { display: grid; gap: 4px; }
+
+#debug-panel input,
+#debug-panel select {
+  min-width: 88px;
+  padding: 6px 7px;
+  border: 1px solid #555;
+  background: #111;
+  color: #fff;
+}
+
+#debug-panel button {
+  padding: 7px 11px;
+  border: 1px solid #a00018;
+  background: #280006;
+  color: #fff;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

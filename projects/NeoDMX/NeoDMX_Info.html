@@ -1099,7 +1099,7 @@
                     <article class="card">
                         <h3>Eigenentwicklung</h3>
                         <p>
-                            NeoDMX entsteht aus eigenen Anforderungen – nicht aus der Vorgabe,
+                            NeoDMX entsteht aus eigenen Anforderungen und Zufällen – nicht aus der Vorgabe,
                             sich an eine fertige Oberfläche oder einen bestehenden Workflow
                             anpassen zu müssen.
                         </p>
@@ -1136,74 +1136,195 @@
                         <h3>Der Anfang · Twitch</h3>
                         <p>
                             Während der Pandemie entstand zunächst die Idee, visuelle Effekte
-                            für Twitch zu programmieren. Die ersten Versuche liefen eher mehr
-                            schlecht als recht – vieles war Experiment und längst noch kein
-                            fertiges System.
+                            auf Twitch darzustellen. Ein Programm, welches ich dafür ins Leben
+                            gerufen habe, nennt sich <strong>Track-Frame</strong>. Wie der Name
+                            schon sagt, ist es ein einfaches Frame-Modul, welches mir die
+                            Titelinformationen von Mixxx nach OBS transportiert.
+                            <br><br>
+                            Für den ersten Moment war ich damit auch zufrieden. Gleichzeitig
+                            wusste ich aber, dass es da noch mehr geben muss, was man machen kann.
                         </p>
                     </article>
 
                     <article class="story-step">
                         <h3>Der Zufallsfund · NeoCube</h3>
                         <p>
-                            Gegen Ende dieser Phase stolperte ich eher zufällig über
+                            Nach weiteren Recherchen bin ich auf <strong>adressierbare LEDs</strong>
+                            gestoßen und habe mir dazu das eine oder andere Video angeschaut.
+                            Ein wichtiger Fund dabei war
                             <a class="reference-link"
                                href="https://github.com/swenae/neocube"
                                target="_blank"
                                rel="noopener noreferrer">NeoCube</a>.
-                            Dieser Fund war der entscheidende Anstoß, mich intensiver mit
-                            adressierbaren LEDs und deren Möglichkeiten zu beschäftigen.
+                            <br><br>
+                            <strong>NeoLED</strong> heißt das Zauberwort.
+                            Also fing ich an, mit einem 8-Pixel-Modul zu experimentieren.
+                            <br><br>
+                            Erfolgreich.
                         </p>
                     </article>
 
                     <article class="story-step">
-                        <h3>LEDs werden mehr als Bildschirm</h3>
+                        <h3>LEDs sind mehr als nur schönes Licht</h3>
                         <p>
-                            Über NeoCube führte der Weg weiter in die Welt von
-                            <a class="reference-link"
-                               href="https://learn.adafruit.com/adafruit-neopixel-uberguide"
-                               target="_blank"
-                               rel="noopener noreferrer">NeoLED / NeoPixel</a>.
-                            Ohne diesen Schritt wäre auch die spätere Raspberry-Pi-Idee
-                            so nicht entstanden.
+                            Nach fast zwei Jahren Zeitmangel fielen mir drei weitere
+                            8-Pixel-Module in die Hände und ich fragte mich:
+                            Was kann man damit erreichen?
+                            <br><br>
+                            Also schaute ich weiter und fing an, mein erstes Matrix-Board
+                            aus insgesamt 4 × 8 Pixeln zu simulieren.
+                            <br><br>
+                            <strong>WOW.</strong>
+                            <br><br>
+                            Genau dieser Effekt war es, den ich haben wollte, um weiterzumachen.
+                            Und genau dieses WOW-Erlebnis war der Auslöser dafür, die Idee
+                            weiterzuentwickeln – und damit entwickelte sich auch der Gedanke
+                            von NeoLED zu NeoPixel.
+                            <br><br>
+                            Leider wurde auch dies aus Zeitgründen wieder zur Seite gelegt,
+                            aber nicht für lange.
                         </p>
                     </article>
 
                     <article class="story-step">
-                        <h3>Der Pi-Versuch · ein eigenes VJ-Pult</h3>
+                        <h3>Neuer Controller, neues Glück<br>Die Geburt der ersten passenden IDE</h3>
                         <p>
-                            Aus dieser neuen Richtung entstand parallel der Versuch, eine Art
-                            eigenes VJ-Pult mit WS2812-LEDs und einem Raspberry Pi 4 zu bauen.
-                            Visuelle Effekte sollten damit nicht mehr nur auf einem Bildschirm
-                            stattfinden, sondern direkt mit echter Licht-Hardware verbunden werden.
+                            Da ich mit dem ersten Controller sehr schnell an meine Grenzen
+                            gestoßen bin, musste ich wieder ans Reißbrett. Einen passenden
+                            Ersatz hatte ich schnell gefunden, und für den Anfang reichte er aus.
+                            <br><br>
+                            Das war auch der Zeitpunkt, an dem ich die erste IDE für dieses
+                            System zu schreiben begann und mich entschloss, mich bei meinen
+                            eigenen Programmen von C++ zu verabschieden.
+                            <br><br>
+                            Leider kam mir ein gesundheitlicher Aspekt dazwischen, wodurch
+                            das Projekt abermals in der Schublade landete.
                         </p>
                     </article>
 
                     <article class="story-step">
                         <h3>Schublade und Neustart</h3>
                         <p>
-                            Aus diesen Versuchen entstand die Idee für ein eigenes NeoLED-System.
-                            Irgendwann verschwand das Projekt für eine Zeit in der Schublade –
-                            nicht vergessen, aber auch nicht wirklich weitergeführt. Seit gut
-                            einem Jahr wird es wieder aktiv betrieben und weiterentwickelt.
+                            Wie es im Leben so spielt, spürt man manchmal, dass etwas nicht
+                            stimmt. Bei einer meiner Datensicherungen fiel es mir wie Schuppen
+                            von den Augen:
+                            <br><br>
+                            Da war doch noch was.
+                            <br><br>
+                            Also wieder Vollgas in das Projekt NeoPixel. Diesmal mit einem
+                            klaren Ziel: Es sollte zeitnah ein Prototyp stehen, den man auch
+                            einmal mit zu einer Party nehmen kann – sei es als Werbeschild,
+                            Wegweiser oder sichtbar schon als das, was es in diesem Moment
+                            werden sollte.
+                            <br><br>
+                            Ein von meinem PC gesteuertes NeoPixel-Board mit
+                            <strong>10 × 10 adressierbaren LEDs pro Board</strong>.
+                            <br><br>
+                            Also ran ans Werk und Feuer frei.
+                            Wer jetzt an die Lieder von Rammstein und/oder Nachtmahr denkt,
+                            liegt damit nicht ganz verkehrt.
+                            <br><br>
+                            Somit kam der erste Controller-Prototyp extra zu mir nach Hause
+                            und fragte:
+                            <br><br>
+                            <strong>WAS DARF ICH GUTES FÜR DICH TUN?</strong>
+                            <br><br>
+                            Da ich mich das nicht zweimal fragen ließ, bekam er seine Aufgaben.
+                            Wir beide mussten allerdings feststellen, dass auch er recht schnell
+                            an seine Grenzen kam.
+                            <br><br>
+                            Dies jedoch nicht, weil er zu schwach war oder die Daten nicht
+                            verarbeiten konnte. Vielmehr lag es daran, dass ich während der
+                            Entwicklung auch die IDE immer weiter vorantrieb.
+                            <br><br>
+                            Also blieb uns nur eines übrig: einvernehmlich einen gezielten
+                            Break zu machen und uns zunächst auf die Kernfunktionen zu
+                            beschränken. Aber auch da wurde es schnell eng für ihn.
+                            <br><br>
+                            Während dieser Zeit entwickelte sich außerdem das Sub-Projekt
+                            <a href="VLT_ICP.html" class="project-button">VLT-ICP</a>,
+                            welches seitdem Teil der großen VLT-Welt ist.
                         </p>
                     </article>
 
                     <article class="story-step">
-                        <h3>DMX kommt hinzu</h3>
+                        <h3>Erster Realeinsatz</h3>
                         <p>
-                        Aus diesen Versuchen entstand die Idee für ein eigenes NeoLED-System. Irgendwann verschwand das Projekt für eine Zeit in der Schublade –
-                        nicht vergessen, aber auch nicht wirklich weitergeführt. Seit gut einem Jahr wird es wieder aktiv betrieben und weiterentwickelt.
-                        Parallel dazu entstand eine eigene <a href="NeoDMX_IDE.html" class="project-button">NeoDMX - IDE</a>, um die Entwicklung besser an die eigenen Anforderungen anzupassen.
-                        Als weiterer Baustein der entstehenden VLT-Welt kam zudem das Nebenprojekt <a href="VLT_ICP.html" class="project-button">VLT-ICP</a> hinzu.</p>
+                            Wie es ein weiterer Zufall wollte, kam auch die Veranstaltung
+                            Rostock tanzt
+                            „<a href="https://www.facebook.com/events/758506363935052"
+                                target="_blank"
+                                rel="noopener noreferrer">ACOUSTIC MEETS 80s &amp; GOTHIC</a>“
+                            immer näher.
+                            <br><br>
+                            Somit wurde die Energie erst einmal auf diese Veranstaltung
+                            gelenkt und der Prototyp genau dafür umgebaut.
+                            <br><br>
+                            <a class="reference-link"
+                               href="https://www.facebook.com/reel/997627353253043"
+                               target="_blank"
+                               rel="noopener noreferrer">ACOUSTIC MEETS 80s &amp; GOTHIC – Teaser</a>
+                            <br><br>
+                            Erfolgreich, wenn ich mir dieses Urteil erlauben darf –
+                            auch was die Veranstaltung selbst angeht.
+                        </p>
+                    </article>
+
+                    <article class="story-step">
+                        <h3>Von NeoPixel zu NeoDMX</h3>
+                        <p>
+                            Es ist schon fast ironisch, dass während der Entwicklung der
+                            Projektkontext NeoPixel immer weiter in den Hintergrund gerückt
+                            ist und der Gedanke in Richtung NeoDMX immer stärker wurde.
+                            <br><br>
+                            Was mir an diesem Gedanken besonders gefällt?
+                            <br><br>
+                            Mit meinem PC will ich zukünftig <strong>nicht nur</strong> Musik
+                            auflegen – was eigentlich sein Hauptaugenmerk ist. Er soll
+                            zusätzlich die Ausleuchtung der Location mit übernehmen.
+                            <br><br>
+                            Somit war der Grundstein für NeoDMX gelegt und der Projektkontext
+                            konnte entsprechend wechseln.
+                            <br><br>
+                            Vorweg gesagt: Beim Programmieren hatte ich den DMX-Part
+                            unterschwellig bereits in der IDE angerissen und auf der
+                            To-do-Liste stehen.
+                            <br><br>
+                            Parallel dazu entstand eine eigene
+                            <a href="NeoDMX_IDE.html" class="project-button">NeoDMX-IDE</a>,
+                            um die Entwicklung besser an die eigenen Anforderungen anzupassen.
+                        </p>
+                    </article>
+
+                    <article class="story-step">
+                        <h3>NeoPixel innerhalb von NeoDMX</h3>
+                        <p>
+                            Auch wenn dieses Projekt nun unter NeoDMX läuft, ist NeoPixel
+                            <strong>NIE</strong> wirklich gestorben.
+                            <br><br>
+                            Im Gegenteil: Es hat sich als Projektteil und eigenständiges Modul
+                            weiterentwickelt und ist inzwischen auf
+                            <strong>11 × 11 Pixel pro Board</strong> gewachsen.
+                            Auch farbtechnisch ist eine Änderung eingeflossen.
+                            <br><br>
+                            Da im Zuge dessen auch der Controller neu überdacht werden musste,
+                            wurde es Zeit, Neo-Link zum Leben zu erwecken.
+                        </p>
+                    </article>
+
+                    <article class="story-step">
+                        <h3>Neo-Link als Schnittstelle</h3>
+                        <p>Noch in Arbeit.</p>
                     </article>
 
                 </div>
 
                 <div class="story-final-wrap">
                     <p class="story-final-copy">
-                        Was als NeoLED-Projekt begann, ist inzwischen deutlich größer geworden.
-                        Parallel dazu wurden erste Grundlagen in der DMX-Welt geschaffen und
-                        ein möglicher Aufbau geplant. Vor rund vier Monaten entstand daraus die
+                        Was als NeoLED-Projekt begann, entwickelte sich über NeoPixel immer
+                        weiter und ist inzwischen deutlich größer geworden. Parallel dazu
+                        wurden erste Grundlagen in der DMX-Welt geschaffen und ein möglicher
+                        Aufbau geplant. Am <strong>1. April 2026</strong> entstand daraus die
                         Idee, beide Welten künftig miteinander zu verbinden.
                     </p>
 
@@ -1238,10 +1359,10 @@
 
                     <div class="official-video-copy">
                         <small>Erster offizieller Werbelauf</small>
-                        <h3>Acoustic meets Gothic</h3>
+                        <h3>Acoustic meets 80s &amp; Gothic</h3>
                         <p>
                             Dieser Lauf war der erste offizielle Werbelauf von NeoDMX für die
-                            Veranstaltung <strong>Acoustic meets Gothic</strong>. Damit wurde das
+                            Veranstaltung <strong>Acoustic meets 80s &amp; Gothic</strong>. Damit wurde das
                             System erstmals gezielt für die öffentliche Bewerbung einer
                             Veranstaltung eingesetzt.
                         </p>
@@ -1250,7 +1371,7 @@
                            href="https://www.facebook.com/events/758506363935052"
                            target="_blank"
                            rel="noopener noreferrer">
-                            Acoustic meets Gothic auf Facebook
+                            Acoustic meets 80s &amp; Gothic auf Facebook
                         </a>
                     </div>
                 </div>

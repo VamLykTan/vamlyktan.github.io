@@ -16,10 +16,7 @@
   const HEROES = {
     gothic: {
       base: "images/Gothic.png",
-      overlays: [
-        { file: "images/Gothic_2-overlay-1.webp", x: 1246, y: 67, width: 199, height: 307 },
-        { file: "images/Gothic_2-overlay-2.webp", x: 1445, y: 67, width: 199, height: 307 }
-      ],
+      soul: "images/Gothic_Soul.png",
       x: 1265,
       y: 238,
       width: 242,
@@ -37,10 +34,7 @@
 
     main: {
       base: "images/mainbackground.png",
-      overlays: [
-        { file: "images/mainbackground_2-overlay-1.webp", x: 1256, y: 81, width: 197, height: 304 },
-        { file: "images/mainbackground_2-overlay-2.webp", x: 1453, y: 81, width: 197, height: 304 }
-      ],
+      soul: "images/mainbackground_Soul.png",
       x: 1270,
       y: 238,
       width: 242,
@@ -59,11 +53,7 @@
 
     psycho: {
       base: "images/Psycho.png",
-      overlays: [
-        { file: "images/Psycho_2-overlay-1.webp", x: 1266, y: 72, width: 128, height: 304 },
-        { file: "images/Psycho_2-overlay-2.webp", x: 1394, y: 72, width: 128, height: 304 },
-        { file: "images/Psycho_2-overlay-3.webp", x: 1522, y: 72, width: 128, height: 304 }
-      ],
+      soul: "images/Psycho_Soul.png",
       x: 1360,
       y: 220,
       width: 232,
@@ -84,10 +74,10 @@
 
   const stage = document.getElementById("stage");
   const image = document.getElementById("hero-image");
+  const soulImage = document.getElementById("soul-overlay");
   const readout = document.getElementById("soul-readout");
   const soulsEl = document.getElementById("souls");
   const echoesEl = document.getElementById("echoes");
-  const overlayEls = [1,2,3].map(n => document.getElementById(`overlay-${n}`));
 
   const style = document.createElement("style");
   style.textContent = `
@@ -122,25 +112,6 @@
     soulsEl.textContent = formatCounter(souls);
     echoesEl.textContent = formatCounter(echoes);
   };
-
-  function applyOverlays(parts) {
-    overlayEls.forEach((el, index) => {
-      const part = parts[index];
-
-      if (!part) {
-        el.style.display = "none";
-        el.removeAttribute("src");
-        return;
-      }
-
-      el.src = part.file;
-      el.style.left = `${part.x}px`;
-      el.style.top = `${part.y}px`;
-      el.style.width = `${part.width}px`;
-      el.style.height = `${part.height}px`;
-      el.style.display = "block";
-    });
-  }
 
   function rebuildHotspots(hero) {
     hotspotLayer.replaceChildren();
@@ -190,8 +161,9 @@
 
     currentHeroId = validId;
     document.body.dataset.hero = validId;
+
     image.src = hero.base;
-    applyOverlays(hero.overlays);
+    soulImage.src = hero.soul;
     rebuildHotspots(hero);
 
     readout.style.setProperty("--counter-x", `${hero.x}px`);
@@ -205,14 +177,22 @@
     if (heroSelect) heroSelect.value = validId;
 
     window.dispatchEvent(new CustomEvent("vlt:herochange", {
-      detail: { id: validId, file: hero.base }
+      detail: {
+        id: validId,
+        file: hero.base,
+        soul: hero.soul
+      }
     }));
   };
 
   window.VLTHero = {
     getCurrent() {
       const hero = HEROES[currentHeroId];
-      return { id: currentHeroId, file: hero.base };
+      return {
+        id: currentHeroId,
+        file: hero.base,
+        soul: hero.soul
+      };
     },
     switchHero(heroId) {
       if (!Object.hasOwn(HEROES, heroId)) return false;

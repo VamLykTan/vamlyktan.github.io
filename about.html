@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About VamLykTan | DJ VamLykTan</title>
+  <meta name="description" content="Die Geschichte hinter VamLykTan – vom Namen einer nie veröffentlichten Romanfigur zur DJ-Identität.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --red: #d90b25;
+      --red-soft: rgba(217,11,37,.38);
+      --text: #ece9ec;
+      --muted: #aaa4aa;
+      --panel: rgba(5,5,7,.82);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; background: #050506; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.92) 0%, rgba(0,0,0,.76) 48%, rgba(0,0,0,.88) 100%),
+        url("images/mainbackground.png") center / cover fixed no-repeat;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 24% 20%, rgba(170,0,26,.13), transparent 34%),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.58));
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(960px, calc(100% - 34px));
+      margin: 0 auto;
+      padding: 28px 0 60px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 2px 0 34px;
+    }
+
+    .back,
+    .home {
+      color: #d6d0d6;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: .22em;
+      font: 12px/1.4 Arial, sans-serif;
+      transition: color .2s ease, text-shadow .2s ease;
+    }
+
+    .back:hover,
+    .home:hover,
+    .back:focus-visible,
+    .home:focus-visible {
+      color: #fff;
+      text-shadow: 0 0 12px rgba(217,11,37,.8);
+      outline: none;
+    }
+
+    .about {
+      padding: clamp(26px, 5vw, 58px);
+      border: 1px solid rgba(185,14,38,.42);
+      background:
+        linear-gradient(145deg, rgba(14,11,14,.91), rgba(3,3,5,.84));
+      box-shadow:
+        0 30px 80px rgba(0,0,0,.62),
+        inset 0 0 80px rgba(120,0,18,.045);
+      backdrop-filter: blur(5px);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: .38em;
+      font: 12px/1.4 Arial, sans-serif;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 8vw, 88px);
+      line-height: .95;
+      font-weight: 400;
+      letter-spacing: -.035em;
+      text-shadow: 0 0 28px rgba(150,0,25,.24);
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 26px 0 0;
+      color: #d7d2d7;
+      font-size: clamp(19px, 2.4vw, 25px);
+      line-height: 1.55;
+    }
+
+    .rule {
+      width: min(340px, 70%);
+      height: 1px;
+      margin: 34px 0;
+      background: linear-gradient(90deg, var(--red), rgba(217,11,37,.25), transparent);
+      box-shadow: 0 0 10px var(--red-soft);
+    }
+
+    .story {
+      max-width: 780px;
+      font-size: clamp(17px, 2vw, 20px);
+      line-height: 1.8;
+      color: #c9c4c9;
+    }
+
+    .story p { margin: 0 0 1.35em; }
+    .story strong { color: #f1edf1; font-weight: 400; }
+
+    .timeline {
+      display: grid;
+      gap: 16px;
+      margin-top: 38px;
+    }
+
+    .moment {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 22px;
+      padding: 18px 0;
+      border-top: 1px solid rgba(255,255,255,.09);
+    }
+
+    .moment .when {
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font: 12px/1.55 Arial, sans-serif;
+    }
+
+    .moment p {
+      margin: 0;
+      color: #c8c2c8;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .closing {
+      margin: 42px 0 0;
+      padding-left: 18px;
+      border-left: 2px solid var(--red);
+      color: #eee9ee;
+      font-size: clamp(20px, 2.5vw, 27px);
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    footer {
+      padding: 28px 4px 0;
+      color: #716c72;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      font: 10px/1.5 Arial, sans-serif;
+    }
+
+    @media (max-width: 620px) {
+      body { background-attachment: scroll; }
+      .page { width: min(100% - 20px, 960px); padding-top: 18px; }
+      .topbar { padding-bottom: 20px; }
+      .about { padding: 26px 22px 30px; }
+      .moment { grid-template-columns: 1fr; gap: 7px; }
+      .home { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="topbar" aria-label="Seitennavigation">
+      <a class="back" href="index.html">← Zurück</a>
+      <a class="home" href="index.html">DJ VamLykTan</a>
+    </nav>
+
+    <article class="about">
+      <p class="eyebrow">About</p>
+      <h1>VamLykTan</h1>
+
+      <p class="lead">
+        VamLykTan war ursprünglich kein DJ-Name. Der Name gehörte zu einer fiktiven Hauptfigur eines Romans, der nie fertiggestellt und nie veröffentlicht wurde. Die Geschichte blieb liegen – der Name nicht.
+      </p>
+
+      <div class="rule" aria-hidden="true"></div>
+
+      <div class="story">
+        <p>
+          Mein zweiter Anlauf als DJ begann etwa zwei bis drei Jahre vor Corona. Die ersten Veranstaltungen spielte ich gemeinsam mit <strong>DJ Janus Schwarz</strong>, unter anderem im <strong>Lavanta</strong> und im <strong>Café Babel</strong>.
+        </p>
+
+        <p>
+          Aus einzelnen Abenden wurde mit der Zeit mehr. Besonders in den vergangenen zwei Jahren wurde ich immer häufiger als Support-DJ für Janus Schwarz in der <strong>Baustelle Lübeck</strong> eingeplant. Auch auf der <strong>MS Stubnitz</strong> durfte ich gemeinsam mit Janus und einem weiteren Kollegen als Gast-DJ auflegen.
+        </p>
+
+        <p>
+          Gegen <strong>2021</strong> habe ich den Namen VamLykTan aus seiner ursprünglichen Geschichte übernommen. Seitdem bin ich als <strong>DJ VamLykTan</strong> unterwegs. Aus dem Namen einer nie veröffentlichten Romanfigur wurde nach und nach eine reale musikalische Identität.
+        </p>
+
+        <p>
+          Seit <strong>2026</strong> kommt ein weiterer Schritt dazu: In <strong>Rostock</strong> veranstalte ich meine eigene Veranstaltungsreihe und entwickle VamLykTan damit auch über das reine Auflegen hinaus weiter.
+        </p>
+      </div>
+
+      <section class="timeline" aria-label="Stationen">
+        <div class="moment">
+          <span class="when">Vor Corona</span>
+          <p>Zweiter Anlauf als DJ und erste Veranstaltungen mit DJ Janus Schwarz im Lavanta und Café Babel.</p>
+        </div>
+        <div class="moment">
+          <span class="when">ca. 2021</span>
+          <p>Der Name VamLykTan wird zur DJ-Identität.</p>
+        </div>
+        <div class="moment">
+          <span class="when">Heute</span>
+          <p>Regelmäßiger Support in der Baustelle Lübeck, Gast-DJ auf der MS Stubnitz und weitere gemeinsame Abende.</p>
+        </div>
+        <div class="moment">
+          <span class="when">Seit 2026</span>
+          <p>Eigene Veranstaltungsreihe in Rostock.</p>
+        </div>
+      </section>
+
+      <p class="closing">
+        Was einmal als Figur in einer Geschichte begann, hat irgendwann selbst eine Geschichte bekommen.
+      </p>
+    </article>
+
+    <footer>DJ VamLykTan · Darkness has a frequency.</footer>
+  </main>
+</body>
+</html>

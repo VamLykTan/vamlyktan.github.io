@@ -64,10 +64,12 @@
       glow: "rgba(215,92,255,.55)",
       hotspots: [
         { id: "about-psycho", href: "about.html", label: "About VamLykTan", x: .064, y: .255, width: .500, height: .225 },
-        { id: "events-psycho-nav", href: "current.html", label: "Events", x: .359, y: .021, width: .052, height: .034 },
-        { id: "projects-psycho-nav", href: "projects/index.html", label: "Projekte", x: .426, y: .021, width: .060, height: .034 },
-        { id: "events-psycho-content", href: "current.html", label: "Events", x: .274, y: .568, width: .052, height: .035 },
-        { id: "projects-psycho-content", href: "projects/index.html", label: "Projekte", x: .335, y: .568, width: .068, height: .035 },
+        { id: "home-psycho-nav", href: "index.html", label: "Home", x: .238, y: .021, width: .043, height: .034, visible: true },
+        { id: "events-psycho-nav", href: "current.html", label: "Events", x: .359, y: .021, width: .052, height: .034, visible: true },
+        { id: "projects-psycho-nav", href: "projects/index.html", label: "Projekte", x: .426, y: .021, width: .060, height: .034, visible: true },
+        { id: "kontakt-psycho-nav", href: SOCIAL.email, label: "Kontakt", x: .558, y: .021, width: .063, height: .034, visible: true },
+        { id: "events-psycho-content", href: "current.html", label: "Events", x: .274, y: .568, width: .052, height: .035, visible: true },
+        { id: "projects-psycho-content", href: "projects/index.html", label: "Projekte", x: .335, y: .568, width: .068, height: .035, visible: true },
         { id: "facebook-psycho", href: SOCIAL.facebook, label: "Facebook", external: true, x: .8032, y: .0213, width: .0215, height: .0383 },
         { id: "instagram-psycho", href: SOCIAL.instagram, label: "Instagram", external: true, x: .8283, y: .0213, width: .0215, height: .0383 },
         { id: "youtube-psycho", href: SOCIAL.youtube, label: "YouTube", external: true, x: .8553, y: .0213, width: .0215, height: .0383 },
@@ -90,9 +92,13 @@
     #action-hotspots { position:absolute; inset:0; z-index:30; pointer-events:none; }
     .action-hotspot { position:absolute; display:block; pointer-events:auto; cursor:pointer; text-decoration:none; background:transparent; outline:0; }
     .action-hotspot:focus-visible { outline:2px solid rgba(255,25,48,.95); outline-offset:2px; }
+    .visible-hotspot { border-radius:2px; transition:border-color .22s ease, box-shadow .22s ease, background .22s ease, opacity .22s ease, transform .22s ease; }
+    .visible-hotspot-psycho { border:1px solid rgba(215,92,255,.44); background:rgba(215,92,255,.05); box-shadow:inset 0 0 10px rgba(215,92,255,.08), 0 0 12px rgba(215,92,255,.14); }
+    .visible-hotspot-psycho:hover, .visible-hotspot-psycho:focus-visible { border-color:rgba(229,140,255,.82); background:rgba(215,92,255,.10); box-shadow:inset 0 0 12px rgba(238,168,255,.16), 0 0 18px rgba(215,92,255,.32); }
     .enter-hotspot { transition:background .22s ease, box-shadow .22s ease, outline-color .22s ease; }
     .enter-hotspot:hover { background:rgba(145,0,18,.10); outline:1px solid rgba(255,28,45,.72); box-shadow:inset 0 0 16px rgba(180,0,20,.14),0 0 18px rgba(170,0,20,.16); }
     body.hotspot-debug .action-hotspot { outline:1px dashed rgba(255,65,85,.86); background:rgba(255,0,35,.08); }
+    body.hotspot-debug .visible-hotspot-psycho { outline:1px dashed rgba(229,140,255,.92); background:rgba(215,92,255,.12); }
     #stage { transition:opacity .26s ease, filter .26s ease; }
     body.hero-switching #stage { opacity:.08; filter:brightness(.35); }
   `;
@@ -128,6 +134,10 @@
       link.dataset.actionId = hotspot.id;
       link.setAttribute("aria-label", hotspot.label);
       link.title = hotspot.label;
+
+      if (hotspot.visible) {
+        link.classList.add("visible-hotspot", `visible-hotspot-${currentHeroId}`);
+      }
 
       link.style.left = `${hotspot.x * DESIGN_W}px`;
       link.style.top = `${hotspot.y * DESIGN_H}px`;

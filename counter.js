@@ -6,7 +6,7 @@
 
   const SOCIAL = {
     facebook: "https://www.facebook.com/profile.php?id=100063754892757",
-    instagram: "https://www.instagram.com/dj_vamlyktan/",
+    instagram: "https://www.instagram.com/_dj_vamlyktan/",
     youtube: "https://www.youtube.com/@vamlyktan7205",
     twitch: "https://www.twitch.tv/dj_vamlyktan",
     mixcloud: "https://www.mixcloud.com/vamlyktan/",

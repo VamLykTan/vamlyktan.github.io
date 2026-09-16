@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aktuell – VamLykTan</title>
+<style>
+:root{
+  --bg:#09090b;
+  --panel:rgba(20,20,25,.92);
+  --text:#f2f2f4;
+  --muted:#b5b5bd;
+  --line:#303038;
+  --accent:#99191f;
+  --accent-soft:#2b1215;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  margin:0;
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  line-height:1.5;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 82% 4%, rgba(112,36,105,.14), transparent 30rem),
+    radial-gradient(circle at 12% 35%, rgba(110,0,0,.10), transparent 28rem),
+    linear-gradient(180deg,#09090b 0%,#101014 55%,#09090b 100%);
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.16;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+  background-size:42px 42px;
+}
+main{
+  width:min(1040px,92%);
+  margin:0 auto;
+  padding:58px 0 80px;
+  position:relative;
+}
+h1{
+  margin:0;
+  font-size:clamp(2.35rem,7vw,4.9rem);
+  letter-spacing:.055em;
+  line-height:.95;
+  text-transform:uppercase;
+}
+.intro{
+  max-width:760px;
+  color:var(--muted);
+  margin:16px 0 34px;
+  font-size:1.05rem;
+}
+.section-head{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:18px;
+  margin:30px 0 16px;
+}
+.section-head h2{
+  margin:0;
+  font-size:1.3rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.count{
+  color:var(--muted);
+  font-size:.92rem;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:20px;
+}
+.event-card{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,rgba(26,26,32,.96),rgba(17,17,21,.96));
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:23px;
+  box-shadow:0 14px 36px rgba(0,0,0,.28);
+  display:flex;
+  flex-direction:column;
+  min-height:345px;
+}
+.event-card::after{
+  content:"";
+  position:absolute;
+  right:-80px;
+  bottom:-95px;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(133,19,25,.16),transparent 68%);
+  pointer-events:none;
+}
+.event-card.past{
+  opacity:.72;
+  filter:saturate(.7);
+  background:linear-gradient(180deg,rgba(21,21,25,.92),rgba(14,14,17,.92));
+}
+.topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.date{
+  color:#dadade;
+  font-weight:700;
+  font-size:.88rem;
+  text-transform:uppercase;
+  letter-spacing:.055em;
+}
+.badge{
+  flex:0 0 auto;
+  font-size:.74rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  border-radius:999px;
+  padding:5px 9px;
+  border:1px solid #633036;
+  background:var(--accent-soft);
+  color:#ffc6c9;
+}
+.past .badge{
+  border-color:#43434b;
+  background:#202027;
+  color:#c4c4ca;
+}
+.event-card h3{
+  margin:3px 0 8px;
+  font-size:1.65rem;
+  line-height:1.15;
+}
+.meta{
+  color:var(--muted);
+  margin-bottom:16px;
+}
+.role{
+  display:inline-block;
+  align-self:flex-start;
+  border:1px solid #5a252a;
+  background:#231215;
+  color:#ffc0c3;
+  padding:7px 10px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:.86rem;
+  margin-bottom:16px;
+}
+.past .role{
+  background:#1d1d22;
+  border-color:#3a3a43;
+  color:#cacad0;
+}
+.summary{
+  margin:0 0 22px;
+  color:#e3e3e7;
+}
+.past .summary{color:#c1c1c7}
+.spacer{flex:1}
+.button{
+  display:inline-block;
+  position:relative;
+  z-index:1;
+  text-decoration:none;
+  text-align:center;
+  font-weight:800;
+  color:#fff;
+  background:var(--accent);
+  padding:12px 15px;
+  border-radius:10px;
+}
+details.archive{
+  margin-top:38px;
+  border-top:1px solid var(--line);
+  padding-top:18px;
+}
+details.archive summary{
+  cursor:pointer;
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.055em;
+  padding:7px 0 15px;
+}
+details.archive summary::-webkit-details-marker{display:none}
+details.archive summary::after{
+  content:"+";
+  font-size:1.5rem;
+  color:var(--muted);
+  font-weight:400;
+}
+details.archive[open] summary::after{content:"–"}
+.empty{
+  display:none;
+  color:var(--muted);
+  padding:20px 0;
+}
+@media(max-width:760px){
+  main{padding-top:36px}
+  .grid{grid-template-columns:1fr}
+  .event-card{min-height:0}
+  .section-head{align-items:flex-start;flex-direction:column;gap:4px}
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Aktuell</h1>
+  <p class="intro">
+    Kommende Termine und Veranstaltungen, bei denen VamLykTan als DJ,
+    Mitveranstalter oder Organisator beteiligt ist.
+  </p>
+
+  <section id="upcoming-section">
+    <div class="section-head">
+      <h2>Bevorstehende Veranstaltungen</h2>
+      <div class="count" id="upcoming-count"></div>
+    </div>
+    <div class="grid" id="upcoming-events"></div>
+    <p class="empty" id="upcoming-empty">Aktuell sind keine kommenden Veranstaltungen eingetragen.</p>
+  </section>
+
+  <details class="archive" id="archive">
+    <summary>
+      <span>Vergangene Veranstaltungen</span>
+      <span class="count" id="past-count"></span>
+    </summary>
+    <div class="grid" id="past-events"></div>
+  </details>
+</main>
+
+<script>
+const events = [
+  {
+    title: 'Graf Vlad – „Dunkle Reise“',
+    start: '2026-09-19T20:00:00+02:00',
+    end: '2026-09-19T23:45:00+02:00',
+    dateLabel: '19. September 2026 · 20:00–23:45 Uhr',
+    place: 'Club Zuckerfabrik · Rostock',
+    role: 'Pausenmusik & Aftershow',
+    text: 'Release-Abend von Graf Vlad mit Mirco M und Niederschlag. VamLykTan übernimmt zwischen den Live-Sets die musikalischen Übergänge und führt den Abend anschließend an den Decks weiter.',
+    url: 'https://www.facebook.com/share/19gEaKUggB/'
+  },
+  {
+    title: "Rock'n'Metal for Charity",
+    start: '2026-10-31T17:30:00+01:00',
+    end: '2026-11-01T00:30:00+01:00',
+    dateLabel: '31. Oktober 2026 · Einlass 16:30 Uhr · Beginn 17:30 Uhr',
+    place: 'Rostock',
+    role: 'Organisation: VamLykTan',
+    text: 'Halloween mit Rock & Metal für einen guten Zweck. Der Reinerlös unterstützt das Projekt „666 Schlafsäcke“ von Metality e.V.; VamLykTan organisiert den Abend und bringt mehrere Live-Acts zusammen.',
+    url: 'https://www.facebook.com/share/1JU6gsj85X/'
+  },
+  {
+    title: 'Rostock tanzt… „Zwischen Schatten & Synthesizern“',
+    start: '2026-09-04T21:00:00+02:00',
+    end: '2026-09-05T04:00:00+02:00',
+    dateLabel: '4. September 2026 · 21:00–04:00 Uhr',
+    place: 'Alte Zuckerfabrik · Rostock',
+    role: 'Mitveranstaltung: VamLykTan & Geßner Maik',
+    text: 'Eine Nacht zwischen Post-Punk, Dark Wave, Gothic Rock, Synth-Wave und moderner elektronischer Musik – mit Klassikern, Neuentdeckungen und ausgewählten Independent-Künstlern.',
+    url: 'https://facebook.com/events/s/-rostock-tanzt-zwischen-schatt/1550033706845695/'
+  },
+  {
+    title: 'Acoustic Meets 80s & Gothic',
+    start: '2026-07-03T21:00:00+02:00',
+    end: '2026-07-04T05:00:00+02:00',
+    dateLabel: '3. Juli 2026 · 21:00–05:00 Uhr',
+    place: 'Alte Zuckerfabrik · Rostock',
+    role: 'DJ VamLykTan',
+    text: 'Akustische Klänge treffen auf 80er- und Gothic-Flair. Mit Solomensch, Metamorphonia und Scarrow entstand ein Abend zwischen dunkler Atmosphäre, Live-Musik und retro-futuristischem Sound.',
+    url: 'https://facebook.com/events/s/acoustic-meets-80s-gothic/758506363935052/'
+  }
+];
+
+const upcoming = document.getElementById('upcoming-events');
+const past = document.getElementById('past-events');
+const upcomingCount = document.getElementById('upcoming-count');
+const pastCount = document.getElementById('past-count');
+const upcomingEmpty = document.getElementById('upcoming-empty');
+const archive = document.getElementById('archive');
+
+function card(event, isPast){
+  const article = document.createElement('article');
+  article.className = 'event-card' + (isPast ? ' past' : '');
+  article.dataset.eventEnd = event.end;
+
+  const link = event.url
+    ? `<a class="button" href="${event.url}" target="_blank" rel="noopener noreferrer">Zur Facebook-Veranstaltung</a>`
+    : '';
+
+  article.innerHTML = `
+    <div class="topline">
+      <div class="date">${event.dateLabel}</div>
+      <div class="badge">${isPast ? 'Vergangen' : 'Bevorstehend'}</div>
+    </div>
+    <h3>${event.title}</h3>
+    <div class="meta">${event.place}</div>
+    <div class="role">${event.role}</div>
+    <p class="summary">${event.text}</p>
+    <div class="spacer"></div>
+    ${link}
+  `;
+  return article;
+}
+
+function render(){
+  const now = new Date();
+
+  const upcomingEvents = events
+    .filter(e => new Date(e.end) >= now)
+    .sort((a,b) => new Date(a.start) - new Date(b.start));
+
+  const pastEvents = events
+    .filter(e => new Date(e.end) < now)
+    .sort((a,b) => new Date(b.start) - new Date(a.start));
+
+  upcoming.replaceChildren(...upcomingEvents.map(e => card(e,false)));
+  past.replaceChildren(...pastEvents.map(e => card(e,true)));
+
+  upcomingCount.textContent = upcomingEvents.length === 1
+    ? '1 Termin'
+    : `${upcomingEvents.length} Termine`;
+
+  pastCount.textContent = pastEvents.length === 1
+    ? '1 Eintrag'
+    : `${pastEvents.length} Einträge`;
+
+  upcomingEmpty.style.display = upcomingEvents.length ? 'none' : 'block';
+  archive.style.display = pastEvents.length ? 'block' : 'none';
+}
+
+render();
+</script>
+</body>
+</html>

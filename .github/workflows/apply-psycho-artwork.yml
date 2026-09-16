@@ -1,0 +1,42 @@
+name: Apply Psycho artwork
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/apply-psycho-artwork.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild Psycho image
+        shell: bash
+        run: |
+          cat .psycho_upload/part*.b64 | base64 --decode > /tmp/Psycho.webp
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from PIL import Image
+          img = Image.open('/tmp/Psycho.webp').convert('RGB')
+          assert img.size == (1672, 941), img.size
+          img.save('images/Psycho.png', 'PNG', optimize=True)
+          PY
+
+      - name: Commit image and clean staging files
+        shell: bash
+        run: |
+          rm -rf .psycho_upload
+          rm -f .github/workflows/apply-psycho-artwork.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Replace Psycho artwork"
+          git push

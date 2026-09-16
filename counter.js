@@ -42,6 +42,7 @@
       accent: "#ff102d",
       glow: "rgba(255,16,45,.62)",
       hotspots: [
+        { id: "about-main", href: "about.html", label: "About VamLykTan", x: .300, y: .522, width: .382, height: .155 },
         { id: "events-main", href: "current.html", label: "Events", x: .405, y: .021, width: .052, height: .034 },
         { id: "projects-main", href: "projects/index.html", label: "Projekte", x: .472, y: .021, width: .057, height: .034 },
         { id: "facebook-main", href: SOCIAL.facebook, label: "Facebook", external: true, x: .7841, y: .0213, width: .0215, height: .0383 },
@@ -62,6 +63,7 @@
       accent: "#d75cff",
       glow: "rgba(215,92,255,.55)",
       hotspots: [
+        { id: "about-psycho", href: "about.html", label: "About VamLykTan", x: .064, y: .255, width: .500, height: .225 },
         { id: "events-psycho-nav", href: "current.html", label: "Events", x: .359, y: .021, width: .052, height: .034 },
         { id: "projects-psycho-nav", href: "projects/index.html", label: "Projekte", x: .426, y: .021, width: .060, height: .034 },
         { id: "events-psycho-content", href: "current.html", label: "Events", x: .274, y: .568, width: .052, height: .035 },

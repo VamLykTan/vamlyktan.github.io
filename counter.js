@@ -24,12 +24,18 @@
       glow: "rgba(255,16,45,.62)",
       hotspots: [
         { id: "about-gothic", href: "about.html", label: "About VamLykTan", x: .287, y: .510, width: .398, height: .145 },
+        { id: "aktuell-gothic-top", label: "Aktuell", x: .0568, y: .0255, width: .0915, height: .0361, visible: true, visualOnly: true },
+        { id: "listen-gothic-top", href: SOCIAL.mixcloud, label: "Listen", external: true, x: .1603, y: .0255, width: .0760, height: .0361, visible: true },
+        { id: "kontakt-gothic-top", href: SOCIAL.email, label: "Kontakt", x: .6938, y: .0255, width: .0825, height: .0361, visible: true },
         { id: "facebook-gothic", href: SOCIAL.facebook, label: "Facebook", external: true, x: .8215, y: .0213, width: .0215, height: .0383 },
         { id: "instagram-gothic", href: SOCIAL.instagram, label: "Instagram", external: true, x: .8477, y: .0213, width: .0215, height: .0383 },
         { id: "mixcloud-gothic", href: SOCIAL.mixcloud, label: "Mixcloud", external: true, x: .8745, y: .0213, width: .0215, height: .0383 },
         { id: "twitch-gothic", href: SOCIAL.twitch, label: "Twitch", external: true, x: .8995, y: .0213, width: .0215, height: .0383 },
         { id: "email-gothic", href: SOCIAL.email, label: "E-Mail", x: .9255, y: .0213, width: .0215, height: .0383 },
-        { id: "enter-gothic", action: "enter", label: "Enter", x: .4336, y: .8129, width: .1322, height: .0723 }
+        { id: "aktuell-gothic-mid", label: "Aktuell", x: .3828, y: .7620, width: .0706, height: .0372, visible: true, visualOnly: true },
+        { id: "listen-gothic-mid", href: SOCIAL.mixcloud, label: "Listen", external: true, x: .4803, y: .7620, width: .0556, height: .0372, visible: true },
+        { id: "kontakt-gothic-mid", href: SOCIAL.email, label: "Kontakt", x: .5634, y: .7620, width: .0760, height: .0372, visible: true },
+        { id: "enter-gothic", action: "enter", label: "Enter", x: .4312, y: .8098, width: .1202, height: .0595, visible: true }
       ]
     },
 
@@ -43,8 +49,12 @@
       glow: "rgba(255,16,45,.62)",
       hotspots: [
         { id: "about-main", href: "about.html", label: "About VamLykTan", x: .300, y: .522, width: .382, height: .155 },
-        { id: "events-main", href: "current.html", label: "Events", x: .405, y: .021, width: .052, height: .034 },
-        { id: "projects-main", href: "projects/index.html", label: "Projekte", x: .472, y: .021, width: .057, height: .034 },
+        { id: "home-main", href: "index.html", label: "Home", x: .2590, y: .0213, width: .0347, height: .0372, visible: true },
+        { id: "aktuell-main", label: "Aktuell", x: .3200, y: .0213, width: .0484, height: .0372, visible: true, visualOnly: true },
+        { id: "events-main", href: "current.html", label: "Events", x: .3917, y: .0213, width: .0449, height: .0372, visible: true },
+        { id: "projects-main", href: "projects/index.html", label: "Projekte", x: .4623, y: .0213, width: .0526, height: .0372, visible: true },
+        { id: "media-main", href: SOCIAL.mixcloud, label: "Media", external: true, x: .5455, y: .0213, width: .0407, height: .0372, visible: true },
+        { id: "kontakt-main", href: SOCIAL.email, label: "Kontakt", x: .6089, y: .0213, width: .0550, height: .0372, visible: true },
         { id: "facebook-main", href: SOCIAL.facebook, label: "Facebook", external: true, x: .7841, y: .0213, width: .0215, height: .0383 },
         { id: "instagram-main", href: SOCIAL.instagram, label: "Instagram", external: true, x: .8140, y: .0213, width: .0215, height: .0383 },
         { id: "youtube-main", href: SOCIAL.youtube, label: "YouTube", external: true, x: .8439, y: .0213, width: .0215, height: .0383 },
@@ -92,12 +102,21 @@
     #action-hotspots { position:absolute; inset:0; z-index:30; pointer-events:none; }
     .action-hotspot { position:absolute; display:block; pointer-events:auto; cursor:pointer; text-decoration:none; background:transparent; outline:0; }
     .action-hotspot:focus-visible { outline:2px solid rgba(255,25,48,.95); outline-offset:2px; }
-    .visible-hotspot { border-radius:2px; transition:border-color .22s ease, box-shadow .22s ease, background .22s ease, opacity .22s ease, transform .22s ease; }
+    .visual-hotspot { pointer-events:none; cursor:default; }
+    .visible-hotspot { border-radius:3px; transition:border-color .22s ease, box-shadow .22s ease, background .22s ease, opacity .22s ease, transform .22s ease; }
+    .visible-hotspot-main,
+    .visible-hotspot-gothic { border:1px solid rgba(255,35,55,.38); background:rgba(255,24,40,.03); box-shadow:inset 0 0 8px rgba(255,35,55,.05), 0 0 12px rgba(255,35,55,.12); }
+    .visible-hotspot-main:hover,
+    .visible-hotspot-main:focus-visible,
+    .visible-hotspot-gothic:hover,
+    .visible-hotspot-gothic:focus-visible { border-color:rgba(255,85,100,.76); background:rgba(255,30,48,.07); box-shadow:inset 0 0 12px rgba(255,95,110,.12), 0 0 16px rgba(255,45,70,.24); }
     .visible-hotspot-psycho { border:1px solid rgba(215,92,255,.44); background:rgba(215,92,255,.05); box-shadow:inset 0 0 10px rgba(215,92,255,.08), 0 0 12px rgba(215,92,255,.14); }
     .visible-hotspot-psycho:hover, .visible-hotspot-psycho:focus-visible { border-color:rgba(229,140,255,.82); background:rgba(215,92,255,.10); box-shadow:inset 0 0 12px rgba(238,168,255,.16), 0 0 18px rgba(215,92,255,.32); }
     .enter-hotspot { transition:background .22s ease, box-shadow .22s ease, outline-color .22s ease; }
     .enter-hotspot:hover { background:rgba(145,0,18,.10); outline:1px solid rgba(255,28,45,.72); box-shadow:inset 0 0 16px rgba(180,0,20,.14),0 0 18px rgba(170,0,20,.16); }
     body.hotspot-debug .action-hotspot { outline:1px dashed rgba(255,65,85,.86); background:rgba(255,0,35,.08); }
+    body.hotspot-debug .visible-hotspot-main,
+    body.hotspot-debug .visible-hotspot-gothic { outline:1px dashed rgba(255,110,130,.92); background:rgba(255,35,55,.12); }
     body.hotspot-debug .visible-hotspot-psycho { outline:1px dashed rgba(229,140,255,.92); background:rgba(215,92,255,.12); }
     #stage { transition:opacity .26s ease, filter .26s ease; }
     body.hero-switching #stage { opacity:.08; filter:brightness(.35); }
@@ -129,11 +148,17 @@
     hotspotLayer.replaceChildren();
 
     for (const hotspot of hero.hotspots || []) {
-      const link = document.createElement("a");
+      const link = document.createElement(hotspot.visualOnly ? "span" : "a");
       link.className = "action-hotspot";
       link.dataset.actionId = hotspot.id;
-      link.setAttribute("aria-label", hotspot.label);
-      link.title = hotspot.label;
+
+      if (hotspot.visualOnly) {
+        link.classList.add("visual-hotspot");
+        link.setAttribute("aria-hidden", "true");
+      } else {
+        link.setAttribute("aria-label", hotspot.label);
+        link.title = hotspot.label;
+      }
 
       if (hotspot.visible) {
         link.classList.add("visible-hotspot", `visible-hotspot-${currentHeroId}`);
@@ -143,6 +168,11 @@
       link.style.top = `${hotspot.y * DESIGN_H}px`;
       link.style.width = `${hotspot.width * DESIGN_W}px`;
       link.style.height = `${hotspot.height * DESIGN_H}px`;
+
+      if (hotspot.visualOnly) {
+        hotspotLayer.appendChild(link);
+        continue;
+      }
 
       if (hotspot.action === "enter") {
         link.href = "#";

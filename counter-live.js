@@ -4,15 +4,17 @@
   const API = "https://abacus.jasoncameron.dev";
 
   /*
-   * Neuer Namespace = sauberer Neustart der beiden Zaehler.
    * ECHOS: jeder normale Seitenaufruf.
    * SEELEN: einmal pro Browser (localStorage).
    * ?debug=1 arbeitet ausschliesslich lokal und greift NICHT auf die Counter-API zu.
+   * Werden im Debug Werte gesetzt, dienen diese lokal als neuer Ausgangsstand.
    */
   const NAMESPACE = "vamlyktan-github-io-v2-20260912";
   const SOUL_KEY = "souls";
   const ECHO_KEY = "echoes";
   const LOCAL_MARK = "vlt_soul_counted_v2";
+  const LOCAL_SOUL_VALUE = "vlt-souls";
+  const LOCAL_ECHO_VALUE = "vlt-echoes";
 
   const params = new URLSearchParams(window.location.search);
   const debugMode = params.get("debug") === "1";
@@ -33,6 +35,28 @@
       return true;
     } catch (_) {
       return false;
+    }
+  }
+
+  function readStoredCounter(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw === null) return null;
+
+      const value = Number(raw);
+      if (!Number.isFinite(value)) return null;
+
+      return Math.max(0, Math.floor(value));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function writeStoredCounter(key, value) {
+    try {
+      localStorage.setItem(key, String(Math.max(0, Math.floor(Number(value) || 0))));
+    } catch (_) {
+      // localStorage kann in restriktiven Browsermodi deaktiviert sein.
     }
   }
 
@@ -90,10 +114,32 @@
 
   async function loadCounters() {
     try {
+      const canStore = storageAvailable();
+
+      /*
+       * Wenn im Debug-Modus Werte gesetzt wurden, sind diese der lokale
+       * Ausgangsstand. Beim normalen Aufruf wird ab dort weitergezaehlt.
+       * Der Aufruf selbst erzeugt genau ein neues Echo.
+       */
+      if (canStore) {
+        const storedSouls = readStoredCounter(LOCAL_SOUL_VALUE);
+        const storedEchoes = readStoredCounter(LOCAL_ECHO_VALUE);
+
+        if (storedSouls !== null && storedEchoes !== null) {
+          const souls = storedSouls;
+          const echoes = storedEchoes + 1;
+
+          writeStoredCounter(LOCAL_SOUL_VALUE, souls);
+          writeStoredCounter(LOCAL_ECHO_VALUE, echoes);
+          localStorage.setItem(LOCAL_MARK, "1");
+
+          animateCounters(souls, echoes);
+          return;
+        }
+      }
+
       const echoPromise = counterRequest("hit", ECHO_KEY);
       let soulPromise;
-
-      const canStore = storageAvailable();
 
       if (canStore && !localStorage.getItem(LOCAL_MARK)) {
         soulPromise = counterRequest("hit", SOUL_KEY).then(value => {

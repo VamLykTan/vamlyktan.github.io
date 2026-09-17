@@ -23,19 +23,19 @@
       accent: "#ff102d",
       glow: "rgba(255,16,45,.62)",
       hotspots: [
-        { id: "about-gothic", href: "about.html", label: "About VamLykTan", 						 x: .287,  y: .510,  width: .398, height: .145 },
-        { id: "aktuell-gothic-top", label: "Aktuell", 													 x: .0525, y: .0255, width: .08,  height: .03, visible: true, visualOnly: true },
-        { id: "listen-gothic-top", href: SOCIAL.mixcloud, label: "Listen", external: true, 	 x: .15,   y: .0255, width: .08,  height: .03, visible: true },
-        { id: "kontakt-gothic-top", href: SOCIAL.email, label: "Kontakt", 							 x: .7025, y: .0255, width: .08,  height: .03, visible: true },
-        { id: "facebook-gothic", href: SOCIAL.facebook, label: "Facebook", external: true, 	 x: .8215, y: .0213, width: .0215, height: .0383 },
-        { id: "instagram-gothic", href: SOCIAL.instagram, label: "Instagram", external: true, x: .8477, y: .0213, width: .0215, height: .0383 },
-        { id: "mixcloud-gothic", href: SOCIAL.mixcloud, label: "Mixcloud", external: true,    x: .8745, y: .0213, width: .0215, height: .0383 },
-        { id: "twitch-gothic", href: SOCIAL.twitch, label: "Twitch", external: true,          x: .8995, y: .0213, width: .0215, height: .0383 },
-        { id: "email-gothic", href: SOCIAL.email, label: "E-Mail", 									 x: .9255, y: .0213, width: .0215, height: .0383 },
-        { id: "aktuell-gothic-mid", label: "Aktuell", 													 x: .3845, y: .7620, width: .0706, height: .0372, visible: true, visualOnly: true },
-        { id: "listen-gothic-mid", href: SOCIAL.mixcloud, label: "Listen", external: true, 	 x: .47,   y: .7620, width: .0556, height: .0374, visible: true },
-        { id: "kontakt-gothic-mid", href: SOCIAL.email, label: "Kontakt", 							 x: .545,  y: .7620, width: .07,   height: .0372, visible: true },
-        { id: "enter-gothic", action: "enter", label: "Enter", 										 x: .4312, y: .8098, width: .1202, height: .0595}
+        { id: "about-gothic", href: "about.html", label: "About VamLykTan",                         x: .287,  y: .510,  width: .398, height: .145 },
+        { id: "aktuell-gothic-top", label: "Aktuell",                                             x: .0525, y: .0255, width: .08,  height: .03, visible: true, visualOnly: true },
+        { id: "listen-gothic-top", href: SOCIAL.mixcloud, label: "Listen", external: true,        x: .15,   y: .0255, width: .08,  height: .03, visible: true },
+        { id: "kontakt-gothic-top", href: SOCIAL.email, label: "Kontakt",                          x: .7025, y: .0255, width: .08,  height: .03, visible: true },
+        { id: "facebook-gothic", href: SOCIAL.facebook, label: "Facebook", external: true,        x: .8215, y: .0213, width: .0215, height: .0383 },
+        { id: "instagram-gothic", href: SOCIAL.instagram, label: "Instagram", external: true,     x: .8477, y: .0213, width: .0215, height: .0383 },
+        { id: "mixcloud-gothic", href: SOCIAL.mixcloud, label: "Mixcloud", external: true,        x: .8745, y: .0213, width: .0215, height: .0383 },
+        { id: "twitch-gothic", href: SOCIAL.twitch, label: "Twitch", external: true,              x: .8995, y: .0213, width: .0215, height: .0383 },
+        { id: "email-gothic", href: SOCIAL.email, label: "E-Mail",                                x: .9255, y: .0213, width: .0215, height: .0383 },
+        { id: "aktuell-gothic-mid", label: "Aktuell",                                             x: .3845, y: .7620, width: .0706, height: .0372, visible: true, visualOnly: true },
+        { id: "listen-gothic-mid", href: SOCIAL.mixcloud, label: "Listen", external: true,        x: .47,   y: .7620, width: .0556, height: .0374, visible: true },
+        { id: "kontakt-gothic-mid", href: SOCIAL.email, label: "Kontakt",                          x: .545,  y: .7620, width: .07,   height: .0372, visible: true },
+        { id: "enter-gothic", action: "enter", label: "Enter",                                   x: .4312, y: .8098, width: .1202, height: .0595}
       ]
     },
 
@@ -48,19 +48,19 @@
       accent: "#ff102d",
       glow: "rgba(255,16,45,.62)",
       hotspots: [
-        { id: "about-main", href: "about.html", label: "About VamLykTan", 							x: .300,  y: .522,  width: .382,  height: .155 },
-        { id: "home-main", href: "index.html", label: "Home", 											x: .262,  y: .0210, width: .0347, height: .0368, visible: true },
-        { id: "aktuell-main", label: "Aktuell", 															x: .3250, y: .0213, width: .049,  height: .0368, visible: true, visualOnly: true },
-        { id: "events-main", href: "current.html", label: "Events", 									x: .4, 	 y: .0213, width: .0449, height: .0368, visible: true },
-        { id: "projects-main", href: "projects/index.html", label: "Projekte", 					x: .4725, y: .0213, width: .0526, height: .0368, visible: true },
-        { id: "media-main", href: SOCIAL.mixcloud, label: "Media", external: true, 				x: .5525, y: .0213, width: .0407, height: .0368, visible: true },
-        { id: "kontakt-main", href: SOCIAL.email, label: "Kontakt", 									x: .6175, y: .0213, width: .0550, height: .0368, visible: true },
-        { id: "facebook-main", href: SOCIAL.facebook, label: "Facebook", external: true, 		x: .7841, y: .0213, width: .0215, height: .0383 },
-        { id: "instagram-main", href: SOCIAL.instagram, label: "Instagram", external: true, 	x: .8140, y: .0213, width: .0215, height: .0383 },
-        { id: "youtube-main", href: SOCIAL.youtube, label: "YouTube", external: true, 			x: .8439, y: .0213, width: .0215, height: .0383 },
-        { id: "twitch-main", href: SOCIAL.twitch, label: "Twitch", external: true, 				x: .8732, y: .0213, width: .0215, height: .0383 },
-        { id: "mixcloud-main", href: SOCIAL.mixcloud, label: "Mixcloud", external: true, 		x: .9037, y: .0213, width: .0215, height: .0383 },
-        { id: "email-main", href: SOCIAL.email, label: "E-Mail", 										x: .9342, y: .0213, width: .0215, height: .0383 }
+        { id: "about-main", href: "about.html", label: "About VamLykTan",                           x: .300,  y: .522,  width: .382,  height: .155 },
+        { id: "home-main", href: "index.html", label: "Home",                                     x: .262,  y: .0210, width: .0347, height: .0368, visible: true },
+        { id: "aktuell-main", label: "Aktuell",                                                    x: .3250, y: .0213, width: .049,  height: .0368, visible: true, visualOnly: true },
+        { id: "events-main", href: "current.html", label: "Events",                               x: .4,    y: .0213, width: .0449, height: .0368, visible: true },
+        { id: "projects-main", href: "projects/index.html", label: "Projekte",                    x: .4725, y: .0213, width: .0526, height: .0368, visible: true },
+        { id: "media-main", href: SOCIAL.mixcloud, label: "Media", external: true,                 x: .5525, y: .0213, width: .0407, height: .0368, visible: true },
+        { id: "kontakt-main", href: SOCIAL.email, label: "Kontakt",                                x: .6175, y: .0213, width: .0550, height: .0368, visible: true },
+        { id: "facebook-main", href: SOCIAL.facebook, label: "Facebook", external: true,           x: .7841, y: .0213, width: .0215, height: .0383 },
+        { id: "instagram-main", href: SOCIAL.instagram, label: "Instagram", external: true,        x: .8140, y: .0213, width: .0215, height: .0383 },
+        { id: "youtube-main", href: SOCIAL.youtube, label: "YouTube", external: true,              x: .8439, y: .0213, width: .0215, height: .0383 },
+        { id: "twitch-main", href: SOCIAL.twitch, label: "Twitch", external: true,                 x: .8732, y: .0213, width: .0215, height: .0383 },
+        { id: "mixcloud-main", href: SOCIAL.mixcloud, label: "Mixcloud", external: true,           x: .9037, y: .0213, width: .0215, height: .0383 },
+        { id: "email-main", href: SOCIAL.email, label: "E-Mail",                                   x: .9342, y: .0213, width: .0215, height: .0383 }
       ]
     },
 
@@ -73,19 +73,19 @@
       accent: "#d75cff",
       glow: "rgba(215,92,255,.55)",
       hotspots: [
-        { id: "about-psycho", href: "about.html", label: "About VamLykTan", 					 		x: .064,  y: .255,  width: .500,  height: .225 },
-        { id: "home-psycho-nav", href: "index.html", label: "Home", 								 		x: .2380, y: .0231, width: .0389, height: .0320, visible: true },
-        { id: "events-psycho-nav", href: "current.html", label: "Events", 						 		x: .3665, y: .0231, width: .0442, height: .0320, visible: true },
-        { id: "projects-psycho-nav", href: "projects/index.html", label: "Projekte", 		 		x: .4310, y: .0231, width: .0535, height: .0320, visible: true },
-        { id: "kontakt-psycho-nav", href: SOCIAL.email, label: "Kontakt", 						 		x: .5641, y: .0231, width: .0506, height: .0320, visible: true },
-        { id: "events-psycho-content", href: "current.html", label: "Events", 				 		x: .2595, y: .5735, width: .0558, height: .0372, visible: true },
-        { id: "projects-psycho-content", href: "projects/index.html", label: "Projekte", 	 		x: .3333, y: .5735, width: .0686, height: .0372, visible: true },
-        { id: "facebook-psycho", href: SOCIAL.facebook, label: "Facebook", external: true, 		x: .8032, y: .0213, width: .0215, height: .0383 },
-        { id: "instagram-psycho", href: SOCIAL.instagram, label: "Instagram", external: true, 	x: .8283, y: .0213, width: .0215, height: .0383 },
-        { id: "youtube-psycho", href: SOCIAL.youtube, label: "YouTube", external: true, 			x: .8553, y: .0213, width: .0215, height: .0383 },
-        { id: "twitch-psycho", href: SOCIAL.twitch, label: "Twitch", external: true, 				x: .8816, y: .0213, width: .0215, height: .0383 },
-        { id: "mixcloud-psycho", href: SOCIAL.mixcloud, label: "Mixcloud", external: true, 		x: .9109, y: .0213, width: .0215, height: .0383 },
-        { id: "email-psycho", href: SOCIAL.email, label: "E-Mail", 										x: .9384, y: .0213, width: .0215, height: .0383 }
+        { id: "about-psycho", href: "about.html", label: "About VamLykTan",                         x: .064,  y: .255,  width: .500,  height: .225 },
+        { id: "home-psycho-nav", href: "index.html", label: "Home",                               x: .2380, y: .0231, width: .0389, height: .0320, visible: true },
+        { id: "events-psycho-nav", href: "current.html", label: "Events",                         x: .3665, y: .0231, width: .0442, height: .0320, visible: true },
+        { id: "projects-psycho-nav", href: "projects/index.html", label: "Projekte",              x: .4310, y: .0231, width: .0535, height: .0320, visible: true },
+        { id: "kontakt-psycho-nav", href: SOCIAL.email, label: "Kontakt",                          x: .5641, y: .0231, width: .0506, height: .0320, visible: true },
+        { id: "events-psycho-content", href: "current.html", label: "Events",                     x: .2595, y: .5735, width: .0558, height: .0372, visible: true },
+        { id: "projects-psycho-content", href: "projects/index.html", label: "Projekte",          x: .3333, y: .5735, width: .0686, height: .0372, visible: true },
+        { id: "facebook-psycho", href: SOCIAL.facebook, label: "Facebook", external: true,         x: .8032, y: .0213, width: .0215, height: .0383 },
+        { id: "instagram-psycho", href: SOCIAL.instagram, label: "Instagram", external: true,      x: .8283, y: .0213, width: .0215, height: .0383 },
+        { id: "youtube-psycho", href: SOCIAL.youtube, label: "YouTube", external: true,            x: .8553, y: .0213, width: .0215, height: .0383 },
+        { id: "twitch-psycho", href: SOCIAL.twitch, label: "Twitch", external: true,               x: .8816, y: .0213, width: .0215, height: .0383 },
+        { id: "mixcloud-psycho", href: SOCIAL.mixcloud, label: "Mixcloud", external: true,         x: .9109, y: .0213, width: .0215, height: .0383 },
+        { id: "email-psycho", href: SOCIAL.email, label: "E-Mail",                                 x: .9384, y: .0213, width: .0215, height: .0383 }
       ]
     }
   };
@@ -143,6 +143,23 @@
     soulsEl.textContent = formatCounter(souls);
     echoesEl.textContent = formatCounter(echoes);
   };
+
+  function readStoredCounter(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function saveStoredCounters(souls, echoes) {
+    try {
+      localStorage.setItem("vlt-souls", String(souls));
+      localStorage.setItem("vlt-echoes", String(echoes));
+    } catch {
+      // localStorage kann in restriktiven Browsermodi deaktiviert sein.
+    }
+  }
 
   function rebuildHotspots(hero) {
     hotspotLayer.replaceChildren();
@@ -250,8 +267,10 @@
 
   const params = new URLSearchParams(window.location.search);
   const initialHero = params.get("hero") || "main";
-  const initialSouls = params.has("souls") ? params.get("souls") : 0;
-  const initialEchoes = params.has("echoes") ? params.get("echoes") : 0;
+  const storedSouls = readStoredCounter("vlt-souls");
+  const storedEchoes = readStoredCounter("vlt-echoes");
+  const initialSouls = params.has("souls") ? params.get("souls") : (storedSouls ?? 0);
+  const initialEchoes = params.has("echoes") ? params.get("echoes") : (storedEchoes ?? 0);
 
   window.setHero(initialHero);
   window.setSoulCounters(initialSouls, initialEchoes);
@@ -273,7 +292,15 @@
 
     panel.addEventListener("submit", event => {
       event.preventDefault();
-      window.setSoulCounters(soulsInput.value, echoesInput.value);
+
+      const souls = Math.max(0, Math.floor(Number(soulsInput.value) || 0));
+      const echoes = Math.max(0, Math.floor(Number(echoesInput.value) || 0));
+
+      saveStoredCounters(souls, echoes);
+      window.setSoulCounters(souls, echoes);
+
+      soulsInput.value = souls;
+      echoesInput.value = echoes;
     });
   }
 

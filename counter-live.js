@@ -7,7 +7,7 @@
    * Neuer Namespace = sauberer Neustart der beiden Zaehler.
    * ECHOS: jeder normale Seitenaufruf.
    * SEELEN: einmal pro Browser (localStorage).
-   * ?debug=1 liest nur und zaehlt NICHT hoch.
+   * ?debug=1 arbeitet ausschliesslich lokal und greift NICHT auf die Counter-API zu.
    */
   const NAMESPACE = "vamlyktan-github-io-v2-20260912";
   const SOUL_KEY = "souls";
@@ -16,6 +16,14 @@
 
   const params = new URLSearchParams(window.location.search);
   const debugMode = params.get("debug") === "1";
+
+  /*
+   * Im Debug-Modus werden Seelen/Echos von counter.js aus localStorage geladen
+   * und dort beim manuellen Setzen gespeichert. Keine API-Anfrage = keine Echos.
+   */
+  if (debugMode) {
+    return;
+  }
 
   function storageAvailable() {
     try {
@@ -48,21 +56,9 @@
     return Math.max(0, Math.floor(value));
   }
 
-  function setDebugFields(souls, echoes) {
-    const soulsInput = document.getElementById("debug-souls");
-    const echoesInput = document.getElementById("debug-echoes");
-
-    if (soulsInput) soulsInput.value = souls;
-    if (echoesInput) echoesInput.value = echoes;
-  }
-
   function showCounters(souls, echoes) {
     if (typeof window.setSoulCounters === "function") {
       window.setSoulCounters(souls, echoes);
-    }
-
-    if (debugMode) {
-      setDebugFields(souls, echoes);
     }
   }
 
@@ -94,26 +90,18 @@
 
   async function loadCounters() {
     try {
+      const echoPromise = counterRequest("hit", ECHO_KEY);
       let soulPromise;
-      let echoPromise;
 
-      if (debugMode) {
-        /* Debug-Aufrufe duerfen die Statistik nicht veraendern. */
-        soulPromise = counterRequest("get", SOUL_KEY);
-        echoPromise = counterRequest("get", ECHO_KEY);
+      const canStore = storageAvailable();
+
+      if (canStore && !localStorage.getItem(LOCAL_MARK)) {
+        soulPromise = counterRequest("hit", SOUL_KEY).then(value => {
+          localStorage.setItem(LOCAL_MARK, "1");
+          return value;
+        });
       } else {
-        echoPromise = counterRequest("hit", ECHO_KEY);
-
-        const canStore = storageAvailable();
-
-        if (canStore && !localStorage.getItem(LOCAL_MARK)) {
-          soulPromise = counterRequest("hit", SOUL_KEY).then(value => {
-            localStorage.setItem(LOCAL_MARK, "1");
-            return value;
-          });
-        } else {
-          soulPromise = counterRequest("get", SOUL_KEY);
-        }
+        soulPromise = counterRequest("get", SOUL_KEY);
       }
 
       const [soulResult, echoResult] = await Promise.allSettled([

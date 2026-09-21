@@ -1,16 +1,8 @@
 (() => {
   "use strict";
 
-  const params = new URLSearchParams(window.location.search);
-  const debugMode = params.get("debug") === "1";
   const SESSION_KEY = "vlt_debug_auth_v1";
   const PASSKEY_ID_KEY = "vlt_current_passkey_id_v1";
-
-  function signalReady() {
-    window.dispatchEvent(new CustomEvent("vlt:current-auth-ready", {
-      detail: { authorized: window.VLT_DEBUG_AUTHORIZED === true }
-    }));
-  }
 
   function decodeBase64Url(value) {
     const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
@@ -47,60 +39,70 @@
         }
       });
 
-      if (!credential) return false;
-
-      window.VLT_DEBUG_AUTHORIZED = true;
-      try {
-        window.sessionStorage.setItem(SESSION_KEY, "1");
-      } catch (_) {
-        /* Freigabe gilt dann nur für diesen Seitenaufruf. */
-      }
-
-      return true;
+      return Boolean(credential);
     } catch (_) {
       return false;
     }
   }
 
-  function loadPasswordFallback() {
+  async function loadPasswordHelper() {
+    if (typeof window.VLTRequestPasswordAuthorization === "function") {
+      return true;
+    }
+
     return new Promise(resolve => {
       const script = document.createElement("script");
       script.src = "debug-auth.js";
-      script.onload = () => resolve(window.VLT_DEBUG_AUTHORIZED === true);
-      script.onerror = () => {
-        window.VLT_DEBUG_AUTHORIZED = false;
-        resolve(false);
-      };
+      script.onload = () => resolve(typeof window.VLTRequestPasswordAuthorization === "function");
+      script.onerror = () => resolve(false);
       document.head.appendChild(script);
     });
   }
 
-  async function boot() {
-    if (!debugMode) {
-      window.VLT_CURRENT_AUTH_READY = true;
-      signalReady();
-      return;
-    }
-
+  async function requestCurrentAuthorization() {
     try {
       if (window.sessionStorage.getItem(SESSION_KEY) === "1") {
         window.VLT_DEBUG_AUTHORIZED = true;
-        window.VLT_CURRENT_AUTH_READY = true;
-        signalReady();
-        return;
+        return true;
       }
     } catch (_) {
       /* sessionStorage kann blockiert sein. */
     }
 
     const deviceAuthorized = await tryDeviceAuth();
-    if (!deviceAuthorized) {
-      await loadPasswordFallback();
+    if (deviceAuthorized) {
+      window.VLT_DEBUG_AUTHORIZED = true;
+      try {
+        window.sessionStorage.setItem(SESSION_KEY, "1");
+      } catch (_) {
+        /* Freigabe gilt dann nur für diesen Seitenaufruf. */
+      }
+      return true;
     }
 
-    window.VLT_CURRENT_AUTH_READY = true;
-    signalReady();
+    const helperReady = await loadPasswordHelper();
+    if (!helperReady) {
+      window.VLT_DEBUG_AUTHORIZED = false;
+      return false;
+    }
+
+    const passwordAuthorized = await window.VLTRequestPasswordAuthorization();
+    window.VLT_DEBUG_AUTHORIZED = passwordAuthorized === true;
+
+    if (passwordAuthorized) {
+      try {
+        window.sessionStorage.setItem(SESSION_KEY, "1");
+      } catch (_) {
+        /* Freigabe gilt dann nur für diesen Seitenaufruf. */
+      }
+    }
+
+    return passwordAuthorized === true;
   }
 
-  boot();
+  window.VLTRequestCurrentAuthorization = requestCurrentAuthorization;
+  window.VLT_CURRENT_AUTH_READY = true;
+  window.dispatchEvent(new CustomEvent("vlt:current-auth-ready", {
+    detail: { authorized: window.VLT_DEBUG_AUTHORIZED === true }
+  }));
 })();

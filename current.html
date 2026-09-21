@@ -54,8 +54,27 @@ h1{
 .intro{
   max-width:760px;
   color:var(--muted);
-  margin:16px 0 34px;
+  margin:16px 0 18px;
   font-size:1.05rem;
+}
+.admin-entry-wrap{
+  margin:0 0 34px;
+}
+.admin-entry-button{
+  border:1px solid #5a252a;
+  border-radius:10px;
+  padding:11px 15px;
+  background:#231215;
+  color:#ffc0c3;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+.admin-entry-button:hover{filter:brightness(1.12)}
+.admin-entry-button[aria-expanded="true"]{
+  border-color:#41414a;
+  background:#17171c;
+  color:#d7d7dc;
 }
 .section-head{
   display:flex;
@@ -361,6 +380,12 @@ details.archive[open] summary::after{content:"–"}
     Mitveranstalter oder Organisator beteiligt ist.
   </p>
 
+  <div class="admin-entry-wrap">
+    <button class="admin-entry-button" id="open-current-admin" type="button" aria-controls="current-admin" aria-expanded="false">
+      Veranstaltung eintragen
+    </button>
+  </div>
+
   <section id="upcoming-section">
     <div class="section-head">
       <h2>Bevorstehende Veranstaltungen</h2>
@@ -381,8 +406,10 @@ details.archive[open] summary::after{content:"–"}
   <section class="current-admin" id="current-admin" hidden aria-label="Veranstaltungseditor">
     <h2>Veranstaltungseditor</h2>
     <p class="admin-note">
-      Geschützter Pflegebereich. Änderungen erscheinen sofort als Vorschau und werden lokal als Entwurf gespeichert.
-      Für die dauerhafte Online-Übernahme wird daraus die Datei <code>current-events.js</code> erzeugt.
+      Der Editor kann ohne Anmeldung geöffnet werden. Das Passwort wird erst beim Klick auf
+      <strong>„Veranstaltung übernehmen“</strong> abgefragt. Änderungen erscheinen danach sofort als Vorschau
+      und werden lokal als Entwurf gespeichert. Für die dauerhafte Online-Übernahme wird daraus die Datei
+      <code>current-events.js</code> erzeugt.
     </p>
 
     <div class="admin-status" id="admin-status" data-type="info"></div>
@@ -438,6 +465,7 @@ details.archive[open] summary::after{content:"–"}
 
     <div class="admin-tools">
       <button id="admin-device-auth" type="button" hidden>Geräteanmeldung einrichten</button>
+      <span class="admin-note">Kopieren/Download erfordern eine gültig formatierte E-Mail-Adresse.</span>
       <button id="admin-copy" type="button">current-events.js kopieren</button>
       <button id="admin-download" type="button">current-events.js herunterladen</button>
       <button class="danger" id="admin-discard" type="button">Lokale Änderungen verwerfen</button>

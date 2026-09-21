@@ -2,10 +2,6 @@
   "use strict";
 
   const EXPECTED_HASH = "574838cd0a8a23adef82b077ad900b4453323eaeb9454be2ea4720d861407bbd";
-  const SESSION_KEY = "vlt_debug_auth_v1";
-
-  const params = new URLSearchParams(window.location.search);
-  if (params.get("debug") !== "1") return;
 
   function sha256(ascii) {
     const mathPow = Math.pow;
@@ -83,46 +79,18 @@
     return result;
   }
 
-  function clearDebugFromUrl() {
-    params.delete("debug");
-    params.delete("souls");
-    params.delete("echoes");
+  window.VLTRequestPasswordAuthorization = async function requestPasswordAuthorization() {
+    const entered = window.prompt("Veranstaltung übernehmen – Passwort:");
 
-    const query = params.toString();
-    const cleanUrl = window.location.pathname
-      + (query ? `?${query}` : "")
-      + window.location.hash;
-
-    window.history.replaceState(null, "", cleanUrl);
-  }
-
-  try {
-    if (window.sessionStorage.getItem(SESSION_KEY) === "1") {
-      window.VLT_DEBUG_AUTHORIZED = true;
-      return;
-    }
-  } catch (_) {
-    /* sessionStorage kann blockiert sein; dann wird erneut gefragt. */
-  }
-
-  const entered = window.prompt("Debug-Modus – Passwort:");
-
-  if (entered !== null && sha256(entered) === EXPECTED_HASH) {
-    window.VLT_DEBUG_AUTHORIZED = true;
-
-    try {
-      window.sessionStorage.setItem(SESSION_KEY, "1");
-    } catch (_) {
-      /* Freigabe gilt dann nur fuer diesen Seitenaufruf. */
+    if (entered === null) {
+      return false;
     }
 
-    return;
-  }
+    if (sha256(entered) === EXPECTED_HASH) {
+      return true;
+    }
 
-  window.VLT_DEBUG_AUTHORIZED = false;
-  clearDebugFromUrl();
-
-  if (entered !== null) {
     window.alert("Falsches Passwort.");
-  }
+    return false;
+  };
 })();

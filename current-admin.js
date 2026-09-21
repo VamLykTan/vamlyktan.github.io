@@ -2,7 +2,7 @@
   "use strict";
 
   const params = new URLSearchParams(window.location.search);
-  if (params.get("debug") !== "1") return;
+  const openFromDebugUrl = params.get("debug") === "1";
 
   const PASSKEY_ID_KEY = "vlt_current_passkey_id_v1";
   const DRAFT_KEY = "vlt_current_events_draft_v1";
@@ -10,6 +10,7 @@
   let workingEvents = [];
   let sourceEvents = [];
   let editingIndex = null;
+  let initialized = false;
 
   function byId(id) {
     return document.getElementById(id);
@@ -30,6 +31,46 @@
     if (!status) return;
     status.textContent = message;
     status.dataset.type = type;
+  }
+
+  async function requestAuthorization(reason = "Diese Aktion") {
+    if (typeof window.VLTRequestCurrentAuthorization !== "function") {
+      setStatus("Authentifizierung ist momentan nicht verfügbar.", "error");
+      return false;
+    }
+
+    const authorized = await window.VLTRequestCurrentAuthorization();
+    if (!authorized) {
+      setStatus(`${reason} wurde nicht ausgeführt.`, "error");
+      return false;
+    }
+
+    return true;
+  }
+
+  function requestExportEmail() {
+    const entered = window.prompt("Bitte gültige E-Mail-Adresse für Kopieren/Download eingeben:");
+    if (entered === null) return null;
+
+    const email = entered.trim();
+    const validator = document.createElement("input");
+    validator.type = "email";
+    validator.required = true;
+    validator.value = email;
+
+    if (!validator.checkValidity()) {
+      setStatus("Kopieren/Download nicht erlaubt: Bitte eine gültig formatierte E-Mail-Adresse eingeben.", "error");
+      window.alert("Ungültige E-Mail-Adresse.");
+      return null;
+    }
+
+    try {
+      window.sessionStorage.setItem("vlt_current_export_email_v1", email);
+    } catch (_) {
+      /* Speicherung ist optional. */
+    }
+
+    return email;
   }
 
   function cloneEvents(events) {
@@ -214,15 +255,21 @@
   }
 
   async function copyEventsFile() {
+    const email = requestExportEmail();
+    if (!email) return;
+
     try {
       await navigator.clipboard.writeText(serializeEvents());
-      setStatus("current-events.js wurde in die Zwischenablage kopiert.", "ok");
+      setStatus(`current-events.js wurde für ${email} in die Zwischenablage kopiert.`, "ok");
     } catch (_) {
       setStatus("Kopieren nicht möglich. Nutze stattdessen den Download.", "error");
     }
   }
 
   function downloadEventsFile() {
+    const email = requestExportEmail();
+    if (!email) return;
+
     const blob = new Blob([serializeEvents()], { type: "text/javascript;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -232,7 +279,7 @@
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
-    setStatus("current-events.js wurde erzeugt. Für die dauerhafte Online-Änderung muss diese Datei ins Repository übernommen werden.", "ok");
+    setStatus(`current-events.js wurde für ${email} erzeugt. Für die dauerhafte Online-Änderung muss diese Datei ins Repository übernommen werden.`, "ok");
   }
 
   async function deviceAuthAvailable() {
@@ -252,6 +299,10 @@
   }
 
   async function setupDeviceAuth() {
+    if (!(await requestAuthorization("Einrichtung der Geräteanmeldung"))) {
+      return;
+    }
+
     if (!(await deviceAuthAvailable())) {
       setStatus("Auf diesem Gerät ist keine geeignete Geräteauthentifizierung verfügbar.", "error");
       return;
@@ -324,7 +375,7 @@
       : "Geräteanmeldung einrichten";
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const start = parseLocalDateTime(byId("admin-start").value);
@@ -348,6 +399,10 @@
 
     if (!entry.title || !entry.place || !entry.role || !entry.text) {
       setStatus("Titel, Ort, Rolle und Kurzbeschreibung sind Pflichtfelder.", "error");
+      return;
+    }
+
+    if (!(await requestAuthorization(editingIndex === null ? "Übernahme der Veranstaltung" : "Übernahme der Änderung"))) {
       return;
     }
 
@@ -377,12 +432,23 @@
   }
 
   function initAdmin() {
-    if (window.VLT_DEBUG_AUTHORIZED !== true) return;
-
     const panel = byId("current-admin");
     if (!panel) return;
 
     panel.hidden = false;
+
+    const opener = byId("open-current-admin");
+    if (opener) {
+      opener.setAttribute("aria-expanded", "true");
+      opener.textContent = "Veranstaltungseditor geöffnet";
+    }
+
+    if (initialized) {
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    initialized = true;
     sourceEvents = cloneEvents(window.VLT_EVENTS || []);
     const draft = loadDraft();
     workingEvents = draft || cloneEvents(sourceEvents);
@@ -399,15 +465,18 @@
       syncPreview();
     } else {
       renderAdminList();
-      setStatus("Debug-Editor aktiv. Änderungen werden zunächst nur als lokaler Entwurf gespeichert.", "info");
+      setStatus("Editor geöffnet. Das Passwort wird erst beim Übernehmen einer Veranstaltung oder Änderung abgefragt.", "info");
     }
 
     updateDeviceButton();
   }
 
-  if (window.VLT_CURRENT_AUTH_READY) {
+  const opener = byId("open-current-admin");
+  if (opener) {
+    opener.addEventListener("click", initAdmin);
+  }
+
+  if (openFromDebugUrl) {
     initAdmin();
-  } else {
-    window.addEventListener("vlt:current-auth-ready", initAdmin, { once: true });
   }
 })();

@@ -10,13 +10,13 @@ window.VLT_EVENTS = [
     url: 'https://www.facebook.com/share/19gEaKUggB/'
   },
   {
-    title: "Rock'n'Metal for Charity",
+    title: "Rock'n'Metal for Charity – 666 Schlafsäcke",
     start: '2026-10-31T17:30:00+01:00',
     end: '2026-11-01T00:30:00+01:00',
-    dateLabel: '31. Oktober 2026 · Einlass 16:30 Uhr · Beginn 17:30 Uhr',
-    place: 'Rostock',
+    dateLabel: '31. Oktober 2026 · Einlass 16:30 Uhr · Beginn 17:30 Uhr · Ende: wenn der Letzte geht',
+    place: 'Alte Zuckerfabrik Rostock · Neubrandenburger Straße 7 · 18055 Rostock',
     role: 'Organisation: VamLykTan',
-    text: 'Halloween mit Rock & Metal für einen guten Zweck. Der Reinerlös unterstützt das Projekt „666 Schlafsäcke“ von Metality e.V.; VamLykTan organisiert den Abend und bringt mehrere Live-Acts zusammen.',
+    text: 'Halloween mit Rock & Metal für den guten Zweck: Seelenbrand, Neytmar und Remember Twilight spielen zugunsten des Projekts „666 Schlafsäcke“ von Metality e.V. Der Reinerlös hilft dabei, Schlafsäcke für obdachlose Menschen bereitzustellen und über Hilfsorganisationen zu verteilen. Vorverkauf: 20 € · Abendkasse: 30 € · Abendkasse im Halloween-Look: 25 €.',
     url: 'https://www.facebook.com/share/1JU6gsj85X/'
   },
   {

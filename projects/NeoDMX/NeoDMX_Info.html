@@ -479,6 +479,135 @@
             color: #9eaab0;
         }
 
+        .story-branch {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            max-width: 920px;
+            margin: 8px 0 36px;
+            padding: 38px 0 0 38px;
+        }
+
+        .story-branch::before {
+            content: "";
+            position: absolute;
+            left: -25px;
+            right: 0;
+            top: 0;
+            height: 1px;
+            background: linear-gradient(90deg, var(--cyan), rgba(47,157,166,0.55), var(--violet));
+            opacity: 0.78;
+        }
+
+        .story-branch-step {
+            position: relative;
+            min-width: 0;
+            padding: 22px;
+            background: rgba(7, 10, 14, 0.66);
+            border: 1px solid var(--line);
+        }
+
+        .story-branch-step::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: -38px;
+            width: 1px;
+            height: 38px;
+            background: rgba(47,157,166,0.72);
+        }
+
+        .story-branch-step::after {
+            content: "";
+            position: absolute;
+            left: 14px;
+            top: -45px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #071015;
+            border: 2px solid var(--cyan);
+            box-shadow: 0 0 18px rgba(47,157,166,0.35);
+        }
+
+        .story-branch-step.open::before {
+            background: rgba(111,53,165,0.72);
+        }
+
+        .story-branch-step.open::after {
+            border-color: var(--violet);
+            box-shadow: 0 0 18px rgba(111,53,165,0.35);
+        }
+
+        .story-branch-step h3 {
+            margin: 0 0 10px;
+            color: #e4eaed;
+            font-size: 0.83rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
+
+        .story-branch-step p {
+            margin: 0;
+            color: #9eaab0;
+        }
+
+        .story-branch-status {
+            display: inline-block;
+            margin-bottom: 12px;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+        }
+
+        .story-branch-step.live .story-branch-status {
+            color: #8ed7dc;
+        }
+
+        .story-branch-step.open .story-branch-status {
+            color: #bda4da;
+        }
+
+        @media (max-width: 760px) {
+            .story-branch {
+                grid-template-columns: 1fr;
+                gap: 18px;
+                padding: 34px 0 0 34px;
+            }
+
+            .story-branch::before {
+                left: -25px;
+                right: auto;
+                width: 52px;
+            }
+
+            .story-branch::after {
+                content: "";
+                position: absolute;
+                left: 27px;
+                top: 0;
+                bottom: 0;
+                width: 1px;
+                background: linear-gradient(to bottom, var(--cyan), var(--violet));
+                opacity: 0.72;
+            }
+
+            .story-branch-step::before,
+            .story-branch-step.open::before {
+                left: -7px;
+                top: 28px;
+                width: 34px;
+                height: 1px;
+            }
+
+            .story-branch-step::after,
+            .story-branch-step.open::after {
+                left: -14px;
+                top: 22px;
+            }
+        }
+
         .reference-link {
             color: #b9e7ea;
             text-decoration: none;
@@ -1312,10 +1441,19 @@
                         </p>
                     </article>
 
-                    <article class="story-step">
-                        <h3>Neo-Link als Schnittstelle</h3>
-                        <p>Noch in Arbeit.</p>
-                    </article>
+                    <div class="story-branch" aria-label="Parallele Entwicklungszweige">
+                        <article class="story-branch-step live">
+                            <span class="story-branch-status">Aktiver Zweig</span>
+                            <h3>Version 1.90 · Pixel Board Version 2.00</h3>
+                            <p>Version 1.90 mit Pixel Board Version 2.00 lebt.</p>
+                        </article>
+
+                        <article class="story-branch-step open">
+                            <span class="story-branch-status">Paralleler Zweig</span>
+                            <h3>Neo-Link als Schnittstelle</h3>
+                            <p>Offen / Überarbeitung.</p>
+                        </article>
+                    </div>
 
                 </div>
 

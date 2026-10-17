@@ -1406,11 +1406,15 @@
                                 gewechselt. Bei Weißdarstellung kann dadurch der vierte Kanal
                                 genutzt werden, wodurch der Strombedarf trotz größerer Matrix sinkt.
                                 <br><br>
-                                Bei einer gerenderten Lichtstufe von <strong>255 / 7 = 36</strong>
-                                ergibt sich rechnerisch – bei 20 mA je voll angesteuertem Kanal –
-                                ein LED-Strom von rund <strong>847 mA</strong> für V1.5 gegenüber
-                                rund <strong>342 mA</strong> für V2.00. Das entspricht etwa
-                                <strong>60 % weniger Strombedarf</strong>.
+                                Bei Volllast arbeitet der Dimmer mit
+                                <strong>255 &lt;&lt; 7 = 32640</strong>, also mit voller Lichtstufe.
+                                Bei einer weißen Vollausgabe benötigt V1.5 mit 100 Pixeln und
+                                drei Kanälen zu je 20 mA rechnerisch bis zu
+                                <strong>6000 mA</strong>. Bei V2.00 übernimmt dafür der separate
+                                Weißkanal: 121 Pixel × 16 mA ergeben rund
+                                <strong>1936 mA</strong>. Trotz der größeren Matrix sinkt der
+                                Strombedarf bei Weiß damit rechnerisch um rund
+                                <strong>68 %</strong>.
                             </p>
                         </article>
 

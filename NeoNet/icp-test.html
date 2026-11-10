@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>ICP HTTP-Test | NeoNet Web-Config</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/icp-test.css">
+  <script src="js/deployment.js" defer></script>
+  <script src="js/icp-client.js" defer></script>
+  <script src="js/icp-test.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt</a>
+  <header class="test-topbar"><a href="index.html" class="test-back">← NeoNet Web-Config</a><span class="small-kicker">VLT-ICP / ONLINE-VORSCHAU (DEAKTIVIERT)</span><span class="header-chip">ENTWICKLUNG</span></header>
+  <main id="main" class="test-main">
+    <div class="eyebrow">ICP / LOKALE TESTSCHNITTSTELLE</div>
+    <h1>ICP-Verbindung<span class="title-accent">.</span></h1>
+    <p class="page-subtitle">Test der implementierten VLT-ICP-HTTP-API. Keine direkte Browser-TCP-Verbindung, keine Geräte- oder Modulbefehle.</p>
+
+    <section class="panel test-section" aria-labelledby="connection-heading">
+      <div class="panel-header"><div><div class="panel-kicker">VERBINDUNG</div><h2 id="connection-heading" class="panel-heading">Automatische ICP-Verbindung</h2></div><span id="connection-state" class="pill unknown">NICHT GETESTET</span></div>
+      <div class="panel-body">
+        <p class="test-note">Diese öffentliche Vorschau verbindet sich nicht mit einem lokalen VLT-ICP. Die automatische Sitzung steht ausschließlich in der lokalen Web-Config zur Verfügung.</p><p id="status-details" class="test-note">Status wird ermittelt…</p>
+        <div class="test-actions"><button id="status-button" class="btn secondary" type="button">ICP-Status abfragen</button></div>
+      </div>
+    </section>
+
+    <section class="panel test-section" aria-labelledby="frame-heading">
+      <div class="panel-header"><div><div class="panel-kicker">TESTFRAME / DEBUG</div><h2 id="frame-heading" class="panel-heading">TEST-Funktion aufrufen</h2></div><span class="pill violet">HTTP-API</span></div>
+      <div class="panel-body">
+        <p>Vorgegebener originaler TCP-Testframe:</p>
+        <pre id="original-frame" class="test-code">$&lt;00#01#TEST#544553544652414D4530313233343536#6F95&gt;</pre>
+        <div class="notice info"><strong>Wichtig:</strong> Die derzeitige HTTP-API hat keinen Endpunkt zum direkten Senden eines vollständigen TCP-Frames. Der Button ruft deshalb <code>POST /api/v1/build</code> mit <code>target=TEST</code>, dem originalen Hex-Nutzinhalt und <code>qq=00, zz=01</code> auf. Das Frame-Endstück <code>#6F95</code> wird bei diesem Aufruf <strong>nicht übertragen oder geprüft</strong>. Eine erfolgreiche Antwort ist kein Nachweis, dass der vollständige TCP-Testframe verarbeitet wurde.</div>
+        <div class="test-actions"><button id="frame-button" type="button" class="btn">TEST über HTTP auslösen</button><button id="check-button" type="button" class="btn secondary" disabled>SOP / COP prüfen</button><button id="clear-button" type="button" class="btn secondary">Ausgabe löschen</button></div>
+        <p class="test-note">Hinweis: Der bestehende ICP-Core gestattet <code>TEST</code> bei <code>/build</code> nur im entsprechenden Debug-Modus. Ohne diesen kann die API <code>422 / build_failed</code> melden.</p>
+      </div>
+    </section>
+
+    <section class="panel test-section" aria-labelledby="result-heading">
+      <div class="panel-header"><div><div class="panel-kicker">LIVE-RÜCKMELDUNG</div><h2 id="result-heading" class="panel-heading">Letzte Anfrage und Antwort</h2></div><span id="result-state" class="pill unknown" role="status" aria-live="polite">BEREIT</span></div>
+      <div class="panel-body">
+        <div class="test-output-grid"><div><h3>Gesendete HTTP-Anfrage</h3><pre id="request-output" class="test-code test-log" aria-live="polite">Noch keine Anfrage</pre></div><div><h3>HTTP-Antwort</h3><pre id="response-output" class="test-code test-log" aria-live="polite">Noch keine Antwort</pre></div></div>
+        <p id="result-help" class="test-note" aria-live="polite">Öffentliche Vorschau: HTTP-Tests sind deaktiviert. Für reale ICP-Tests die lokale Web-Config öffnen.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

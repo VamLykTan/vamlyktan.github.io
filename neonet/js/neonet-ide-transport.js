@@ -1,5 +1,5 @@
-/* NeoNet-IDE: Session und vorläufiger Scan-Sendeversuch auf dem dokumentierten API-Basispfad.
-   Kein eigener Scan-Endpunkt bekannt. Der IDE-Empfang/Hardwareauftrag ist nicht bestätigt. */
+/* Gemeinsamer NeoNet-IDE-HTTP-Transport: bestaetigter Sendeweg POST /api/v1.
+   Die HTTP-Antwort bestaetigt keinen Empfang durch den AVR. */
 (() => {
   'use strict';
   const ORIGIN = 'http://127.0.0.1:8081';

@@ -4,7 +4,7 @@
   const COMMAND='$<FE#FF#CFG#LOAD>';
   let adapter=null, visible=false, probing=false, busy=false, reachable=false, scanEpoch=0;
   let portState="Nicht geprüft", portDetail="HTTP-Port 8081 wurde noch nicht geprüft.";
-  let phase='Nicht konfiguriert', detail='IDE-Endpunkt und Session-Schnittstelle noch nicht freigegeben.';
+  let phase='Nicht konfiguriert', detail='IDE-Verbindung noch nicht initialisiert.';
   let received='Noch keine echte IDE-Antwort.', sessionReady=false;
   const safe=str=>String(str||'').replace(/(Bearer\s+)\S+/gi,'$1[VERDECKT]').replace(/("(?:access_)?token"\s*:\s*")[^"]+/gi,'$1[VERDECKT]').slice(0,4096);
   const isIPv4=host=>/^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) && host.split('.').every(p=>String(Number(p))===p && Number(p)<=255);
@@ -45,7 +45,7 @@
     adapter=Object.freeze({origin,probe:config.probe,startSession:config.startSession,sendScan:config.sendScan||null,portProbe:config.portProbe||null});
     reachable=false;sessionReady=false;received='Noch keine echte IDE-Antwort.';
     portState='Nicht geprüft';portDetail='HTTP-Port 8081 wurde noch nicht geprüft.';
-    setState('IDE-Ziel konfiguriert','IDE-Adresse ist festgelegt. Die Verbindung muss separat geprüft werden.');
+    setState('IDE-Ziel konfiguriert','Der Scan kann sofort gestartet werden. Die Session wird bei Bedarf aufgebaut.');
   }
   function httpError(response,action) {
     const code=Number(response?.status)||0;

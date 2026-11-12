@@ -68,7 +68,9 @@
     const table=panel('Erfasste Module','EEPROM-ID / ADRESSE / VERBUND',`<div class="table-wrap"><table class="data-table"><thead><tr><th>Modul / Identität</th><th>NeoNet-Adresse</th><th>Status</th><th>Weg / aktiver Zugriff</th><th>IPv4-Zugang</th><th>Verbund</th><th>Details</th></tr></thead><tbody>${rows || '<tr><td colspan="7">Keine passenden Module.</td></tr>'}</tbody></table></div>`,`<div class="table-tools"><input id="module-search" class="search-input" aria-label="Module suchen" placeholder="Module suchen …" value="${esc(state.search)}"><select id="module-filter" class="filter-select" aria-label="Statusfilter"><option value="all" ${state.filter==='all'?'selected':''}>Alle Status</option><option value="online" ${state.filter==='online'?'selected':''}>Online</option><option value="offline" ${state.filter==='offline'?'selected':''}>Offline</option><option value="degraded" ${state.filter==='degraded'?'selected':''}>Eingeschränkt</option><option value="unknown" ${state.filter==='unknown'?'selected':''}>Unbekannt</option></select></div>`);
     const m=view.modules.find(m=>m.key===state.selectedModule);
     const details=m? panel(m.name,'GERÄTEDETAILS / GEMELDET',`<dl class="details-grid"><div><dt>EEPROM-Identität</dt><dd>${m.identityConfirmed?esc(m.eepromId):'Nicht bestätigt'}</dd></div><div><dt>NeoNet-Adresse</dt><dd>${esc(m.address)}</dd></div><div><dt>Status</dt><dd>${statusPill(m.state)}</dd></div><div><dt>Verbund</dt><dd>${membership(m)}</dd></div><div><dt>Betriebsart</dt><dd>${esc(m.mode)}</dd></div><div><dt>Gateway</dt><dd>${m.isGateway?'Ja · '+esc(m.gatewayState):'Nein'}</dd></div><div><dt>Hardware</dt><dd>${esc(m.hardware)}</dd></div><div><dt>Firmware</dt><dd>${esc(m.firmware)}</dd></div><div><dt>Beobachtungen</dt><dd>${m.observationIds.length} · IDs ${m.observationIds.map(esc).join(', ')}</dd></div><div><dt>Eigene IPv4-Adresse</dt><dd>${m.ipv4?esc(m.ipv4.address || 'Nicht gemeldet')+' · '+esc((m.ipv4.mode || '').toUpperCase()):'Keine eigene IPv4-Adresse gemeldet'}</dd></div><div><dt>Gemeinsamer IP-Zugang</dt><dd>${accessLabel(m)}</dd></div><div><dt>Aktiver Weg</dt><dd>${pathLabel(m)}</dd></div></dl><div class="section-space"><div class="small-kicker">GEMELDETE ERREICHBARKEIT</div>${routes(m)}</div>`):'';
-    return `<div class="stack">${sharedAccessPanel(view)}${view.warnings.map(w=>notice(w)).join('')}${table}${details}</div>`;
+    const scanPanel=panel('NeoNet-Scan','NEONET-IDE / HTTP-SCAN',
+      `<div class="neonet-scan"><div class="scan-facts"><div><span class="small-kicker">ZIELANWENDUNG</span><strong id="neonet-scan-target">Noch nicht freigegeben</strong></div><div><span class="small-kicker">HTTP-PORT 8081</span><strong id="neonet-scan-port">Nicht geprüft</strong></div><div><span class="small-kicker">IDE-SESSION</span><strong id="neonet-scan-connection">Nicht geprüft</strong></div></div><p class="small-muted">Verbindlicher Scanbefehl: <code>$&lt;FE#FF#CFG#LOAD&gt;</code> – Übertragung ausschließlich durch die NeoNet-IDE, nicht durch den Browser an die Hardware.</p><div class="actions"><button class="btn" id="neonet-scan-start" type="button">Module scannen</button><button class="btn secondary" id="neonet-scan-probe" type="button">Port und Sitzung prüfen</button></div><p id="neonet-scan-message" class="scan-message" role="status" aria-live="polite">Der Scan-Klick startet einen HTTP-Sendeversuch an den bekannten IDE-API-Basispfad. Nach 5 Sekunden ohne IDE-Antwort erscheint eine Zeitüberschreitung. Ein Hardwareempfang ist dadurch nicht bestätigt.</p><details class="scan-response"><summary>Empfangsstatus / IDE-Antwort</summary><pre id="neonet-scan-response">Noch keine echte IDE-Antwort.</pre></details><p class="small-muted">Die nachfolgende Modultabelle enthält ausschließlich Mock-Daten. Ohne freigegebenes IDE-Antwortformat werden keine realen Module daraus abgeleitet.</p></div>`);
+    return `<div class="stack">${scanPanel}${sharedAccessPanel(view)}${view.warnings.map(w=>notice(w)).join('')}${table}${details}</div>`;
   }
   function renderNetwork(view) {
     const devices=view.modules;
@@ -137,7 +139,13 @@
     document.querySelectorAll('[data-page]').forEach(btn=>{const active=btn.dataset.page===state.page;btn.classList.toggle('active',active);if(active)btn.setAttribute('aria-current','page');else btn.removeAttribute('aria-current');});
     const pages={dashboard:renderDashboard,modules:renderModules,network:renderNetwork,topology:renderTopology,diagnostics:renderDiagnostics};
     document.getElementById('view').innerHTML=pages[state.page](view);
+    const icpPanel=document.querySelector('.icp-live-panel');
+    if (icpPanel) icpPanel.hidden=state.page==='modules';
     bindPage(view);
+    if (window.NeoNetIDEScan) {
+      if (state.page==='modules') window.NeoNetIDEScan.mount();
+      else window.NeoNetIDEScan.leave();
+    }
   }
   function bindPage(view) {
     document.querySelectorAll('[data-open-module]').forEach(btn=>btn.addEventListener('click',()=>{

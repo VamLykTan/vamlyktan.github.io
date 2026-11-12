@@ -4,12 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="NeoNet Web-Config – funktionsfähige Mock-Vorschau ohne Geräteanbindung">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:8080; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="description" content="NeoNet Web-Config – NeoNet Web-Config mit live IDE-Scan und getrennten Mock-Moduldaten">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:8080 http://127.0.0.1:8081; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>NeoNet Web-Config | Mock-Vorschau</title>
   <link rel="stylesheet" href="css/styles.css">
   <script src="js/core.js" defer></script>
   <script src="js/mocks.js" defer></script>
+  <script src="js/neonet-ide-scan.js" defer></script>
+  <script src="js/neonet-ide-transport.js" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/deployment.js" defer></script>
   <script src="js/online-client.js" defer></script>
@@ -34,7 +36,7 @@
       <header class="topbar"><div class="mobile-brand">NeoNet <span>CONFIG</span></div><div class="breadcrumb" id="breadcrumb">SYSTEM <span>/</span> DASHBOARD</div><div class="header-tools"><span class="header-chip"><span class="status-dot warning"></span>SIMULATION</span><span class="header-version">VORSCHAU · 03.11.2026</span></div></header>
       <main id="main" tabindex="-1">
         <div class="page-heading"><div><div class="eyebrow" id="page-kicker">NEONET / SYSTEMÜBERSICHT</div><h1 id="page-title">Dashboard<span class="title-accent">.</span></h1><p id="page-subtitle" class="page-subtitle">Erkannte Geräteidentitäten, Übertragungswege und Diagnose – aus simulierten IDE-Meldungen.</p></div><div class="source-panel"><span class="small-kicker">DATENLAGE</span><strong id="source-status">Mock-Daten</strong><span id="source-updated" class="small-muted">Keine Live-Geräte</span></div></div>
-        <div class="mock-banner" role="status"><span class="banner-icon">!</span><div><strong>Entwicklungsansicht mit Mock-Daten</strong><p>Die NeoNet-Moduldaten sind weiterhin simuliert. Nur bei ausdrücklicher Verbindung können freigegebene API-Funktionen abgefragt werden; es werden keine AVR-Modulbefehle übertragen.</p></div></div>
+        <div class="mock-banner" role="status"><span class="banner-icon">!</span><div><strong>Entwicklungsansicht mit Mock-Daten</strong><p>Die NeoNet-Moduldaten sind weiterhin simuliert. Der Scan sendet den festgelegten Befehl an die lokale NeoNet-IDE auf Port 8081. HTTP 202 bestätigt noch keinen AVR-Empfang; der Browser spricht niemals direkt mit der Hardware.</p></div></div>
         <div class="control-strip"><label for="scenario">Testszenario</label><select id="scenario"><option value="seven" selected>7 Module / 1 IP (Beispiel)</option><option value="normal">Ursprungs-Mock (N: Adresskonflikt)</option><option value="gateway">Gateway offline</option><option value="unknown">Topologie unklar</option><option value="addresses">Gleiche Adresse im Verbund</option></select><label for="role">Rollenansicht</label><select id="role"><option value="user">Benutzer</option><option value="admin">Administrator (nur Vorschau)</option></select><span class="strip-note">Die Rollenauswahl ist <strong>keine</strong> Anmeldung.</span></div>
         <section class="panel icp-live-panel" aria-labelledby="icp-live-heading">
       <div class="panel-header"><div><div class="panel-kicker">LOKALER DIENST / TOKEN-SESSION</div><h2 id="icp-live-heading" class="panel-heading">Verbindung zum lokalen Dienst</h2></div><span id="icp-live-status" class="pill unknown">NICHT VERBUNDEN</span></div>
@@ -44,7 +46,7 @@
       <p class="small-muted">Eine erfolgreiche API-Verbindung ist keine NeoNet-Geräteerkennung. Module und Topologie bleiben Simulation.</p></div>
     </section>
     <div id="view" aria-live="polite"></div>
-        <footer>NeoNet Web-Config · getrennte Mock-Oberfläche · keine AVR-Hardwarebefehle · Lokale API nur nach Freigabe</footer>
+        <footer>NeoNet Web-Config · Mock-Moduldaten klar gekennzeichnet · Scan per HTTP an lokale NeoNet-IDE · ICP-Anbindung separat</footer>
       </main>
     </div>
   </div>

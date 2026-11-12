@@ -39,3 +39,14 @@ main{max-width:1500px;padding:42px clamp(24px,4vw,64px) 20px;margin:auto}.page-h
 
 /* HTTP-01: ICP live region; does not alter NeoNet mock rendering. */
 .icp-live-panel{margin-bottom:20px}.icp-live-panel .actions{margin:16px 0;display:flex;gap:10px;flex-wrap:wrap}.icp-live-panel .small-muted{line-height:1.6}.icp-live-raw{padding-top:4px;font-size:12px}.icp-live-raw summary{cursor:pointer;color:var(--cyan)}.icp-live-raw pre{background:#061018;border:1px solid var(--border);padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:240px;overflow:auto}
+
+/* NeoNet IDE: independent HTTP port and session status in the shared Modules tab. */
+.icp-live-panel[hidden]{display:none!important}
+.neonet-scan .scan-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.neonet-scan .scan-facts>div{min-width:0;border-left:2px solid var(--border-strong);padding-left:12px}
+.neonet-scan .scan-facts strong{display:block;font-size:13px;font-weight:500;overflow-wrap:anywhere}
+.neonet-scan code{color:var(--cyan);font-size:12px;overflow-wrap:anywhere}
+.neonet-scan .scan-message{font-size:12px;color:var(--muted);margin:14px 0;overflow-wrap:anywhere}
+.neonet-scan .scan-response summary{color:var(--cyan);cursor:pointer;font-size:12px}
+.neonet-scan .scan-response pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:230px;overflow:auto;background:#061018;border:1px solid var(--border);padding:12px;font-size:12px}
+@media(max-width:800px){.neonet-scan .scan-facts{grid-template-columns:1fr}}
